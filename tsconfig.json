@@ -1,0 +1,44 @@
+// {
+//   "extends": "@tsconfig/react-native/tsconfig.json"
+// }
+{
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "commonjs",
+    "lib": ["es6"],
+    "allowJs": true,
+    "jsx": "react-native",
+    "noEmit": true,
+    "isolatedModules": true,
+    "strict": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "rootDirs": ["App"],
+    "resolveJsonModule": true,
+    "baseUrl": "./",
+    "paths": {
+      "@components/*": ["App/Components/*"],
+      // "@layouts/*": ["App/layouts/*"],
+      // "@modules/*": ["App/modules/*"],
+      "@config/*": ["App/Config/*"],
+      "@services/*": ["App/services/*"],
+      "@screens/*": ["App/Screen/*"],
+      "@redux/*": ["App/Redux/*"],
+      // "@saga/*": ["App/saga/*"],
+      // "@static/*": ["App/static/*"],
+      // "@utils/*": ["App/utility/*"],
+      "@navigation/*": ["App/Navigation/*"],
+      "@theme/*": ["App/Themes/*"],
+      "@assets/*": ["App/Assets/*"]
+      // "@icons/*":["App/Assets/icons"]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "babel.config.js",
+    "metro.config.js",
+    "jest.config.js"
+  ]
+}
