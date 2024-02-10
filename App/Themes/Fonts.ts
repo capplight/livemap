@@ -2,9 +2,12 @@ export default {
   robotoSlabBold: 'RobotoSlab-Bold',
   // poppinsLight: 'Poppins-Light',
   // poppinsLightItalic: 'Poppins-LightItalic',
-  // poppinsRegular: 'Poppins-Regular',
+  robotoRegular: 'RobotoSlab-Regular',
   robotoMedium: 'RobotoSlab-Medium',
+  robotoSemiBold: 'RobotoSlab-SemiBold',
   // poppinsBold: 'Poppins-Bold',
+
+  righteousRegular: 'Righteous-Regular',
 
   // petronaLight: 'Petrona-Light',
   // petronaRegular: 'Petrona-Regular',

@@ -2,6 +2,10 @@
   "migIndex": 1,
   "data": [
     {
+      "path": "App/Assets/fonts/Righteous-Regular.ttf",
+      "sha1": "3129e2b47e224dec082c4169b396b1fa27a95749"
+    },
+    {
       "path": "App/Assets/fonts/RobotoSlab-Black.ttf",
       "sha1": "f3b1bdd1676dff204f659634c1a29c109cbc238a"
     },

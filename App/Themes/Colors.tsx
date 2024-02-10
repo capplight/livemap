@@ -45,4 +45,8 @@ export const Colors = {
   shadow: '#D5D9DD',
 
   activeColor: '#0089A8',
+  primaryColor: '#480A5D',
+  secondaryColor: '#850AAF',
+  textLight: '#480A5D',
+  notificationBackgroundColor: '#C880D7',
 };
