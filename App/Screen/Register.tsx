@@ -11,7 +11,7 @@ import {Colors} from '../Themes/Colors';
 import Fonts from '../Themes/Fonts';
 import CustomButton from '../Components/Buttons/CustomButton';
 
-interface SplashScreen {
+interface Register {
   navigation: StackNavigationProp<any>;
   route?: any;
 }
@@ -50,8 +50,16 @@ export const chatView = () => {
   );
 };
 
-export const SplashScreen: FC<SplashScreen> = ({navigation}: SplashScreen) => {
+export const Register: FC<Register> = ({navigation}: Register) => {
   const [isStarted, setStart] = useState(false);
+  function homeNavigation() {
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 1,
+        routes: [{name: 'tabs'}],
+      }),
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -88,7 +96,6 @@ export const SplashScreen: FC<SplashScreen> = ({navigation}: SplashScreen) => {
             containerStyle={[styles.buttonContainerStyle2]}
             textOverrideStyle={{fontSize: hp(2)}}
             onPress={() => {
-              navigation.navigate('Login');
               // setStart(!isStarted);
             }}
           />

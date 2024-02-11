@@ -29,7 +29,6 @@ export const Colors = {
   d_3: '#A1A6B8',
   d_5: '#F1F5FF',
 
-  textBlue: '#4693EE',
   orderSlipText: '#43464D',
   viewBorderColor: '#DADCE5',
   errorMessage: '#f44336',
@@ -47,6 +46,9 @@ export const Colors = {
   activeColor: '#0089A8',
   primaryColor: '#480A5D',
   secondaryColor: '#850AAF',
+  backgroundColor: '#22052C',
   textLight: '#480A5D',
+  lightWhite: '#F5F0F6',
+  textBlue: '#3FC1DD',
   notificationBackgroundColor: '#C880D7',
 };

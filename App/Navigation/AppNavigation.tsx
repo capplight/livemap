@@ -6,6 +6,8 @@ import {
 import {Colors} from '../Themes/Colors';
 import BottomTabNavigation from './BottomTabNavigation';
 import {SplashScreen} from '../Screen/SplashScreen';
+import {Login} from '../Screen/Login';
+import {Register} from '../Screen/Register';
 // import {TabAppSwitch} from '@components/TabSwitch/tabAppSwitch';
 // import {LoginScreen} from '../Screen/Auth/LoginScreen';
 // import {LogoutScreen} from '../Screen/Auth/Logout';
@@ -24,11 +26,16 @@ export const AppNavigation = () => {
       })}>
       <Stack.Screen name="splash" component={SplashScreen} />
       <Stack.Screen name="tabs" component={BottomTabNavigation} />
-      {/* <Stack.Screen
+      <Stack.Screen
         name="Login"
-        component={LoginScreen}
+        component={Login}
         options={{title: 'Login', headerShown: false}}
-      /> */}
+      />
+      <Stack.Screen
+        name="Register"
+        component={Register}
+        options={{title: 'Register', headerShown: false}}
+      />
 
       {/* <Stack.Screen
         name="Logout"

@@ -57,11 +57,7 @@ export const FoundationIcon = ({
 };
 
 //Ionicons
-export const IoniconsIcon = ({
-  name,
-  color = 'black',
-  size = 30,
-}: IconParams) => {
+export const Ionicons = ({name, color = 'black', size = 30}: IconParams) => {
   return <Icon5 name={name} color={color} size={size} />;
 };
 
