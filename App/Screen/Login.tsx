@@ -55,7 +55,7 @@ export const OrHorizontalLine = () => {
   );
 };
 
-const socialMediaButton = (isGoogle: boolean, onPress: () => void) => {
+export const socialMediaButton = (isGoogle: boolean, onPress: () => void) => {
   return (
     <TouchableOpacity onPress={onPress} style={styles.socialMediaButtonStyles}>
       <View
@@ -87,7 +87,6 @@ const socialMediaButton = (isGoogle: boolean, onPress: () => void) => {
 };
 
 export const Login: FC<Login> = ({navigation}: Login) => {
-  const [isStarted, setStart] = useState(false);
   function homeNavigation() {
     navigation.dispatch(
       CommonActions.reset({
@@ -99,9 +98,13 @@ export const Login: FC<Login> = ({navigation}: Login) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={{alignSelf: 'flex-end', margin: wp(2)}}>
+      <Pressable
+        onPress={() => {
+          navigation.navigate('Splash');
+        }}
+        style={{alignSelf: 'flex-end', margin: wp(2), padding: hp(1)}}>
         <Ionicons name="close" color={'white'} size={wp(8)} />
-      </View>
+      </Pressable>
       <Text style={styles.appNameText}>LiveMap</Text>
       <CustomTextField
         autoCapitalize={false}
@@ -109,19 +112,23 @@ export const Login: FC<Login> = ({navigation}: Login) => {
         placeHolder="Phone number, username or email"
       />
       <CustomTextField isPassword={true} placeHolder="Password" />
-      <Pressable style={{marginBottom: hp(2)}} onPress={() => {}}>
+      <Pressable
+        style={{alignSelf: 'flex-end', marginBottom: hp(2)}}
+        onPress={() => {}}>
         <Text style={styles.text}>Forgot Password?</Text>
       </Pressable>
       <LoginButton
         label="Log in"
         onPress={() => {
-          // setStart(!isStarted);
+          homeNavigation();
         }}
       />
       {OrHorizontalLine()}
-      {socialMediaButton(true, () => {})}
+      <View style={{marginTop: hp(-1)}}>
+        {socialMediaButton(true, () => {})}
+      </View>
       {socialMediaButton(false, () => {})}
-      <View style={{bottom: hp(-14)}}>
+      <View style={{bottom: hp(-18)}}>
         <Text style={styles.bottomTextStyles}>
           Message and data rates may apply. By continuing, you agree to our
           <Text style={styles.bold}> Terms of Use</Text> and
@@ -132,7 +139,7 @@ export const Login: FC<Login> = ({navigation}: Login) => {
           style={{
             flexDirection: 'row',
             alignSelf: 'center',
-            marginVertical: hp(2),
+            marginVertical: hp(1),
           }}>
           <Text
             style={[
@@ -141,7 +148,10 @@ export const Login: FC<Login> = ({navigation}: Login) => {
             ]}>
             Don't have an account?
           </Text>
-          <Pressable onPress={() => {}}>
+          <Pressable
+            onPress={() => {
+              navigation.navigate('Register');
+            }}>
             <Text
               style={[
                 styles.text,
@@ -165,12 +175,11 @@ const styles = StyleSheet.create({
   appNameText: {
     fontFamily: Fonts.righteousRegular,
     fontSize: hp(5),
-    marginTop: hp(8),
+    marginTop: hp(6),
     marginBottom: hp(4),
     color: 'white',
     alignSelf: 'center',
   },
-  imageStyles: {height: hp(100), width: wp(100), position: 'absolute'},
   text: {
     color: Colors.textBlue,
     textAlign: 'right',
@@ -193,7 +202,7 @@ const styles = StyleSheet.create({
   socialMediaButtonStyles: {
     width: wp(90),
     height: hp(5),
-    marginVertical: hp(1),
+    marginVertical: hp(0.5),
     marginHorizontal: wp(4),
     borderRadius: 5,
     borderWidth: 1,

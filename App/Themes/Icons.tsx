@@ -8,6 +8,7 @@ import Icon6 from 'react-native-vector-icons/MaterialCommunityIcons';
 import Icon7 from 'react-native-vector-icons/Feather';
 import Icon8 from 'react-native-vector-icons/MaterialIcons';
 import Icon9 from 'react-native-vector-icons/Octicons';
+import Icon10 from 'react-native-vector-icons/EvilIcons';
 import {Dimensions, Platform} from 'react-native';
 
 export const isIOS = Platform.OS === 'ios';
@@ -87,4 +88,9 @@ export const MaterialIcon = ({
 //OctIcons
 export const OctIcon = ({name, color = 'black', size = 30}: IconParams) => {
   return <Icon9 name={name} color={color} size={size} />;
+};
+
+//EvilIcons
+export const EvilIcons = ({name, color = 'black', size = 30}: IconParams) => {
+  return <Icon10 name={name} color={color} size={size} />;
 };

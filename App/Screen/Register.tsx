@@ -1,6 +1,6 @@
 import {StackNavigationProp} from '@react-navigation/stack';
-import React, {FC, useState} from 'react';
-import {Text, StyleSheet, View, Image} from 'react-native';
+import React, {FC} from 'react';
+import {Text, StyleSheet, View, Pressable} from 'react-native';
 import {CommonActions} from '@react-navigation/routers';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {
@@ -9,49 +9,16 @@ import {
 } from 'react-native-responsive-screen';
 import {Colors} from '../Themes/Colors';
 import Fonts from '../Themes/Fonts';
-import CustomButton from '../Components/Buttons/CustomButton';
-
+import {Ionicons} from '../Themes/Icons';
+import {CustomTextField} from '../Components/TextField/CustomTextField';
+import {LoginButton} from '../Components/Buttons/LoginButton';
+import {OrHorizontalLine, horizontalLine, socialMediaButton} from './Login';
 interface Register {
   navigation: StackNavigationProp<any>;
   route?: any;
 }
 
-const chatImage = (header: string, message: string) => {
-  return (
-    <View style={styles.notificationBackground}>
-      <Image
-        source={require('../Assets/icons/LogoSmall.png')}
-        style={{
-          height: hp(4),
-          width: wp(8),
-          marginLeft: wp(3),
-        }}
-      />
-      <View style={{marginLeft: wp(2.5)}}>
-        <Text style={styles.chatTextHeader}>{header}</Text>
-        <Text style={{color: Colors.textLight}}>{message}</Text>
-      </View>
-    </View>
-  );
-};
-
-export const chatView = () => {
-  return (
-    <View style={{marginTop: hp(6)}}>
-      {chatImage('Live Concert Astana Area', '4 km away')}
-      <View style={[styles.reverseChatView]}>
-        {chatImage('Happy hour at My Place', '2 km away')}
-      </View>
-      <View style={[styles.reverseChatView2, {}]}>
-        {chatImage('Live Concert Astana Area', '4 km away')}
-      </View>
-      {chatImage('Your spot is having a Quiz Night', '12 km away')}
-    </View>
-  );
-};
-
 export const Register: FC<Register> = ({navigation}: Register) => {
-  const [isStarted, setStart] = useState(false);
   function homeNavigation() {
     navigation.dispatch(
       CommonActions.reset({
@@ -63,52 +30,73 @@ export const Register: FC<Register> = ({navigation}: Register) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <Image
-        source={require('../Assets/icons/backgroundCover.png')}
-        style={[
-          styles.imageStyles,
-          isStarted ? {height: hp(87)} : {height: hp(100)},
-        ]}
-      />
-      {chatView()}
-      {!isStarted && (
-        <Text style={[styles.text]}>
-          {'Your City, Your Events, Your Moment. \n Welcome to LiveMap'}
-        </Text>
-      )}
-      <CustomButton
-        label={isStarted ? 'Explore the app' : 'Get Started'}
-        containerStyle={[
-          styles.buttonContainerStyle,
-          isStarted ? {width: wp(80)} : {width: wp(50)},
-        ]}
-        textOverrideStyle={{fontSize: hp(2)}}
+      <Pressable
+        style={{alignSelf: 'flex-end', margin: wp(2), padding: hp(2)}}
         onPress={() => {
-          setStart(!isStarted);
-        }}
+          navigation.navigate('Splash');
+        }}>
+        <Ionicons name="close" color={'white'} size={wp(8)} />
+      </Pressable>
+      <Text style={styles.appNameText}>LiveMap</Text>
+      <Text
+        style={[
+          styles.bold,
+          {
+            fontSize: hp(2),
+            marginHorizontal: wp(4),
+            marginBottom: hp(4),
+            textAlign: 'center',
+          },
+        ]}>
+        Sign up so you can track live events more efficiently.
+      </Text>
+      <CustomTextField
+        autoCapitalize={false}
+        keyboardType="email-address"
+        placeHolder="Phone number or email"
       />
-      {isStarted && (
+      <CustomTextField placeHolder="Full name (Optional)" />
+      <CustomTextField placeHolder="Username" />
+      <CustomTextField isPassword={true} placeHolder="Password" />
+      <LoginButton
+        label="Sign up"
+        onPress={() => {
+          homeNavigation();
+        }}
+        buttonContainerStyle={{marginTop: hp(2)}}
+      />
+      {OrHorizontalLine()}
+      <View style={{marginTop: hp(-1)}}>
+        {socialMediaButton(true, () => {})}
+      </View>
+      {socialMediaButton(false, () => {})}
+      <View style={{bottom: hp(-6)}}>
+        <Text style={styles.bottomTextStyles}>
+          Message and data rates may apply. By continuing, you agree to our
+          <Text style={styles.bold}> Terms of Use</Text> and
+          <Text style={styles.bold}> Privacy Policy.</Text>
+        </Text>
+        {horizontalLine(wp(100))}
         <View
-          style={{alignSelf: 'center', position: 'absolute', bottom: hp(8)}}>
-          <Text style={styles.appNameText}>LiveMap</Text>
-          <CustomButton
-            label="Log in"
-            containerStyle={[styles.buttonContainerStyle2]}
-            textOverrideStyle={{fontSize: hp(2)}}
+          style={{
+            flexDirection: 'row',
+            alignSelf: 'center',
+            marginVertical: hp(1),
+          }}>
+          <Pressable
             onPress={() => {
-              // setStart(!isStarted);
-            }}
-          />
-          <CustomButton
-            label="Sign up"
-            containerStyle={[styles.buttonContainerStyle2, {bottom: hp(14)}]}
-            textOverrideStyle={{fontSize: hp(2)}}
-            onPress={() => {
-              // setStart(!isStarted);
-            }}
-          />
+              navigation.goBack();
+            }}>
+            <Text
+              style={[
+                styles.text,
+                {marginVertical: hp(0), fontSize: hp(2), fontWeight: 'bold'},
+              ]}>
+              Back to log in
+            </Text>
+          </Pressable>
         </View>
-      )}
+      </View>
     </SafeAreaView>
   );
 };
@@ -116,61 +104,37 @@ export const Register: FC<Register> = ({navigation}: Register) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'black',
+    alignItems: 'center',
+    backgroundColor: Colors.backgroundColor,
   },
   appNameText: {
     fontFamily: Fonts.righteousRegular,
     fontSize: hp(5),
-    marginBottom: hp(14),
+    marginTop: hp(3),
+    marginBottom: hp(1),
     color: 'white',
     alignSelf: 'center',
-  },
-  imageStyles: {height: hp(100), width: wp(100), position: 'absolute'},
-  buttonContainerStyle2: {
-    height: hp(6),
-    width: wp(80),
-    backgroundColor: Colors.activeColor,
-  },
-  reverseChatView: {
-    flexDirection: 'row-reverse',
-    marginVertical: hp(4),
-    marginLeft: wp(4),
-  },
-  reverseChatView2: {
-    flexDirection: 'row-reverse',
-    marginVertical: hp(4),
-    marginLeft: wp(12),
-    marginTop: hp(-1),
-    opacity: 0.75,
-  },
-  chatTextHeader: {
-    width: wp(50),
-    color: Colors.primaryColor,
-    fontWeight: '500',
   },
   text: {
-    alignSelf: 'center',
-    color: 'white',
-    textAlign: 'center',
-    bottom: hp(14),
-    fontSize: hp(2),
-    position: 'absolute',
-    fontFamily: Fonts.robotoSemiBold,
+    color: Colors.textBlue,
+    textAlign: 'right',
+    fontSize: hp(1.5),
+    marginVertical: hp(0.5),
+    marginRight: wp(2),
   },
   buttonContainerStyle: {
-    width: wp(50),
+    height: hp(5),
+    width: wp(90),
+    borderRadius: 4,
     alignSelf: 'center',
-    position: 'absolute',
-    bottom: hp(3),
+    backgroundColor: Colors.activeColor,
   },
-  notificationBackground: {
-    height: hp(6),
-    width: wp(64),
-    borderRadius: 8,
-    marginLeft: wp(4),
-    justifyContent: 'flex-start',
-    alignItems: 'center',
-    backgroundColor: Colors.notificationBackgroundColor,
-    flexDirection: 'row',
+  bottomTextStyles: {
+    marginHorizontal: wp(3),
+    textAlign: 'center',
+    color: Colors.lightWhite,
+    opacity: 0.5,
+    marginBottom: hp(2),
   },
+  bold: {fontWeight: 'bold', color: 'white', opacity: 1},
 });
