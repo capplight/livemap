@@ -20,6 +20,7 @@
     "baseUrl": "./",
     "paths": {
       "@components/*": ["App/Components/*"],
+      "@constants/*": ["App/Constants/*"],
       // "@layouts/*": ["App/layouts/*"],
       // "@modules/*": ["App/modules/*"],
       "@config/*": ["App/Config/*"],
@@ -30,9 +31,9 @@
       // "@static/*": ["App/static/*"],
       // "@utils/*": ["App/utility/*"],
       "@navigation/*": ["App/Navigation/*"],
-      "@theme/*": ["App/Themes/*"],
-      "@assets/*": ["App/Assets/*"]
-      // "@icons/*":["App/Assets/icons"]
+      "@themes/*": ["App/Themes/*"],
+      "@assets/*": ["App/Assets/*"],
+      "@icons/*":["App/Assets/icons"]
     }
   },
   "exclude": [

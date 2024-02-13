@@ -128,7 +128,7 @@ export const Login: FC<Login> = ({navigation}: Login) => {
         {socialMediaButton(true, () => {})}
       </View>
       {socialMediaButton(false, () => {})}
-      <View style={{bottom: hp(-18)}}>
+      <View style={{bottom: hp(-20)}}>
         <Text style={styles.bottomTextStyles}>
           Message and data rates may apply. By continuing, you agree to our
           <Text style={styles.bold}> Terms of Use</Text> and
@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
   appNameText: {
     fontFamily: Fonts.righteousRegular,
     fontSize: hp(5),
-    marginTop: hp(6),
+    marginTop: hp(8.5),
     marginBottom: hp(4),
     color: 'white',
     alignSelf: 'center',

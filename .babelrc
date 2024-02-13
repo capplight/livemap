@@ -6,8 +6,8 @@
         "root": ["./"],
         "alias": {
           "@components": "./App/Components",
-          "@screens": "./App/Screen",
           "@constants": "./App/Constants",
+          "@screens": "./App/Screen",
           "@redux": "./App/Redux",
           "@assets": "./App/Assets",
           "@themes": "./App/Themes",
