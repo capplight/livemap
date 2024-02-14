@@ -5,7 +5,6 @@ import {
   SafeAreaView,
   StyleProp,
   ViewStyle,
-  TextStyle,
   Pressable,
   KeyboardType,
 } from 'react-native';
@@ -17,30 +16,40 @@ import {Colors} from '../../Themes/Colors';
 import {FeatherIcon} from '../../Themes/Icons';
 
 interface TextFieldProps {
-  isLoading?: boolean;
-  containerStyle?: StyleProp<ViewStyle>;
-  textOverrideStyle?: StyleProp<TextStyle | ViewStyle>;
+  icon?: any;
+  value: string;
+  showIcon?: boolean;
   placeHolder: string;
   isPassword?: boolean;
   autoCapitalize?: boolean;
+  onChangeText: (val: string) => void;
   keyboardType?: KeyboardType;
+  containerStyle?: StyleProp<ViewStyle>;
+  textInputStyle?: StyleProp<ViewStyle>;
 }
 
 export const CustomTextField = ({
+  icon,
+  value,
   placeHolder,
+  onChangeText,
+  containerStyle,
+  textInputStyle,
+  showIcon = false,
   isPassword = false,
   autoCapitalize = true,
   keyboardType = 'default',
 }: TextFieldProps) => {
-  const [text, onChangeText] = useState('');
   const [visibleText, setVisibility] = useState(true);
   return (
-    <SafeAreaView style={{justifyContent: 'center'}}>
+    <SafeAreaView style={[styles.container, containerStyle]}>
+      {showIcon && icon}
       <TextInput
-        value={text}
-        style={styles.input}
+        value={value}
+        numberOfLines={1}
         placeholder={placeHolder}
         keyboardType={keyboardType}
+        style={[styles.input, textInputStyle]}
         autoCapitalize={autoCapitalize ? 'sentences' : 'none'}
         onChangeText={val => onChangeText(val)}
         secureTextEntry={isPassword ? visibleText : !visibleText}
@@ -59,14 +68,20 @@ export const CustomTextField = ({
 };
 
 const styles = StyleSheet.create({
+  container: {
+    height: hp(5),
+    marginVertical: hp(1),
+    borderRadius: 4,
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: wp(2),
+    backgroundColor: Colors.textLight,
+  },
   input: {
     height: hp(5),
     width: hp(42),
-    marginVertical: hp(1),
-    backgroundColor: Colors.textLight,
     color: 'white',
-    borderRadius: 4,
-    padding: 10,
+    marginVertical: hp(1),
   },
   visibilityStyles: {
     alignItems: 'flex-end',

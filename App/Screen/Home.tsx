@@ -28,10 +28,13 @@ import GroceryIcon from '@assets/svg/shop.svg';
 import PharmacyIcon from '@assets/svg/pharmacy.svg';
 import PeopleIcon from '@assets/svg/people.svg';
 import FavoritesIcon from '@assets/svg/favorites.svg';
+import FilterIcon from '@assets/svg/settings.svg';
+import CrossIcon from '@assets/svg/cross.svg';
 import {requestMapsPermission} from '@constants/Permission';
 import {FeatherIcon, Ionicons, MaterialCommunityIcon} from '@themes/Icons';
 import Fonts from '@themes/Fonts';
 import {horizontalLine} from './Login';
+import {CustomTextField} from '@components/TextField/CustomTextField';
 interface Home {
   navigation: StackNavigationProp<any>;
   route?: any;
@@ -42,7 +45,6 @@ interface nestedMapViewProps {
   name: string;
   isChecked: boolean;
   expand?: boolean;
-  setCollapse?: React.Dispatch<React.SetStateAction<boolean>>;
   onPress: () => void;
 }
 
@@ -51,7 +53,6 @@ const LayerMapNestedView = ({
   name,
   isChecked = true,
   expand = false,
-  setCollapse,
   onPress,
 }: nestedMapViewProps) => {
   return (
@@ -83,6 +84,7 @@ export const Home: FC<Home> = ({navigation}: Home) => {
   const [imageTrack, setImageTrack] = useState(true);
   const [allMap, setAllMap] = useState(true);
   const [open, setOpen] = useState(true);
+  const [searchText, setSearchText] = useState('');
   const [streaming, setStreaming] = useState(true);
   const [activeHighlights, setActiveHighlights] = useState(true);
   const [groceries, setGroceries] = useState(true);
@@ -90,6 +92,7 @@ export const Home: FC<Home> = ({navigation}: Home) => {
   const [people, setPeople] = useState(true);
   const [favorites, setFavorites] = useState(true);
   const [isExpandable, setExpandable] = useState(false);
+  const [searchPressed, setSearchPress] = useState(false);
   const [nestedExpandableText, setExpandableText] = useState('');
   const [curLoc, setCurLoc] = useState({
     latitude: 30.7993,
@@ -106,11 +109,16 @@ export const Home: FC<Home> = ({navigation}: Home) => {
     setTimeout(() => {
       setImageTrack(false);
     }, 5000);
-  }, [isExpandable]);
+  }, [isExpandable, searchPressed]);
 
   function topSearchView() {
     return (
-      <TouchableOpacity onPress={() => {}} style={styles.searchBarStyles}>
+      <TouchableOpacity
+        onPress={() => {
+          setSearchPress(true);
+          refRBSheet?.current?.open();
+        }}
+        style={styles.searchBarStyles}>
         <View style={styles.searchViewStyles}>
           <View style={{marginHorizontal: wp(1)}}>
             <FeatherIcon name="search" size={24} color={Colors.lightWhite} />
@@ -207,7 +215,6 @@ export const Home: FC<Home> = ({navigation}: Home) => {
                 expand: true,
                 onPress: () => {
                   setExpandable(true);
-                  // setPeople(!people);
                   setExpandableText('People');
                 },
               })}
@@ -216,10 +223,8 @@ export const Home: FC<Home> = ({navigation}: Home) => {
                 name: 'Favorites',
                 isChecked: favorites,
                 expand: true,
-                // setCollapse = true,
                 onPress: () => {
                   setExpandable(true);
-                  // setFavorites(!favorites);
                   setExpandableText('Favorites');
                 },
               })}
@@ -249,23 +254,61 @@ export const Home: FC<Home> = ({navigation}: Home) => {
     );
   }
 
+  function searchBottomSheetView() {
+    return (
+      <View style={{alignItems: 'center', marginVertical: hp(1)}}>
+        <View style={{flexDirection: 'row'}}>
+          <CustomTextField
+            showIcon={true}
+            placeHolder="Search"
+            value={searchText}
+            onChangeText={val => {
+              setSearchText(val);
+            }}
+            icon={<FeatherIcon name="search" size={24} color={'white'} />}
+            containerStyle={{
+              height: hp(3.5),
+              width: wp(85),
+            }}
+            textInputStyle={{
+              width: wp(75),
+              height: hp(3.5),
+              marginLeft: wp(2),
+            }}
+          />
+          <View style={styles.filterViewStyles}>
+            <SVGRenderer
+              onPress={() => {
+                searchText.length >= 3 && setSearchText('');
+              }}>
+              {searchText.length >= 3 ? <CrossIcon /> : <FilterIcon />}
+            </SVGRenderer>
+          </View>
+        </View>
+      </View>
+    );
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <RBSheet
         ref={refRBSheet}
         closeOnDragDown={true}
         closeOnPressMask={false}
-        height={isExpandable ? hp(20) : hp(40)}
         customStyles={{
           container: {
+            height: searchPressed ? hp(92) : isExpandable ? hp(20) : hp(40),
             backgroundColor: '#22052C',
             borderRadius: wp(5),
           },
           draggableIcon: {
-            backgroundColor: 'transparent',
+            width: wp(12),
+            backgroundColor: searchPressed
+              ? Colors.primaryColor
+              : 'transparent',
           },
         }}>
-        {bottomSheetView()}
+        {searchPressed ? searchBottomSheetView() : bottomSheetView()}
       </RBSheet>
       <View style={styles.mapContainer}>
         <MapView
@@ -295,6 +338,7 @@ export const Home: FC<Home> = ({navigation}: Home) => {
         <View style={styles.topViewStyles}>
           <SVGRenderer
             onPress={() => {
+              setSearchPress(false);
               refRBSheet?.current?.open();
             }}>
             <MapLayer />
@@ -395,5 +439,15 @@ const styles = StyleSheet.create({
     fontSize: hp(1.8),
     color: 'white',
     marginLeft: wp(2.5),
+  },
+  filterViewStyles: {
+    height: hp(3.5),
+    width: wp(8),
+    borderRadius: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: hp(1),
+    marginLeft: wp(2),
+    backgroundColor: Colors.textLight,
   },
 });
