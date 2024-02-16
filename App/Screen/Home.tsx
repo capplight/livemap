@@ -1,5 +1,5 @@
 import {StackNavigationProp} from '@react-navigation/stack';
-import React, {useState, useEffect, FC, useRef} from 'react';
+import React, {useState, useEffect, FC, useRef, Fragment} from 'react';
 import {
   View,
   Text,
@@ -15,10 +15,10 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
+import MapView, {Callout, Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import {data} from '../Constants/data';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import {mapStyle} from '@constants/constValues';
+import {horizontalLine, mapStyle} from '@constants/constValues';
 import {SVGRenderer} from '@components/SVGRenderer';
 import MapLayer from '@assets/svg/mapLayers.svg';
 import NotificationIcon from '@assets/svg/bell.svg';
@@ -30,11 +30,20 @@ import PeopleIcon from '@assets/svg/people.svg';
 import FavoritesIcon from '@assets/svg/favorites.svg';
 import FilterIcon from '@assets/svg/settings.svg';
 import CrossIcon from '@assets/svg/cross.svg';
+import CurrentLocation from '@assets/svg/currentLocation.svg';
 import {requestMapsPermission} from '@constants/Permission';
-import {FeatherIcon, Ionicons, MaterialCommunityIcon} from '@themes/Icons';
+import {
+  FeatherIcon,
+  Ionicons,
+  MaterialCommunityIcon,
+  MaterialIcon,
+} from '@themes/Icons';
 import Fonts from '@themes/Fonts';
-import {horizontalLine} from './Login';
 import {CustomTextField} from '@components/TextField/CustomTextField';
+import InstaStory from 'react-native-insta-story';
+import {storyData} from '@constants/storyData';
+import {exportStyles} from '@components/ExportStyles';
+import Geolocation from 'react-native-geolocation-service';
 interface Home {
   navigation: StackNavigationProp<any>;
   route?: any;
@@ -94,22 +103,27 @@ export const Home: FC<Home> = ({navigation}: Home) => {
   const [isExpandable, setExpandable] = useState(false);
   const [searchPressed, setSearchPress] = useState(false);
   const [nestedExpandableText, setExpandableText] = useState('');
+  const [curtLat, setCurLat] = useState(0);
+  const [curtLong, setCurLong] = useState(0);
+  const [openModal, setOpenModal] = useState(false);
   const [curLoc, setCurLoc] = useState({
     latitude: 30.7993,
     longitude: 76.9149,
     latitudeDelta: 0.0922,
     longitudeDelta: 0.0421,
   });
-  const handlePress = () => {
-    console.log('I am clicked!');
-  };
 
   useEffect(() => {
     requestMapsPermission();
-    setTimeout(() => {
-      setImageTrack(false);
-    }, 5000);
-  }, [isExpandable, searchPressed]);
+    setImageTrack(true);
+    // setTimeout(() => {
+    //   setImageTrack(false);
+    // }, 5000);
+  }, [isExpandable, searchPressed, imageTrack]);
+
+  useEffect(() => {
+    getCurrentPosition();
+  }, [curtLat, curtLong, mapRef]);
 
   function topSearchView() {
     return (
@@ -267,12 +281,12 @@ export const Home: FC<Home> = ({navigation}: Home) => {
             }}
             icon={<FeatherIcon name="search" size={24} color={'white'} />}
             containerStyle={{
-              height: hp(3.5),
+              height: hp(4),
               width: wp(85),
             }}
             textInputStyle={{
               width: wp(75),
-              height: hp(3.5),
+              height: hp(5),
               marginLeft: wp(2),
             }}
           />
@@ -285,19 +299,46 @@ export const Home: FC<Home> = ({navigation}: Home) => {
             </SVGRenderer>
           </View>
         </View>
+        <InstaStory
+          data={storyData}
+          duration={5}
+          unPressedBorderColor={Colors.textBlue}
+          avatarImageStyle={{height: hp(11.5), width: wp(19), borderRadius: 4}}
+          style={{alignSelf: 'flex-start'}}
+          showAvatarText={false}
+          avatarWrapperStyle={exportStyles.avatarSquareWrapper}
+        />
       </View>
     );
   }
 
+  function getCurrentPosition() {
+    try {
+      Geolocation.getCurrentPosition(
+        position => {
+          setCurLat(position.coords.latitude);
+          setCurLong(position.coords.longitude);
+        },
+        error => {
+          console.log(error.code, error.message);
+        },
+        {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+      );
+    } catch (error) {}
+  }
+
   return (
     <SafeAreaView style={styles.container}>
+      {/* <Fragment>
+        <InstaStory data={storyData} duration={5} openModal={true} />
+      </Fragment> */}
       <RBSheet
         ref={refRBSheet}
         closeOnDragDown={true}
         closeOnPressMask={false}
         customStyles={{
           container: {
-            height: searchPressed ? hp(92) : isExpandable ? hp(20) : hp(40),
+            height: searchPressed ? hp(92) : isExpandable ? hp(20) : hp(48),
             backgroundColor: '#22052C',
             borderRadius: wp(5),
           },
@@ -313,24 +354,49 @@ export const Home: FC<Home> = ({navigation}: Home) => {
       <View style={styles.mapContainer}>
         <MapView
           ref={mapRef}
-          provider={PROVIDER_GOOGLE}
           style={styles.map}
+          // showsUserLocation={true}
+          // followsUserLocation={true}
+          showsMyLocationButton={true}
+          provider={PROVIDER_GOOGLE}
           customMapStyle={mapStyle}
           initialRegion={curLoc}>
+          <Marker
+            style={{height: hp(2), width: wp(2)}}
+            coordinate={{latitude: curtLat, longitude: curtLong}}
+            image={require('@assets/icons/myLocation.png')}
+          />
           {data.map((val, i) => {
             return (
-              <Marker
-                key={i}
-                coordinate={val.coords}
-                tracksViewChanges={imageTrack}>
-                <TouchableOpacity onPress={handlePress}>
-                  <Image
-                    source={{uri: val.img}}
-                    style={{width: hp(8), height: hp(8), borderRadius: 4}}
-                    resizeMode="center"
-                    resizeMethod="resize"
-                  />
-                </TouchableOpacity>
+              <Marker key={i} coordinate={val.coords} tracksViewChanges={false}>
+                <SVGRenderer style={{padding: wp(2)}}>
+                  <CurrentLocation />
+                </SVGRenderer>
+                <Callout
+                  tooltip
+                  onPress={() => {
+                    setOpenModal(true);
+                    console.log('Clicked image of index: ', i);
+                  }}
+                  style={{
+                    height: hp(14),
+                    width: wp(16),
+                  }}>
+                  <Text
+                    style={{
+                      height: hp(100),
+                      width: wp(100),
+                    }}>
+                    <Image
+                      source={{uri: val.img}}
+                      style={{
+                        height: 80,
+                        width: 80,
+                        borderRadius: 8,
+                      }}
+                    />
+                  </Text>
+                </Callout>
               </Marker>
             );
           })}
@@ -353,11 +419,26 @@ export const Home: FC<Home> = ({navigation}: Home) => {
             </SVGRenderer>
           </View>
         </View>
+        {curtLat !== 0 && (
+          <TouchableHighlight
+            onPress={() => {
+              mapRef?.current.animateToRegion({
+                latitude: curtLat,
+                longitude: curtLong,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+              });
+            }}
+            style={[styles.gpsBackground, exportStyles.shadowProp]}>
+            <MaterialIcon name="my-location" size={26} color="white" />
+          </TouchableHighlight>
+        )}
       </View>
     </SafeAreaView>
   );
 };
 
+const circle = 55;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -402,6 +483,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     marginHorizontal: wp(2),
     marginVertical: hp(0.5),
+    alignItems: 'center',
   },
   textViewStyles: {
     width: wp(0.5),
@@ -449,5 +531,16 @@ const styles = StyleSheet.create({
     marginTop: hp(1),
     marginLeft: wp(2),
     backgroundColor: Colors.textLight,
+  },
+  gpsBackground: {
+    width: circle,
+    height: circle,
+    borderRadius: circle / 2,
+    bottom: hp(20),
+    marginRight: wp(2),
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: Colors.darkGrey,
+    alignSelf: 'flex-end',
   },
 });

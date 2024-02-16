@@ -1,7 +1,6 @@
 import {StackNavigationProp} from '@react-navigation/stack';
 import React, {FC, useState} from 'react';
 import {Text, StyleSheet, View, Pressable} from 'react-native';
-import {CommonActions} from '@react-navigation/routers';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {
   widthPercentageToDP as wp,
@@ -15,45 +14,16 @@ import {LoginButton} from '../Components/Buttons/LoginButton';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {SVGRenderer} from '../Components/SVGRenderer';
 import FacebookIcon from '@assets/svg/Facebook.svg';
+import {
+  OrHorizontalLine,
+  homeNavigation,
+  horizontalLine,
+} from '@constants/constValues';
 
 interface Login {
   navigation: StackNavigationProp<any>;
   route?: any;
 }
-
-export const horizontalLine = (width?: number) => {
-  return (
-    <View
-      style={{
-        width: width === undefined || null ? wp(47) : width,
-        height: hp(0.1),
-        backgroundColor: Colors.primaryColor,
-      }}
-    />
-  );
-};
-
-export const OrHorizontalLine = () => {
-  return (
-    <View
-      style={{
-        marginVertical: hp(2),
-        flexDirection: 'row',
-        alignItems: 'center',
-      }}>
-      {horizontalLine()}
-      <Text
-        style={{
-          marginHorizontal: wp(1),
-          color: Colors.lightWhite,
-          opacity: 0.5,
-        }}>
-        OR
-      </Text>
-      {horizontalLine()}
-    </View>
-  );
-};
 
 export const socialMediaButton = (isGoogle: boolean, onPress: () => void) => {
   return (
@@ -87,14 +57,8 @@ export const socialMediaButton = (isGoogle: boolean, onPress: () => void) => {
 };
 
 export const Login: FC<Login> = ({navigation}: Login) => {
-  function homeNavigation() {
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 1,
-        routes: [{name: 'tabs'}],
-      }),
-    );
-  }
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   return (
     <SafeAreaView style={styles.container}>
@@ -107,11 +71,22 @@ export const Login: FC<Login> = ({navigation}: Login) => {
       </Pressable>
       <Text style={styles.appNameText}>LiveMap</Text>
       <CustomTextField
+        value={email}
+        onChangeText={val => {
+          setEmail(val);
+        }}
         autoCapitalize={false}
         keyboardType="email-address"
         placeHolder="Phone number, username or email"
       />
-      <CustomTextField isPassword={true} placeHolder="Password" />
+      <CustomTextField
+        value={password}
+        onChangeText={val => {
+          setPassword(val);
+        }}
+        isPassword={true}
+        placeHolder="Password"
+      />
       <Pressable
         style={{alignSelf: 'flex-end', marginBottom: hp(2)}}
         onPress={() => {}}>
@@ -120,7 +95,7 @@ export const Login: FC<Login> = ({navigation}: Login) => {
       <LoginButton
         label="Log in"
         onPress={() => {
-          homeNavigation();
+          homeNavigation({navigation});
         }}
       />
       {OrHorizontalLine()}

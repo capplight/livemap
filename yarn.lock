@@ -3963,6 +3963,14 @@
   resolved "https://registry.npmjs.org/@types/prop-types/-/prop-types-15.7.9.tgz"
   integrity sha512-n1yyPsugYNSmHgxDFjicaI2+gCNjsBck8UX9kuofAKlc0h1bL+20oSF72KeNaW2DUlesbEVCFgyV2dPGTiY42g==
 
+"@types/react-native-modalbox@^1.4.14":
+  version "1.4.14"
+  resolved "https://registry.npmjs.org/@types/react-native-modalbox/-/react-native-modalbox-1.4.14.tgz"
+  integrity sha512-KQzP5H5Dbb/Pf/9kh6Ofjr6Zdk4qlT6FG5zRKADxiwBB6SyQeMBJEcv8p97BDQiAxeuDCmeHjCPJqmN6+o4pGA==
+  dependencies:
+    "@types/react" "*"
+    react-native "*"
+
 "@types/react-native-vector-icons@^6.4.18":
   version "6.4.18"
   resolved "https://registry.npmjs.org/@types/react-native-vector-icons/-/react-native-vector-icons-6.4.18.tgz"
@@ -8146,6 +8154,11 @@ react-native-extra-dimensions-android@^1.2.5:
   version "1.2.5"
   resolved "https://registry.npmjs.org/react-native-extra-dimensions-android/-/react-native-extra-dimensions-android-1.2.5.tgz"
   integrity sha512-eorFo9X1vEqAWUkgcZ300yKBG1wtgNeE7tdWAH2CE+P50FGTniJg5Sr6l1iPWG8ZskQOuF+KeiSTFlDa4vLfMw==
+
+react-native-geolocation-service@^5.3.1:
+  version "5.3.1"
+  resolved "https://registry.npmjs.org/react-native-geolocation-service/-/react-native-geolocation-service-5.3.1.tgz"
+  integrity sha512-LTXPtPNmrdhx+yeWG47sAaCgQc3nG1z+HLLHlhK/5YfOgfLcAb9HAkhREPjQKPZOUx8pKZMIpdGFUGfJYtimXQ==
 
 react-native-gesture-handler@^2.13.4, "react-native-gesture-handler@>= 1.0.0":
   version "2.13.4"

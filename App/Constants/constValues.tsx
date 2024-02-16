@@ -1,3 +1,71 @@
+import React from 'react';
+import {StyleSheet, Text, View} from 'react-native';
+import {CommonActions} from '@react-navigation/routers';
+import {
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen';
+import {Colors} from '@themes/Colors';
+
+export function homeNavigation({navigation}: any) {
+  navigation.dispatch(
+    CommonActions.reset({
+      index: 1,
+      routes: [{name: 'tabs'}],
+    }),
+  );
+}
+
+export const VerticalLine = (height?: number, extraStyles?: any) => {
+  return (
+    <View
+      style={[
+        extraStyles,
+        {
+          width: hp(0.1),
+          height: height === undefined || null ? wp(46) : height,
+          marginRight: wp(4),
+          backgroundColor: Colors.primaryColor,
+        },
+      ]}
+    />
+  );
+};
+
+export const horizontalLine = (width?: number) => {
+  return (
+    <View
+      style={{
+        width: width === undefined || null ? wp(47) : width,
+        height: hp(0.1),
+        backgroundColor: Colors.primaryColor,
+      }}
+    />
+  );
+};
+
+export const OrHorizontalLine = () => {
+  return (
+    <View
+      style={{
+        marginVertical: hp(2),
+        flexDirection: 'row',
+        alignItems: 'center',
+      }}>
+      {horizontalLine()}
+      <Text
+        style={{
+          marginHorizontal: wp(1),
+          color: Colors.lightWhite,
+          opacity: 0.5,
+        }}>
+        OR
+      </Text>
+      {horizontalLine()}
+    </View>
+  );
+};
+
 export const mapStyle = [
   {elementType: 'geometry', stylers: [{color: '#242f3e'}]},
   {elementType: 'labels.text.stroke', stylers: [{color: '#242f3e'}]},

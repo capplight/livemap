@@ -10,6 +10,7 @@ import {
 import {Colors} from '../Themes/Colors';
 import Fonts from '../Themes/Fonts';
 import CustomButton from '../Components/Buttons/CustomButton';
+import {homeNavigation} from '@constants/constValues';
 
 interface SplashScreen {
   navigation: StackNavigationProp<any>;
@@ -76,7 +77,7 @@ export const SplashScreen: FC<SplashScreen> = ({navigation}: SplashScreen) => {
         ]}
         textOverrideStyle={{fontSize: hp(2)}}
         onPress={() => {
-          setStart(!isStarted);
+          isStarted ? homeNavigation({navigation}) : setStart(!isStarted);
         }}
       />
       {isStarted && (
@@ -97,6 +98,7 @@ export const SplashScreen: FC<SplashScreen> = ({navigation}: SplashScreen) => {
             containerStyle={[styles.buttonContainerStyle2, {bottom: hp(14)}]}
             textOverrideStyle={{fontSize: hp(2)}}
             onPress={() => {
+              navigation.navigate('Register');
               // setStart(!isStarted);
             }}
           />

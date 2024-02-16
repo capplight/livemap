@@ -1,7 +1,6 @@
 import {StackNavigationProp} from '@react-navigation/stack';
-import React, {FC} from 'react';
+import React, {FC, useState} from 'react';
 import {Text, StyleSheet, View, Pressable} from 'react-native';
-import {CommonActions} from '@react-navigation/routers';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {
   widthPercentageToDP as wp,
@@ -12,21 +11,22 @@ import Fonts from '../Themes/Fonts';
 import {Ionicons} from '../Themes/Icons';
 import {CustomTextField} from '../Components/TextField/CustomTextField';
 import {LoginButton} from '../Components/Buttons/LoginButton';
-import {OrHorizontalLine, horizontalLine, socialMediaButton} from './Login';
+import {socialMediaButton} from './Login';
+import {
+  OrHorizontalLine,
+  homeNavigation,
+  horizontalLine,
+} from '@constants/constValues';
 interface Register {
   navigation: StackNavigationProp<any>;
   route?: any;
 }
 
 export const Register: FC<Register> = ({navigation}: Register) => {
-  function homeNavigation() {
-    navigation.dispatch(
-      CommonActions.reset({
-        index: 1,
-        routes: [{name: 'tabs'}],
-      }),
-    );
-  }
+  const [email, setEmail] = useState('');
+  const [name, setName] = useState('');
+  const [userName, setUsername] = useState('');
+  const [password, setPassword] = useState('');
 
   return (
     <SafeAreaView style={styles.container}>
@@ -51,17 +51,40 @@ export const Register: FC<Register> = ({navigation}: Register) => {
         Sign up so you can track live events more efficiently.
       </Text>
       <CustomTextField
+        value={email}
+        onChangeText={val => {
+          setEmail(val);
+        }}
         autoCapitalize={false}
         keyboardType="email-address"
         placeHolder="Phone number or email"
       />
-      <CustomTextField placeHolder="Full name (Optional)" />
-      <CustomTextField placeHolder="Username" />
-      <CustomTextField isPassword={true} placeHolder="Password" />
+      <CustomTextField
+        value={name}
+        onChangeText={val => {
+          setName(val);
+        }}
+        placeHolder="Full name (Optional)"
+      />
+      <CustomTextField
+        value={userName}
+        onChangeText={val => {
+          setUsername(val);
+        }}
+        placeHolder="Username"
+      />
+      <CustomTextField
+        value={password}
+        onChangeText={val => {
+          setPassword(val);
+        }}
+        isPassword={true}
+        placeHolder="Password"
+      />
       <LoginButton
         label="Sign up"
         onPress={() => {
-          homeNavigation();
+          homeNavigation({navigation});
         }}
         buttonContainerStyle={{marginTop: hp(2)}}
       />
