@@ -161,11 +161,7 @@ export const Home: FC<Home> = ({navigation}: Home) => {
                   ? setExpandable(false)
                   : refRBSheet.current.close();
               }}>
-              <MaterialCommunityIcon
-                name="close-circle"
-                size={28}
-                color="white"
-              />
+              <MaterialCommunityIcon name="close-circle" size={28} />
             </TouchableHighlight>
           </View>
           {!isExpandable ? (
@@ -303,10 +299,10 @@ export const Home: FC<Home> = ({navigation}: Home) => {
           data={storyData}
           duration={5}
           unPressedBorderColor={Colors.textBlue}
-          avatarImageStyle={{height: hp(11.5), width: wp(19), borderRadius: 4}}
           style={{alignSelf: 'flex-start'}}
-          showAvatarText={false}
+          avatarImageStyle={{height: hp(11.5), width: wp(19), borderRadius: 4}}
           avatarWrapperStyle={exportStyles.avatarSquareWrapper}
+          showAvatarText={false}
         />
       </View>
     );
@@ -414,7 +410,9 @@ export const Home: FC<Home> = ({navigation}: Home) => {
             <SVGRenderer onPress={() => {}} style={{padding: wp(1)}}>
               <NotificationIcon />
             </SVGRenderer>
-            <SVGRenderer onPress={() => {}} style={{padding: wp(1)}}>
+            <SVGRenderer
+              onPress={() => {}}
+              style={{padding: wp(1), marginRight: wp(-4), marginLeft: wp(2)}}>
               <MessageIcon />
             </SVGRenderer>
           </View>
@@ -430,7 +428,7 @@ export const Home: FC<Home> = ({navigation}: Home) => {
               });
             }}
             style={[styles.gpsBackground, exportStyles.shadowProp]}>
-            <MaterialIcon name="my-location" size={26} color="white" />
+            <MaterialIcon name="my-location" size={26} />
           </TouchableHighlight>
         )}
       </View>
@@ -471,13 +469,14 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     opacity: 0.5,
+    marginLeft: wp(6),
   },
   searchTextStyles: {
     maxWidth: wp(40),
     fontSize: hp(1.5),
     color: 'white',
     textAlign: 'center',
-    marginHorizontal: wp(2),
+    marginHorizontal: wp(1),
   },
   searchViewStyles: {
     flexDirection: 'row',
@@ -488,13 +487,12 @@ const styles = StyleSheet.create({
   textViewStyles: {
     width: wp(0.5),
     height: hp(2),
-    marginHorizontal: wp(1),
+    marginHorizontal: wp(0.5),
     backgroundColor: Colors.liteGrey,
   },
   endIconStyles: {
-    width: wp(16),
     flexDirection: 'row',
-    justifyContent: 'space-between',
+    justifyContent: 'space-around',
   },
   layerTextViewStyles: {
     width: wp(94),

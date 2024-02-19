@@ -10,6 +10,8 @@ import Icon8 from 'react-native-vector-icons/MaterialIcons';
 import Icon9 from 'react-native-vector-icons/Octicons';
 import Icon10 from 'react-native-vector-icons/EvilIcons';
 import Icon11 from 'react-native-vector-icons/FontAwesome5';
+import Icon12 from 'react-native-vector-icons/SimpleLineIcons';
+import Icon13 from 'react-native-vector-icons/Fontisto';
 import {Dimensions, Platform} from 'react-native';
 
 export const isIOS = Platform.OS === 'ios';
@@ -23,13 +25,13 @@ export const deviceHeight =
 interface IconParams {
   name: string;
   color?: string;
-  size: number;
+  size?: number;
 }
 
 //FontAwesome
 export const FontAwesomeIcon = ({
   name,
-  color = 'black',
+  color = 'white',
   size = 30,
 }: IconParams) => {
   return <Icon1 name={name} color={color} size={size} />;
@@ -38,61 +40,61 @@ export const FontAwesomeIcon = ({
 //AntDesign
 export const AntDesignIcon = ({
   name,
-  color = 'black',
+  color = 'white',
   size = 30,
 }: IconParams) => {
   return <Icon2 name={name} color={color} size={size} />;
 };
 
 //Entypo
-export const EntypoIcon = ({name, color = 'black', size = 30}: IconParams) => {
+export const EntypoIcon = ({name, color = 'white', size = 30}: IconParams) => {
   return <Icon3 name={name} color={color} size={size} />;
 };
 
 //Foundation
 export const FoundationIcon = ({
   name,
-  color = 'black',
+  color = 'white',
   size = 30,
 }: IconParams) => {
   return <Icon4 name={name} color={color} size={size} />;
 };
 
 //Ionicons
-export const Ionicons = ({name, color = 'black', size = 30}: IconParams) => {
+export const Ionicons = ({name, color = 'white', size = 30}: IconParams) => {
   return <Icon5 name={name} color={color} size={size} />;
 };
 
 //MaterialCommunityIcons
 export const MaterialCommunityIcon = ({
   name,
-  color = 'black',
+  color = 'white',
   size = 30,
 }: IconParams) => {
   return <Icon6 name={name} color={color} size={size} />;
 };
 
 //Feather icons
-export const FeatherIcon = ({name, color = 'black', size = 30}: IconParams) => {
+export const FeatherIcon = ({name, color = 'white', size = 30}: IconParams) => {
   return <Icon7 name={name} color={color} size={size} />;
 };
 
 //Material icons
 export const MaterialIcon = ({
   name,
-  color = 'black',
+  color = 'white',
   size = 30,
 }: IconParams) => {
   return <Icon8 name={name} color={color} size={size} />;
 };
 
 //OctIcons
-export const OctIcon = ({name, color = 'black', size = 30}: IconParams) => {
+export const OctIcon = ({name, color = 'white', size = 30}: IconParams) => {
   return <Icon9 name={name} color={color} size={size} />;
 };
 
 //EvilIcons
-export const EvilIcons = ({name, color = 'black', size = 30}: IconParams) => {
+export const EvilIcons = ({name, color = 'white', size = 30}: IconParams) => {
   return <Icon10 name={name} color={color} size={size} />;
 };
 
@@ -102,4 +104,20 @@ export const FontAwesome5Icon = ({
   size = 30,
 }: IconParams) => {
   return <Icon11 name={name} color={color} size={size} />;
+};
+
+export const SimpleLineIcons = ({
+  name,
+  color = 'white',
+  size = 30,
+}: IconParams) => {
+  return <Icon12 name={name} color={color} size={size} />;
+};
+
+export const FontistoIcons = ({
+  name,
+  color = 'white',
+  size = 30,
+}: IconParams) => {
+  return <Icon13 name={name} color={color} size={size} />;
 };

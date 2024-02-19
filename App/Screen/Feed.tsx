@@ -80,29 +80,25 @@ export const Feed: FC<Feed> = ({navigation}: Feed) => {
         <View style={styles.iconStyles}>
           <View style={[exportStyles.row]}>
             <View style={styles.innerIconStyles}>
-              <AntDesignIcon name="hearto" size={26} color="white" />
+              <AntDesignIcon name="hearto" size={26} />
               <Text style={[exportStyles.text1, {marginLeft: wp(1.5)}]}>
                 {likes}
               </Text>
             </View>
             <View style={styles.innerIconStyles}>
-              <MaterialCommunityIcon
-                name="comment-text-outline"
-                size={26}
-                color="white"
-              />
+              <MaterialCommunityIcon name="comment-text-outline" size={26} />
               <Text style={[exportStyles.text1, {marginLeft: wp(1.5)}]}>
                 {comments}
               </Text>
             </View>
             <View style={styles.innerIconStyles}>
-              <Ionicons name="send-sharp" size={26} color="white" />
+              <Ionicons name="send-sharp" size={26} />
               <Text style={[exportStyles.text1, {marginLeft: wp(1.5)}]}>
                 {share}
               </Text>
             </View>
           </View>
-          <FeatherIcon name="bookmark" size={26} color="white" />
+          <FeatherIcon name="bookmark" size={26} />
         </View>
         {horizontalLine(wp(100))}
       </View>
@@ -134,7 +130,7 @@ export const Feed: FC<Feed> = ({navigation}: Feed) => {
   );
 };
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: 'center',

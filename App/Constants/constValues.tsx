@@ -7,6 +7,19 @@ import {
 } from 'react-native-responsive-screen';
 import {Colors} from '@themes/Colors';
 
+export const coverImageLink =
+  'https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3B4MTM2NjcxMC1pbWFnZS1rd3Z4eGVxcC5qcGc.jpg';
+
+export const profileImageLink =
+  'https://scontent.fktm8-1.fna.fbcdn.net/v/t39.30808-6/396710214_1123431385296365_3851796398726471553_n.jpg?stp=cp6_dst-jpg&_nc_cat=101&ccb=1-7&_nc_sid=efb6e6&_nc_ohc=nAet9vW4A74AX-yDq3l&_nc_ht=scontent.fktm8-1.fna&oh=00_AfDCxyR9DoovDTe7jCKRh0bD3E9Q_FZJ0CXDORRC5KwrFA&oe=65D3B12A';
+
+export const expandableData = [
+  {id: 0, name: 'Highlights'},
+  {id: 1, name: 'Recent Pins'},
+  {id: 2, name: 'Favorite Spots'},
+  {id: 3, name: 'Interests'},
+];
+
 export function homeNavigation({navigation}: any) {
   navigation.dispatch(
     CommonActions.reset({

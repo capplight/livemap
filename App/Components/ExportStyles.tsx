@@ -1,10 +1,25 @@
+import React from 'react';
 import {Colors} from '@themes/Colors';
-import Fonts from '@themes/Fonts';
-import {Platform, StyleSheet} from 'react-native';
+import {Image, Platform, StyleSheet} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+
+interface ImageStyleProps {
+  size?: number;
+  link: string;
+}
+export const CircularImage = ({size = 72, link}: ImageStyleProps) => {
+  return (
+    <Image
+      source={{
+        uri: link,
+      }}
+      style={{height: size, width: size, borderRadius: size / 2}}
+    />
+  );
+};
 
 const size = 40;
 export const exportStyles = StyleSheet.create({
@@ -42,5 +57,7 @@ export const exportStyles = StyleSheet.create({
     opacity: 0.5,
     fontSize: hp(1.2),
   },
+  text3: {color: 'white', fontSize: hp(1.8), fontWeight: 'bold'},
+  text4: {color: Colors.lightWhite, opacity: 0.5, fontSize: hp(1.5)},
   row: {flexDirection: 'row'},
 });
