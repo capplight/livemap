@@ -288,13 +288,6 @@ export const Profile: FC<Profile> = ({navigation}: Profile) => {
           renderTabBar={renderTabBar}
           initialLayout={{width: Dimensions.get('window').width}}
         />
-        <View
-          style={{
-            backgroundColor: 'lightgreen',
-            padding: 20,
-            alignItems: 'center',
-          }}
-        />
       </ScrollView>
     </SafeAreaView>
   );
