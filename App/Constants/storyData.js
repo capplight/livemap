@@ -22,7 +22,7 @@ export const storyData = [
   {
     user_id: 2,
     user_image:
-      'https://scontent.fktm8-1.fna.fbcdn.net/v/t39.30808-6/396710214_1123431385296365_3851796398726471553_n.jpg?stp=cp6_dst-jpg&_nc_cat=101&ccb=1-7&_nc_sid=efb6e6&_nc_ohc=nAet9vW4A74AX9RxJr5&_nc_ht=scontent.fktm8-1.fna&oh=00_AfDRQxqYHKzYT5-1awMSe7FxpFmZHO7tpfN4eWH1XvZq7w&oe=65D1B6EA',
+      'https://images.pexels.com/photos/39866/entrepreneur-startup-start-up-man-39866.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
     user_name: 'Ayush Katuwal',
     stories: [
       {
@@ -86,7 +86,7 @@ export const storyData = [
   {
     user_id: 5,
     user_image:
-      'https://scontent.fktm8-1.fna.fbcdn.net/v/t39.30808-6/411783326_3635615250093102_8884746963761614875_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=efb6e6&_nc_ohc=enOfTACLNRoAX8mTmFD&_nc_ht=scontent.fktm8-1.fna&oh=00_AfAUoECkxOD8tYBImKHDveRmY86rvUWBC0s-Y7xfA2ELOQ&oe=65D202A7',
+      'https://img.freepik.com/free-photo/happiness-wellbeing-confidence-concept-cheerful-attractive-african-american-woman-curly-haircut-cross-arms-chest-self-assured-powerful-pose-smiling-determined-wear-yellow-sweater_176420-35063.jpg',
     user_name: 'Ashreeya',
     stories: [
       {

@@ -21,7 +21,7 @@ export const data = [
       latitudeDelta: 0.0922,
       longitudeDelta: 0.0421,
     },
-    img: 'https://scontent.fktm8-1.fna.fbcdn.net/v/t39.30808-6/411783326_3635615250093102_8884746963761614875_n.jpg?_nc_cat=109&ccb=1-7&_nc_sid=efb6e6&_nc_ohc=enOfTACLNRoAX_HAi8U&_nc_ht=scontent.fktm8-1.fna&oh=00_AfA4IZjF-Oin-kquokOnyb4N_z3Lp5fkiDbvrAYbupqfcg&oe=65D202A7',
+    img: 'https://img.freepik.com/free-photo/happiness-wellbeing-confidence-concept-cheerful-attractive-african-american-woman-curly-haircut-cross-arms-chest-self-assured-powerful-pose-smiling-determined-wear-yellow-sweater_176420-35063.jpg',
   },
   {
     id: 2,
@@ -32,7 +32,7 @@ export const data = [
       latitudeDelta: 0.0922,
       longitudeDelta: 0.0421,
     },
-    img: 'https://scontent.fktm8-1.fna.fbcdn.net/v/t39.30808-6/396710214_1123431385296365_3851796398726471553_n.jpg?stp=cp6_dst-jpg&_nc_cat=101&ccb=1-7&_nc_sid=efb6e6&_nc_ohc=nAet9vW4A74AX-yDq3l&_nc_ht=scontent.fktm8-1.fna&oh=00_AfDCxyR9DoovDTe7jCKRh0bD3E9Q_FZJ0CXDORRC5KwrFA&oe=65D3B12A',
+    img: 'https://images.pexels.com/photos/39866/entrepreneur-startup-start-up-man-39866.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
   },
   {
     id: 3,
@@ -43,7 +43,7 @@ export const data = [
       latitudeDelta: 0.0922,
       longitudeDelta: 0.0421,
     },
-    img: 'https://scontent.fktm8-1.fna.fbcdn.net/v/t39.30808-6/414905326_7087376164645352_2122999592333475117_n.jpg?_nc_cat=105&ccb=1-7&_nc_sid=efb6e6&_nc_ohc=N3MkZdZ6MOwAX8OqnMK&_nc_ht=scontent.fktm8-1.fna&oh=00_AfAcMFeLkt9enqW7odoGwi9TTn7hLofJgmem2Fk9uiHM-g&oe=65D2199C',
+    img: 'https://img.freepik.com/free-photo/young-bearded-man-with-striped-shirt_273609-5677.jpg',
   },
   {
     id: 4,

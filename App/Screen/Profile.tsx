@@ -7,6 +7,7 @@ import {
   Image,
   TouchableOpacity,
   Dimensions,
+  ScrollView,
 } from 'react-native';
 import React, {useState, useEffect, FC, useRef} from 'react';
 import {
@@ -28,18 +29,11 @@ import {
 } from '@themes/Icons';
 import {Colors} from '@themes/Colors';
 import {LoginButton} from '@components/Buttons/LoginButton';
-import {ScrollView} from 'react-native-gesture-handler';
 import InstaStory from 'react-native-insta-story';
 import {storyData} from '@constants/storyData';
 import {TabView, TabBar} from 'react-native-tab-view';
-import {
-  FifthRoute,
-  FirstRoute,
-  FourthRoute,
-  SecondRoute,
-  ThirdRoute,
-} from './ProfileRoutes/ProfileRoute';
 import {feedData} from '@constants/data';
+import {FirstRoute} from './ProfileRoutes/FirstRoute';
 
 interface Profile {
   navigation: StackNavigationProp<any>;
@@ -58,7 +52,8 @@ export const Profile: FC<Profile> = ({navigation}: Profile) => {
   ]);
 
   //Aligns data in GridView: It will add a new object in the arrayList to format the data structure in the UI
-  const dummyItemCount = feedData.length % 3;
+  const dummyItemCount = feedData.length % 4;
+
   const [firstRouteData, setFirstRouteData] = useState(
     dummyItemCount > 0
       ? [
@@ -82,13 +77,13 @@ export const Profile: FC<Profile> = ({navigation}: Profile) => {
   const renderScene = ({route}: any) => {
     switch (route.key) {
       case 'second':
-        return <SecondRoute data={firstRouteData} />;
+        return <FirstRoute data={firstRouteData} />;
       case 'third':
-        return <ThirdRoute data={firstRouteData} />;
+        return <FirstRoute data={firstRouteData} />;
       case 'fourth':
-        return <FourthRoute data={firstRouteData} />;
+        return <FirstRoute data={firstRouteData} />;
       case 'fifth':
-        return <FifthRoute data={firstRouteData} />;
+        return <FirstRoute data={firstRouteData} />;
       default:
         return <FirstRoute data={firstRouteData} />;
     }
@@ -293,6 +288,13 @@ export const Profile: FC<Profile> = ({navigation}: Profile) => {
           renderTabBar={renderTabBar}
           initialLayout={{width: Dimensions.get('window').width}}
         />
+        <View
+          style={{
+            backgroundColor: 'lightgreen',
+            padding: 20,
+            alignItems: 'center',
+          }}
+        />
       </ScrollView>
     </SafeAreaView>
   );
@@ -302,6 +304,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignContent: 'center',
+    overflow: 'hidden',
     backgroundColor: Colors.backgroundDark,
   },
   scrollContainer: {
