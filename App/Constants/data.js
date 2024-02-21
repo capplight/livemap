@@ -54,7 +54,7 @@ export const data = [
       latitudeDelta: 0.0922,
       longitudeDelta: 0.0421,
     },
-    img: 'https://scontent.fktm8-1.fna.fbcdn.net/v/t39.30808-6/402435099_2071022243231631_7691549264172760538_n.jpg?stp=cp6_dst-jpg&_nc_cat=102&ccb=1-7&_nc_sid=efb6e6&_nc_ohc=yNVwaZIt66gAX-8ICjP&_nc_ht=scontent.fktm8-1.fna&oh=00_AfDXu_iShLOOY-1s7yXUDMeOubpJGvbeq9AkqbCfAvhSpw&oe=65D2CA4F',
+    img: 'https://t3.ftcdn.net/jpg/02/43/12/34/360_F_243123463_zTooub557xEWABDLk0jJklDyLSGl2jrr.jpg',
   },
 ];
 

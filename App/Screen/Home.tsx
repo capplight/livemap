@@ -364,35 +364,49 @@ export const Home: FC<Home> = ({navigation}: Home) => {
           />
           {data.map((val, i) => {
             return (
-              <Marker key={i} coordinate={val.coords} tracksViewChanges={false}>
-                <SVGRenderer style={{padding: wp(2)}}>
-                  <CurrentLocation />
-                </SVGRenderer>
-                <Callout
-                  tooltip
-                  onPress={() => {
-                    setOpenModal(true);
-                    console.log('Clicked image of index: ', i);
-                  }}
+              // <Marker key={i} coordinate={val.coords} tracksViewChanges={false}>
+              //   <SVGRenderer style={{padding: wp(2)}}>
+              //     <CurrentLocation />
+              //   </SVGRenderer>
+              //   <Callout
+              //     tooltip
+              //     onPress={() => {
+              //       setOpenModal(true);
+              //       console.log('Clicked image of index: ', i);
+              //     }}
+              //     style={{
+              //       height: hp(14),
+              //       width: wp(16),
+              //     }}>
+              //     <Text
+              //       style={{
+              //         height: hp(100),
+              //         width: wp(100),
+              //       }}>
+              //       <Image
+              //         source={{uri: val.img}}
+              //         style={{
+              //           height: 80,
+              //           width: 80,
+              //           borderRadius: 8,
+              //         }}
+              //       />
+              //     </Text>
+              //   </Callout>
+              // </Marker>
+              <Marker
+                onPress={index => {}}
+                key={i}
+                coordinate={val.coords}
+                tracksViewChanges={false}>
+                <Image
+                  source={{uri: val.img}}
                   style={{
-                    height: hp(14),
-                    width: wp(16),
-                  }}>
-                  <Text
-                    style={{
-                      height: hp(100),
-                      width: wp(100),
-                    }}>
-                    <Image
-                      source={{uri: val.img}}
-                      style={{
-                        height: 80,
-                        width: 80,
-                        borderRadius: 8,
-                      }}
-                    />
-                  </Text>
-                </Callout>
+                    height: hp(8),
+                    width: wp(12),
+                    borderRadius: 8,
+                  }}
+                />
               </Marker>
             );
           })}

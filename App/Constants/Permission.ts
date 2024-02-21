@@ -12,6 +12,10 @@ export const isAndroid = Platform.OS === 'android';
 export const requestCameraPermission = async () => {
   try {
     if (isAndroid) {
+      // const a =
+      //   Platform.Version >= '33'
+      //     ? PermissionsAndroid.PERMISSIONS.READ_MEDIA_IMAGES
+      //     : PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE;
       const granted = await PermissionsAndroid.request(
         PermissionsAndroid.PERMISSIONS.CAMERA,
         {
@@ -50,6 +54,53 @@ export const requestCameraPermission = async () => {
       }
       return true;
     }
+  } catch (err) {
+    console.warn('Catch: ', err);
+  }
+};
+
+export const requestStoragePermission = async () => {
+  try {
+    if (isAndroid) {
+      const granted = await PermissionsAndroid.request(
+        PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE,
+        {
+          title: 'Requires Storage Permission',
+          message: 'LiveMap App needs access to your storage',
+          buttonNegative: 'Cancel',
+          buttonPositive: 'OK',
+        },
+      );
+      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
+        console.log('You have now storage access');
+        return true;
+      } else {
+        console.log('Storage permission denied', granted);
+        granted === 'never_ask_again' &&
+          // showAlert({
+          //   message: 'You need to grant camera permission from app settings!!',
+          //   type: 'danger',
+          //   duration: 2000,
+          // });
+          openSettings().catch(() => console.warn('cannot open settings'));
+      }
+    }
+    // else {
+    //   const status = await check(PERMISSIONS.IOS);
+    //   if (status !== RESULTS.GRANTED) {
+    //     try {
+    //       const camStatus = await request(PERMISSIONS.IOS.CAMERA);
+    //       if (camStatus !== RESULTS.GRANTED) {
+    //         openSettings().catch(() => console.warn('cannot open settings'));
+    //         return false;
+    //       }
+    //     } catch (err) {
+    //       console.log(err);
+    //       return false;
+    //     }
+    //   }
+    //   return true;
+    // }
   } catch (err) {
     console.warn('Catch: ', err);
   }

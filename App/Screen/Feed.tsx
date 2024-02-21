@@ -23,7 +23,13 @@ import {
   Ionicons,
   MaterialCommunityIcon,
 } from '@themes/Icons';
-import {VerticalLine, horizontalLine} from '@constants/constValues';
+import {
+  VerticalLine,
+  homeNavigation,
+  horizontalLine,
+} from '@constants/constValues';
+import {SVGRenderer} from '@components/SVGRenderer';
+import CrossIcon from '@assets/svg/crossLarge.svg';
 
 interface Feed {
   navigation: StackNavigationProp<any>;
@@ -108,7 +114,14 @@ export const Feed: FC<Feed> = ({navigation}: Feed) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.topViewStyles}>
-        <View style={{width: wp(6)}} />
+        <SVGRenderer
+          touchable
+          style={{padding: wp(2)}}
+          onPress={() => {
+            homeNavigation({navigation});
+          }}>
+          <CrossIcon />
+        </SVGRenderer>
         <Text
           style={[
             exportStyles.text1,
