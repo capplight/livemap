@@ -1,8 +1,9 @@
 import {all, fork, takeLatest} from 'redux-saga/effects';
-// import {loginSaga} from './Login/LoginSaga';
+import {loginSaga} from './Login/LoginSaga';
+import {LoginActionTypes} from './Login/LoginConstants';
 
 export default function* rootSagas() {
-  // yield all([takeLatest(LoginActionTypes.LoginRequest, loginSaga)]);
+  yield all([takeLatest(LoginActionTypes.LoginRequest, loginSaga)]);
   // yield all([fork(watchOrderListSaga)]);
   // yield all([fork(watchOrderDetailsSaga)]);
   // yield all([fork(watchPostOrderProgressSaga)]);

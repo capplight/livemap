@@ -9,6 +9,7 @@ import {Colors} from '../../Themes/Colors';
 
 interface LoginButtonProps {
   label: string;
+  loading?: boolean;
   onPress: () => void;
   buttonContainerStyle?: StyleProp<ViewStyle>;
   textStyles?: StyleProp<TextStyle | ViewStyle>;
@@ -16,12 +17,14 @@ interface LoginButtonProps {
 
 export const LoginButton = ({
   label = 'Log in',
+  loading = false,
   onPress,
   buttonContainerStyle,
   textStyles,
 }: LoginButtonProps) => {
   return (
     <CustomButton
+      isLoading={loading}
       label={label}
       containerStyle={[styles.buttonContainerStyle, buttonContainerStyle]}
       textOverrideStyle={[styles.buttonText, textStyles]}

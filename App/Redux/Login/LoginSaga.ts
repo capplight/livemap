@@ -1,12 +1,20 @@
 import {AxiosResponse} from 'axios';
-import {call, put} from 'redux-saga/effects';
-import {signInApi} from '../../Services/authApi';
-// import {ToastType} from '@components/CustomToast/ToastProps';
+import {StrictEffect, call, put} from 'redux-saga/effects';
 import {LoginActionTypes} from './LoginConstants';
+import {singInUser} from '../../Services/apis';
+import {LoginRequest} from './LoginAction';
 
-export function* loginSaga(action: any) {
+export function* loginSaga({
+  payload,
+}: ReturnType<typeof LoginRequest>): Generator<StrictEffect, void, any> {
+  const {email, password} = payload;
   try {
-    const response: AxiosResponse = yield call(signInApi, action?.payload);
+    const response: AxiosResponse = yield call(() =>
+      singInUser({
+        email,
+        password,
+      }),
+    );
     const resPayload = response?.data;
     yield put({
       type: LoginActionTypes.LoginReset,
@@ -15,27 +23,13 @@ export function* loginSaga(action: any) {
       type: LoginActionTypes.LoginSuccess,
       resPayload,
     });
-    // yield put({
-    //   type: CustomToastActionTypes.CustomToastRequest,
-    //   toast: {
-    //     message: 'login Success',
-    //     apperance: ToastType.Success,
-    //   },
-    // });
   } catch (error: any) {
     // const errorResponse = error.toJSON();
-
-    // console.log(error?.message, 'error response in saga');
-    yield put({
-      type: LoginActionTypes.LoginFailure,
-      error,
-    });
+    console.log(error?.message, 'error response in saga');
+    // console.log(errorResponse, 'error response in saga');
     // yield put({
-    //   type: CustomToastActionTypes.CustomToastRequest,
-    //   toast: {
-    //     message: error?.message,
-    //     apperance: ToastType.Error,
-    //   },
+    //   type: LoginActionTypes.LoginFailure,
+    //   error,
     // });
   }
 }

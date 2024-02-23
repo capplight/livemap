@@ -228,9 +228,16 @@ export const Profile: FC<Profile> = ({navigation}: Profile) => {
               style={styles.coverImageStyles}
             />
             <View style={styles.coverImageBackgroundStyles}>
-              <FeatherIcon name="lock" size={26} />
+              <TouchableOpacity>
+                <FeatherIcon name="lock" size={26} />
+              </TouchableOpacity>
               <Text style={[exportStyles.text3, {}]}>@ayushmng</Text>
-              <AntDesignIcon name="setting" size={26} />
+              <TouchableOpacity
+                onPress={() => {
+                  navigation.navigate('Login');
+                }}>
+                <AntDesignIcon name="setting" size={26} />
+              </TouchableOpacity>
             </View>
           </View>
           <View style={{position: 'absolute', top: hp(12), left: wp(2)}}>

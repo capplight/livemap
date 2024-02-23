@@ -7,21 +7,26 @@ import {isReadyRef, navigationRef} from './App/Navigation/RootNavigationRef';
 import {store} from './App/Config/AppStore';
 import {AppNavigation} from './App/Navigation/AppNavigation';
 import {StatusBar} from 'react-native';
+import {UserTokenProvider} from '@constants/userContext';
+import Toast from 'react-native-toast-message';
 
 const App: React.FC = () => {
   return (
-    <Provider store={store}>
-      <StatusBar hidden={false} backgroundColor="transparent" />
-      <SafeAreaProvider>
-        <NavigationContainer
-          ref={navigationRef}
-          onReady={() => {
-            isReadyRef.current = true;
-          }}>
-          <AppNavigation />
-        </NavigationContainer>
-      </SafeAreaProvider>
-    </Provider>
+    <UserTokenProvider>
+      <Provider store={store}>
+        <StatusBar hidden={false} backgroundColor="transparent" />
+        <SafeAreaProvider>
+          <NavigationContainer
+            ref={navigationRef}
+            onReady={() => {
+              isReadyRef.current = true;
+            }}>
+            <AppNavigation />
+            <Toast />
+          </NavigationContainer>
+        </SafeAreaProvider>
+      </Provider>
+    </UserTokenProvider>
   );
 };
 

@@ -1,0 +1,16 @@
+import * as Yup from 'yup';
+
+const phoneRegExp = /^\d{10}$/;
+const fullNameRegExp = /\s{1,}/;
+const otpRegExp = /^(?=.{4}$).*/;
+const passwordRegExp =
+  /^.*(?=.{8,})((?=.*[!@#$%^&*()\-_=+{};:,<.>]){1})(?=.*\d)((?=.*[a-z]){1})((?=.*[A-Z]){1}).*$/;
+
+export const signInDataSchema = Yup.object().shape({
+  email: Yup.string()
+    .min(5, 'Too Short!. Minimum length is 5')
+    .max(30, 'Too Long!. Maximum length is 30')
+    .email('Email Address is invalid')
+    .required('Email Address is required'),
+  password: Yup.string().required('Please enter your password'),
+});

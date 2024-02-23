@@ -1,17 +1,28 @@
 import React from 'react';
-import {StyleSheet, Text, View} from 'react-native';
+import {Text, View} from 'react-native';
 import {CommonActions} from '@react-navigation/routers';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import {Colors} from '@themes/Colors';
+import Toast, {ToastType} from 'react-native-toast-message';
 
+export const baseUrl =
+  'https://kg4yg99jv0.execute-api.ap-south-1.amazonaws.com';
 export const coverImageLink =
   'https://images.rawpixel.com/image_800/cHJpdmF0ZS9sci9pbWFnZXMvd2Vic2l0ZS8yMDIyLTA1L3B4MTM2NjcxMC1pbWFnZS1rd3Z4eGVxcC5qcGc.jpg';
 
 export const profileImageLink =
   'https://scontent.fktm8-1.fna.fbcdn.net/v/t39.30808-6/396710214_1123431385296365_3851796398726471553_n.jpg?stp=cp6_dst-jpg&_nc_cat=101&ccb=1-7&_nc_sid=efb6e6&_nc_ohc=nAet9vW4A74AX-yDq3l&_nc_ht=scontent.fktm8-1.fna&oh=00_AfDCxyR9DoovDTe7jCKRh0bD3E9Q_FZJ0CXDORRC5KwrFA&oe=65D3B12A';
+
+export const showToast = (type: ToastType, header: string, message: string) => {
+  Toast.show({
+    type: type,
+    text1: header,
+    text2: message,
+  });
+};
 
 export const expandableData = [
   {id: 0, name: 'Highlights'},

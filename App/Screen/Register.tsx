@@ -1,6 +1,6 @@
 import {StackNavigationProp} from '@react-navigation/stack';
 import React, {FC, useState} from 'react';
-import {Text, StyleSheet, View, Pressable} from 'react-native';
+import {Text, StyleSheet, View, Pressable, ScrollView} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {
   widthPercentageToDP as wp,
@@ -11,12 +11,12 @@ import Fonts from '../Themes/Fonts';
 import {Ionicons} from '../Themes/Icons';
 import {CustomTextField} from '../Components/TextField/CustomTextField';
 import {LoginButton} from '../Components/Buttons/LoginButton';
-import {socialMediaButton} from './Login';
 import {
   OrHorizontalLine,
   homeNavigation,
   horizontalLine,
 } from '@constants/constValues';
+import {socialMediaButton} from '@components/Buttons/SocialMediaButton';
 interface Register {
   navigation: StackNavigationProp<any>;
   route?: any;
@@ -29,97 +29,107 @@ export const Register: FC<Register> = ({navigation}: Register) => {
   const [password, setPassword] = useState('');
 
   return (
-    <SafeAreaView style={styles.container}>
-      <Pressable
-        style={{alignSelf: 'flex-end', margin: wp(2), padding: hp(2)}}
-        onPress={() => {
-          navigation.navigate('Splash');
-        }}>
-        <Ionicons name="close" color={'white'} size={wp(8)} />
-      </Pressable>
-      <Text style={styles.appNameText}>LiveMap</Text>
-      <Text
-        style={[
-          styles.bold,
-          {
-            fontSize: hp(2),
-            marginHorizontal: wp(4),
-            marginBottom: hp(4),
-            textAlign: 'center',
-          },
-        ]}>
-        Sign up so you can track live events more efficiently.
-      </Text>
-      <CustomTextField
-        value={email}
-        onChangeText={val => {
-          setEmail(val);
-        }}
-        autoCapitalize={false}
-        keyboardType="email-address"
-        placeHolder="Phone number or email"
-      />
-      <CustomTextField
-        value={name}
-        onChangeText={val => {
-          setName(val);
-        }}
-        placeHolder="Full name (Optional)"
-      />
-      <CustomTextField
-        value={userName}
-        onChangeText={val => {
-          setUsername(val);
-        }}
-        placeHolder="Username"
-      />
-      <CustomTextField
-        value={password}
-        onChangeText={val => {
-          setPassword(val);
-        }}
-        isPassword={true}
-        placeHolder="Password"
-      />
-      <LoginButton
-        label="Sign up"
-        onPress={() => {
-          homeNavigation({navigation});
-        }}
-        buttonContainerStyle={{marginTop: hp(2)}}
-      />
-      {OrHorizontalLine()}
-      <View style={{marginTop: hp(-1)}}>
-        {socialMediaButton(true, () => {})}
-      </View>
-      {socialMediaButton(false, () => {})}
-      <View style={{bottom: hp(-6)}}>
-        <Text style={styles.bottomTextStyles}>
-          Message and data rates may apply. By continuing, you agree to our
-          <Text style={styles.bold}> Terms of Use</Text> and
-          <Text style={styles.bold}> Privacy Policy.</Text>
-        </Text>
-        {horizontalLine(wp(100))}
-        <View
-          style={{
-            flexDirection: 'row',
-            alignSelf: 'center',
-            marginVertical: hp(1),
-          }}>
+    <SafeAreaView>
+      <ScrollView>
+        <View style={styles.container}>
           <Pressable
+            style={{alignSelf: 'flex-end', margin: wp(2), padding: hp(2)}}
             onPress={() => {
-              navigation.goBack();
+              navigation.navigate('Splash');
             }}>
-            <Text
-              style={[
-                styles.text,
-                {marginVertical: hp(0), fontSize: hp(2), fontWeight: 'bold'},
-              ]}>
-              Back to log in
-            </Text>
+            <Ionicons name="close" color={'white'} size={wp(8)} />
           </Pressable>
+          <Text style={styles.appNameText}>LiveMap</Text>
+          <Text
+            style={[
+              styles.bold,
+              {
+                fontSize: hp(2),
+                marginHorizontal: wp(4),
+                marginBottom: hp(4),
+                textAlign: 'center',
+              },
+            ]}>
+            Sign up so you can track live events more efficiently.
+          </Text>
+          <CustomTextField
+            value={email}
+            onChangeText={val => {
+              setEmail(val);
+            }}
+            autoCapitalize={false}
+            keyboardType="email-address"
+            placeHolder="Phone number or email"
+          />
+          <CustomTextField
+            value={name}
+            onChangeText={val => {
+              setName(val);
+            }}
+            placeHolder="Full name (Optional)"
+          />
+          <CustomTextField
+            value={userName}
+            onChangeText={val => {
+              setUsername(val);
+            }}
+            placeHolder="Username"
+          />
+          <CustomTextField
+            value={password}
+            onChangeText={val => {
+              setPassword(val);
+            }}
+            isPassword={true}
+            placeHolder="Password"
+          />
+          <LoginButton
+            label="Sign up"
+            onPress={() => {
+              homeNavigation({navigation});
+            }}
+            buttonContainerStyle={{marginTop: hp(2)}}
+          />
+          {OrHorizontalLine()}
+          <View style={{marginTop: hp(-1)}}>
+            {socialMediaButton(true, () => {})}
+          </View>
+          {socialMediaButton(false, () => {})}
+          <View style={{height: hp(5)}} />
+          <View style={{bottom: hp(-6)}}>
+            <Text style={styles.bottomTextStyles}>
+              Message and data rates may apply. By continuing, you agree to our
+              <Text style={styles.bold}> Terms of Use</Text> and
+              <Text style={styles.bold}> Privacy Policy.</Text>
+            </Text>
+            {horizontalLine(wp(100))}
+            <View
+              style={{
+                flexDirection: 'row',
+                alignSelf: 'center',
+                marginVertical: hp(1),
+              }}>
+              <Pressable
+                onPress={() => {
+                  navigation.goBack();
+                }}>
+                <Text
+                  style={[
+                    styles.text,
+                    {
+                      marginVertical: hp(0),
+                      fontSize: hp(2),
+                      fontWeight: 'bold',
+                    },
+                  ]}>
+                  Back to log in
+                </Text>
+              </Pressable>
+            </View>
+          </View>
+          <View style={{height: hp(8)}} />
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 };
