@@ -1,5 +1,5 @@
 import {StackNavigationProp} from '@react-navigation/stack';
-import React, {FC, useEffect, useState} from 'react';
+import React, {FC, useState} from 'react';
 import {Text, StyleSheet, View, Pressable, ScrollView} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {
@@ -66,7 +66,8 @@ export const Login: FC<Login> = ({navigation}: Login) => {
           </Pressable>
           <Text style={styles.appNameText}>LiveMap</Text>
           <Formik
-            initialValues={{email: 'gaurab@apple.com', password: 'P@ssw00rd'}}
+            // initialValues={{email: 'gaurab@apple.com', password: 'P@ssw00rd'}}
+            initialValues={{email: '', password: ''}}
             validationSchema={signInDataSchema}
             onSubmit={values => callUserSignInApi(values)}>
             {({handleChange, handleSubmit, values, errors}) => (
@@ -202,6 +203,5 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     marginLeft: wp(6),
     marginTop: hp(-1),
-    // marginBottom: hp(1),
   },
 });

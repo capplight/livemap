@@ -1,17 +1,26 @@
 import axios from 'axios';
-import {SignInRequestParams, SignUpRequestParams} from '@redux/types';
+import {SignupRequestParams} from '@redux/types';
+import {REACT_APP_BASE_URL_DEV} from '@env';
 
 const baseUrl = 'https://kg4yg99jv0.execute-api.ap-south-1.amazonaws.com';
 
-export const singInUser = ({
+export const signupApi = ({
   email,
+  first_name,
+  last_name,
+  user_name,
   password,
-}: SignInRequestParams): Promise<any> => {
+  metaData,
+}: SignupRequestParams): Promise<any> => {
   const params = JSON.stringify({
     email,
+    first_name,
+    last_name,
+    user_name,
     password,
+    metaData,
   });
-  return axios.post(`${baseUrl}/dev/manageOauth`, params);
+  return axios.post(`${baseUrl}/dev/user`, params);
   // .then(response => console.log('Show res: ', response?.data))
   // .catch(err => console.log(err));
 };

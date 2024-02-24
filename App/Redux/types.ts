@@ -1,21 +1,17 @@
-export interface SignUpRequestParams {
+export interface SignupRequestParams {
+  email: string;
   first_name: string;
   last_name: string;
   user_name: string;
-  email: string;
   password: string;
+  metaData: any;
 }
 
-export interface SignInRequestParams {
-  email: string;
-  password: string;
+export interface SignupSuccessParams {
+  data?: any;
 }
 
-export interface SignInSuccessParams {
-  token?: any;
-}
-
-export interface SignInFailureParams {
+export interface SignupFailureParams {
   message?: string;
   data?: any;
 }

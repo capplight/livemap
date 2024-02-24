@@ -1,6 +1,14 @@
 import {StackNavigationProp} from '@react-navigation/stack';
-import React, {FC, useState} from 'react';
-import {Text, StyleSheet, View, Pressable, ScrollView} from 'react-native';
+import React, {FC, useEffect, useRef, useState} from 'react';
+import {
+  Text,
+  StyleSheet,
+  View,
+  Pressable,
+  ScrollView,
+  Dimensions,
+  TouchableOpacity,
+} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {
   widthPercentageToDP as wp,
@@ -15,18 +23,97 @@ import {
   OrHorizontalLine,
   homeNavigation,
   horizontalLine,
+  mapStyle,
+  showToast,
 } from '@constants/constValues';
 import {socialMediaButton} from '@components/Buttons/SocialMediaButton';
+import {Formik} from 'formik';
+import {signUpDataSchema} from '@services/validationSchema';
+import {useDispatch} from 'react-redux';
+import {SignupRequest} from '@redux/Signup/SignupAction';
+import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
+import Geolocation from 'react-native-geolocation-service';
+import {useSelector} from 'react-redux';
+import {RootState} from '@redux/Reducers';
 interface Register {
   navigation: StackNavigationProp<any>;
   route?: any;
 }
 
+const ErrorText = (text: any) => {
+  return <Text style={styles.errorMessageStyles}>{text}</Text>;
+};
+
 export const Register: FC<Register> = ({navigation}: Register) => {
-  const [email, setEmail] = useState('');
-  const [name, setName] = useState('');
-  const [userName, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const dispatch = useDispatch();
+  const mapRef = useRef(null);
+  const {fetching, isAuthorized} = useSelector(
+    (state: RootState) => state?.signup,
+  );
+  const [curtLat, setCurLat] = useState(0);
+  const [curtLong, setCurLong] = useState(0);
+  const [curLoc, setCurLoc] = useState({
+    latitude: 30.7993,
+    longitude: 76.9149,
+    latitudeDelta: 0.0922,
+    longitudeDelta: 0.0421,
+  });
+
+  function getMyCurrentPosition() {
+    try {
+      Geolocation.getCurrentPosition(
+        position => {
+          setCurLat(position.coords.latitude);
+          setCurLong(position.coords.longitude);
+          setCurLoc({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          });
+        },
+        error => {
+          console.log(error.code, error.message);
+        },
+        {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+      );
+    } catch (error) {}
+  }
+
+  useEffect(() => {
+    getMyCurrentPosition();
+  }, [curtLat, curtLong, isAuthorized]);
+
+  useEffect(() => {
+    if (isAuthorized) {
+      homeNavigation({navigation});
+    }
+  }, [isAuthorized, navigation]);
+
+  function showMapView() {
+    return (
+      <MapView
+        ref={mapRef}
+        style={styles.map}
+        showsUserLocation={true}
+        followsUserLocation={true}
+        showsMyLocationButton={true}
+        provider={PROVIDER_GOOGLE}
+        customMapStyle={mapStyle}
+        initialRegion={curLoc}>
+        <Marker
+          draggable={true}
+          coordinate={{
+            latitude: curtLat!!,
+            longitude: curtLong!!,
+          }}
+          onDragEnd={e => {
+            setCurLoc(e.nativeEvent.coordinate);
+          }}
+        />
+      </MapView>
+    );
+  }
 
   return (
     <SafeAreaView>
@@ -35,61 +122,78 @@ export const Register: FC<Register> = ({navigation}: Register) => {
           <Pressable
             style={{alignSelf: 'flex-end', margin: wp(2), padding: hp(2)}}
             onPress={() => {
-              navigation.navigate('Splash');
+              navigation.goBack();
             }}>
             <Ionicons name="close" color={'white'} size={wp(8)} />
           </Pressable>
           <Text style={styles.appNameText}>LiveMap</Text>
-          <Text
-            style={[
-              styles.bold,
-              {
-                fontSize: hp(2),
-                marginHorizontal: wp(4),
-                marginBottom: hp(4),
-                textAlign: 'center',
-              },
-            ]}>
+          <Text style={styles.text1}>
             Sign up so you can track live events more efficiently.
           </Text>
-          <CustomTextField
-            value={email}
-            onChangeText={val => {
-              setEmail(val);
+          <Formik
+            initialValues={{
+              email: '',
+              full_name: '',
+              user_name: '',
+              password: '',
             }}
-            autoCapitalize={false}
-            keyboardType="email-address"
-            placeHolder="Phone number or email"
-          />
-          <CustomTextField
-            value={name}
-            onChangeText={val => {
-              setName(val);
-            }}
-            placeHolder="Full name (Optional)"
-          />
-          <CustomTextField
-            value={userName}
-            onChangeText={val => {
-              setUsername(val);
-            }}
-            placeHolder="Username"
-          />
-          <CustomTextField
-            value={password}
-            onChangeText={val => {
-              setPassword(val);
-            }}
-            isPassword={true}
-            placeHolder="Password"
-          />
-          <LoginButton
-            label="Sign up"
-            onPress={() => {
-              homeNavigation({navigation});
-            }}
-            buttonContainerStyle={{marginTop: hp(2)}}
-          />
+            validationSchema={signUpDataSchema}
+            onSubmit={values => {
+              let formattedName = values?.full_name.split(' ');
+              const sendingValues = {
+                email: values?.email,
+                first_name: formattedName[0],
+                last_name: formattedName[1],
+                user_name: values?.user_name,
+                password: values?.password,
+                metaData: curLoc,
+              };
+              dispatch(SignupRequest(sendingValues));
+            }}>
+            {({handleChange, handleSubmit, values, errors}) => (
+              <>
+                <CustomTextField
+                  value={values.email}
+                  onChangeText={handleChange('email')}
+                  autoCapitalize={false}
+                  keyboardType="email-address"
+                  placeHolder="Phone number or email"
+                />
+                {errors && ErrorText(errors?.email)}
+                <CustomTextField
+                  value={values.full_name}
+                  onChangeText={handleChange('full_name')}
+                  placeHolder="Full name (Optional)"
+                />
+                {errors && ErrorText(errors?.full_name)}
+                <CustomTextField
+                  value={values.user_name}
+                  autoCapitalize={false}
+                  onChangeText={handleChange('user_name')}
+                  placeHolder="Username"
+                />
+                {errors && ErrorText(errors?.user_name)}
+                <CustomTextField
+                  value={values.password}
+                  onChangeText={handleChange('password')}
+                  isPassword={true}
+                  placeHolder="Password"
+                />
+                {errors && ErrorText(errors?.password)}
+                {showMapView()}
+                <Text style={styles.noteText}>
+                  Note: Please use long press to drag the marker on your desired
+                  location or your current location will be set as default.
+                </Text>
+                <LoginButton
+                  label="Sign up"
+                  loading={fetching}
+                  onPress={handleSubmit}
+                  buttonContainerStyle={{marginTop: hp(2)}}
+                />
+              </>
+            )}
+          </Formik>
           {OrHorizontalLine()}
           <View style={{marginTop: hp(-1)}}>
             {socialMediaButton(true, () => {})}
@@ -103,27 +207,12 @@ export const Register: FC<Register> = ({navigation}: Register) => {
               <Text style={styles.bold}> Privacy Policy.</Text>
             </Text>
             {horizontalLine(wp(100))}
-            <View
-              style={{
-                flexDirection: 'row',
-                alignSelf: 'center',
-                marginVertical: hp(1),
-              }}>
+            <View style={styles.bottomViewStyles}>
               <Pressable
                 onPress={() => {
                   navigation.goBack();
                 }}>
-                <Text
-                  style={[
-                    styles.text,
-                    {
-                      marginVertical: hp(0),
-                      fontSize: hp(2),
-                      fontWeight: 'bold',
-                    },
-                  ]}>
-                  Back to log in
-                </Text>
+                <Text style={styles.text2}>Back to log in</Text>
               </Pressable>
             </View>
           </View>
@@ -140,6 +229,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: Colors.backgroundColor,
   },
+  map: {
+    width: wp(100),
+    height: hp(32),
+    marginHorizontal: wp(2),
+  },
   appNameText: {
     fontFamily: Fonts.righteousRegular,
     fontSize: hp(5),
@@ -148,6 +242,11 @@ const styles = StyleSheet.create({
     color: 'white',
     alignSelf: 'center',
   },
+  buttonStyles: {
+    height: hp(5),
+    width: hp(42),
+    backgroundColor: Colors.activeColor,
+  },
   text: {
     color: Colors.textBlue,
     textAlign: 'right',
@@ -155,12 +254,33 @@ const styles = StyleSheet.create({
     marginVertical: hp(0.5),
     marginRight: wp(2),
   },
+  text1: {
+    color: 'white',
+    fontSize: hp(2),
+    fontWeight: 'bold',
+    marginBottom: hp(4),
+    textAlign: 'center',
+    marginHorizontal: wp(4),
+  },
+  text2: {
+    color: Colors.textBlue,
+    textAlign: 'right',
+    marginRight: wp(2),
+    fontSize: hp(2),
+    fontWeight: 'bold',
+  },
+  noteText: {
+    alignSelf: 'flex-start',
+    marginLeft: wp(1),
+    fontStyle: 'italic',
+    padding: wp(1),
+  },
   buttonContainerStyle: {
     height: hp(5),
     width: wp(90),
     borderRadius: 4,
     alignSelf: 'center',
-    backgroundColor: Colors.activeColor,
+    backgroundColor: Colors.primaryColor,
   },
   bottomTextStyles: {
     marginHorizontal: wp(3),
@@ -170,4 +290,16 @@ const styles = StyleSheet.create({
     marginBottom: hp(2),
   },
   bold: {fontWeight: 'bold', color: 'white', opacity: 1},
+  errorMessageStyles: {
+    fontSize: hp(1.2),
+    color: 'red',
+    alignSelf: 'flex-start',
+    marginLeft: wp(6),
+    marginTop: hp(-1),
+  },
+  bottomViewStyles: {
+    flexDirection: 'row',
+    alignSelf: 'center',
+    marginVertical: hp(1),
+  },
 });

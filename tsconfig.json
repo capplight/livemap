@@ -24,7 +24,7 @@
       // "@layouts/*": ["App/layouts/*"],
       // "@modules/*": ["App/modules/*"],
       "@config/*": ["App/Config/*"],
-      "@services/*": ["App/services/*"],
+      "@services/*": ["App/Services/*"],
       "@screens/*": ["App/Screen/*"],
       "@redux/*": ["App/Redux/*"],
       // "@saga/*": ["App/saga/*"],

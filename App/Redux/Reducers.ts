@@ -1,8 +1,8 @@
 import {combineReducers} from 'redux';
-import loginReducer from './Login/LoginReducer';
+import SignupReducer from './Signup/SignupReducer';
 
 export const rootReducer = combineReducers({
-  login: loginReducer,
+  signup: SignupReducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
