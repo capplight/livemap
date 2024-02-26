@@ -48,6 +48,7 @@ export const CustomTextField = ({
         value={value}
         numberOfLines={1}
         placeholder={placeHolder}
+        placeholderTextColor={Colors.fadeWhite}
         keyboardType={keyboardType}
         style={[styles.input, textInputStyle]}
         autoCapitalize={autoCapitalize ? 'sentences' : 'none'}

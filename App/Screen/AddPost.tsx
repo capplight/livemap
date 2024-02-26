@@ -1,17 +1,7 @@
 import {StackNavigationProp} from '@react-navigation/stack';
-import {
-  View,
-  Text,
-  SafeAreaView,
-  StyleSheet,
-  Image,
-  TextInput,
-} from 'react-native';
+import {View, Text, SafeAreaView, StyleSheet, TextInput} from 'react-native';
 import React, {useState, useEffect, FC, useRef} from 'react';
-import {
-  requestCameraPermission,
-  requestStoragePermission,
-} from '@constants/Permission';
+import {requestCameraPermission} from '@constants/Permission';
 import {
   CameraOptions,
   launchCamera,
@@ -24,14 +14,13 @@ import {
 import FastImage from 'react-native-fast-image';
 import {exportStyles} from '@components/ExportStyles';
 import {LoginButton} from '@components/Buttons/LoginButton';
-import {AntDesignIcon, EntypoIcon, Ionicons} from '@themes/Icons';
+import {AntDesignIcon, Ionicons} from '@themes/Icons';
 import {Colors} from '@themes/Colors';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import {homeNavigation, horizontalLine} from '@constants/constValues';
 import {SVGRenderer} from '@components/SVGRenderer';
 import CrossIcon from '@assets/svg/crossLarge.svg';
-import CrossIconSmall from '@assets/svg/cross.svg';
 import CustomButton from '@components/Buttons/CustomButton';
 
 interface AddPost {
@@ -124,7 +113,16 @@ export const AddPost: FC<AddPost> = ({navigation}: AddPost) => {
           <CrossIcon />
         </SVGRenderer>
         <Text style={[exportStyles.text3]}>Post</Text>
-        <TouchableOpacity style={{marginRight: wp(4)}}>
+        <TouchableOpacity
+          onPress={() => {
+            const sendingData = {
+              story_media: 'link',
+              description: textValue,
+              // metadata,
+            };
+            console.log(sendingData);
+          }}
+          style={{marginRight: wp(4)}}>
           <Text style={[exportStyles.text3]}>Publish</Text>
         </TouchableOpacity>
       </View>
@@ -154,25 +152,26 @@ export const AddPost: FC<AddPost> = ({navigation}: AddPost) => {
             <Text style={styles.text}>Add Image</Text>
           </TouchableOpacity>
         )}
-        <View
-          style={{
-            position: 'absolute',
-            alignSelf: 'flex-end',
-            paddingTop: hp(0.5),
-            paddingRight: wp(2),
-          }}>
-          <TouchableOpacity
-            onPress={() => {
-              refRBSheet.current?.open();
-            }}>
-            <Ionicons name="close-circle" size={28} color={Colors.lightWhite} />
-          </TouchableOpacity>
-        </View>
+        {profileImage !== null && (
+          <View style={styles.closeIconStyles}>
+            <TouchableOpacity
+              onPress={() => {
+                refRBSheet.current?.open();
+              }}>
+              <Ionicons
+                name="close-circle"
+                size={28}
+                color={Colors.lightWhite}
+              />
+            </TouchableOpacity>
+          </View>
+        )}
         <TextInput
           multiline
-          maxLength={maxLengthSize}
           numberOfLines={5}
           value={textValue}
+          maxLength={maxLengthSize}
+          placeholderTextColor={Colors.fadeWhite}
           onChangeText={val => setText(val)}
           placeholder="Write your stuffs here...."
           style={styles.textInputStyles}
@@ -194,7 +193,7 @@ export const AddPost: FC<AddPost> = ({navigation}: AddPost) => {
             setOnMapCheck(!onMap);
           }}
           containerStyle={styles.buttonContainerStyles}
-          textOverrideStyle={{color: onMap ? Colors.darkGrey : 'white'}}
+          textOverrideStyle={{color: !onMap ? Colors.darkGrey : 'white'}}
         />
         <CustomButton
           label="On the Profile"
@@ -205,7 +204,7 @@ export const AddPost: FC<AddPost> = ({navigation}: AddPost) => {
             styles.buttonContainerStyles,
             {backgroundColor: Colors.activeColor},
           ]}
-          textOverrideStyle={{color: !onMap ? Colors.darkGrey : 'white'}}
+          textOverrideStyle={{color: onMap ? Colors.darkGrey : 'white'}}
         />
       </View>
     </SafeAreaView>
@@ -258,5 +257,11 @@ const styles = StyleSheet.create({
     paddingLeft: wp(6),
     position: 'absolute',
     bottom: hp(2),
+  },
+  closeIconStyles: {
+    position: 'absolute',
+    alignSelf: 'flex-end',
+    paddingTop: hp(0.5),
+    paddingRight: wp(2),
   },
 });

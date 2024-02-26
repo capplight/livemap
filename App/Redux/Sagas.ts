@@ -1,10 +1,11 @@
 import {all, fork, takeLatest} from 'redux-saga/effects';
 import {signupSaga} from './Signup/SignupSaga';
 import {SignupActionTypes} from './Signup/SignupConstants';
+import {watchGetUserDataList} from './GetUserData/GetUserDataSaga';
 
 export default function* rootSagas() {
   yield all([takeLatest(SignupActionTypes.SignupRequest, signupSaga)]);
-  // yield all([fork(watchOrderListSaga)]);
+  yield all([fork(watchGetUserDataList)]);
   // yield all([fork(watchOrderDetailsSaga)]);
   // yield all([fork(watchPostOrderProgressSaga)]);
   // yield all([fork(watchGetCategoryList)]);

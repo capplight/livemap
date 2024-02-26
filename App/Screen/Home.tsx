@@ -1,5 +1,5 @@
 import {StackNavigationProp} from '@react-navigation/stack';
-import React, {useState, useEffect, FC, useRef, Fragment} from 'react';
+import React, {useState, useEffect, FC, useRef, Fragment, useMemo} from 'react';
 import {
   View,
   Text,
@@ -44,6 +44,14 @@ import InstaStory from 'react-native-insta-story';
 import {storyData} from '@constants/storyData';
 import {exportStyles} from '@components/ExportStyles';
 import Geolocation from 'react-native-geolocation-service';
+import {useToken} from '@constants/userContext';
+import {useDispatch} from 'react-redux';
+import {GetUserDataRequest} from '@redux/GetUserData/GetUserDataAction';
+import {useSelector} from 'react-redux';
+import {RootState} from '@redux/Reducers';
+import axios from 'axios';
+import {UserData} from '@redux/types';
+import {number} from 'yup';
 interface Home {
   navigation: StackNavigationProp<any>;
   route?: any;
@@ -88,8 +96,12 @@ const LayerMapNestedView = ({
 };
 
 export const Home: FC<Home> = ({navigation}: Home) => {
+  let newDataArray: Array<UserData> = [];
+  const {token} = useToken();
   const refRBSheet = useRef();
   const mapRef = useRef(null);
+  const dispatch = useDispatch();
+  const userData = useSelector((state: RootState) => state?.getUserData);
   const [imageTrack, setImageTrack] = useState(true);
   const [allMap, setAllMap] = useState(true);
   const [open, setOpen] = useState(true);
@@ -113,17 +125,34 @@ export const Home: FC<Home> = ({navigation}: Home) => {
     longitudeDelta: 0.0421,
   });
 
+  console.log('Bearer ', token);
   useEffect(() => {
     requestMapsPermission();
-    setImageTrack(true);
-    // setTimeout(() => {
-    //   setImageTrack(false);
-    // }, 5000);
-  }, [isExpandable, searchPressed, imageTrack]);
+    dispatch(GetUserDataRequest({token: token}));
+  }, []);
 
   useEffect(() => {
     getCurrentPosition();
   }, [curtLat, curtLong, mapRef]);
+
+  useMemo(() => {
+    const indexWithMetaData = findIndexWithMetaData(userData?.data);
+    if (indexWithMetaData?.length > 0) {
+      indexWithMetaData.map(indices => {
+        newDataArray.push(userData?.data[indices]);
+      });
+    }
+  }, [newDataArray, userData?.data]);
+
+  function findIndexWithMetaData(array: Array<object>): Array<number> {
+    var indices = [];
+    for (var i = 0; i < array?.length; i++) {
+      if ('metadata' in array[i]) {
+        indices.push(i);
+      }
+    }
+    return indices;
+  }
 
   function topSearchView() {
     return (
@@ -351,6 +380,7 @@ export const Home: FC<Home> = ({navigation}: Home) => {
         <MapView
           ref={mapRef}
           style={styles.map}
+          loadingEnabled={newDataArray?.length > 0 ? true : false}
           // showsUserLocation={true}
           // followsUserLocation={true}
           showsMyLocationButton={true}
@@ -362,54 +392,57 @@ export const Home: FC<Home> = ({navigation}: Home) => {
             coordinate={{latitude: curtLat, longitude: curtLong}}
             image={require('@assets/icons/myLocation.png')}
           />
-          {data.map((val, i) => {
-            return (
-              // <Marker key={i} coordinate={val.coords} tracksViewChanges={false}>
-              //   <SVGRenderer style={{padding: wp(2)}}>
-              //     <CurrentLocation />
-              //   </SVGRenderer>
-              //   <Callout
-              //     tooltip
-              //     onPress={() => {
-              //       setOpenModal(true);
-              //       console.log('Clicked image of index: ', i);
-              //     }}
-              //     style={{
-              //       height: hp(14),
-              //       width: wp(16),
-              //     }}>
-              //     <Text
-              //       style={{
-              //         height: hp(100),
-              //         width: wp(100),
-              //       }}>
-              //       <Image
-              //         source={{uri: val.img}}
-              //         style={{
-              //           height: 80,
-              //           width: 80,
-              //           borderRadius: 8,
-              //         }}
-              //       />
-              //     </Text>
-              //   </Callout>
-              // </Marker>
-              <Marker
-                onPress={index => {}}
-                key={i}
-                coordinate={val.coords}
-                tracksViewChanges={false}>
-                <Image
-                  source={{uri: val.img}}
-                  style={{
-                    height: hp(8),
-                    width: wp(12),
-                    borderRadius: 8,
-                  }}
-                />
-              </Marker>
-            );
-          })}
+          {newDataArray?.length > 0 &&
+            newDataArray?.map((val, i: number) => {
+              return (
+                // <Marker key={i} coordinate={val.coords} tracksViewChanges={false}>
+                //   <SVGRenderer style={{padding: wp(2)}}>
+                //     <CurrentLocation />
+                //   </SVGRenderer>
+                //   <Callout
+                //     tooltip
+                //     onPress={() => {
+                //       setOpenModal(true);
+                //       console.log('Clicked image of index: ', i);
+                //     }}
+                //     style={{
+                //       height: hp(14),
+                //       width: wp(16),
+                //     }}>
+                //     <Text
+                //       style={{
+                //         height: hp(100),
+                //         width: wp(100),
+                //       }}>
+                //       <Image
+                //         source={{uri: val.img}}
+                //         style={{
+                //           height: 80,
+                //           width: 80,
+                //           borderRadius: 8,
+                //         }}
+                //       />
+                //     </Text>
+                //   </Callout>
+                // </Marker>
+                <Marker
+                  onPress={index => {}}
+                  key={i}
+                  coordinate={val?.metadata}
+                  tracksViewChanges={true}>
+                  <Image
+                    source={{
+                      uri: val?.story_media,
+                    }}
+                    style={{
+                      height: hp(8),
+                      width: wp(12),
+                      borderRadius: 8,
+                    }}
+                  />
+                </Marker>
+              );
+            })}
         </MapView>
         <View style={styles.topViewStyles}>
           <SVGRenderer
@@ -434,7 +467,7 @@ export const Home: FC<Home> = ({navigation}: Home) => {
         {curtLat !== 0 && (
           <TouchableHighlight
             onPress={() => {
-              mapRef?.current.animateToRegion({
+              mapRef?.current?.animateToRegion({
                 latitude: curtLat,
                 longitude: curtLong,
                 latitudeDelta: 0.0922,

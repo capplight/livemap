@@ -7,6 +7,7 @@ export const Colors = {
   backgroundColor: '#22052C',
   textLight: '#480A5D',
   lightWhite: '#F5F0F6',
+  fadeWhite: '#CDCDC5',
   textBlue: '#3FC1DD',
   darkGrey: '#1E1F1F',
   liteGrey: '#4F5052',

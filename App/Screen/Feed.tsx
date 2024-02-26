@@ -30,6 +30,8 @@ import {
 } from '@constants/constValues';
 import {SVGRenderer} from '@components/SVGRenderer';
 import CrossIcon from '@assets/svg/crossLarge.svg';
+import {useSelector} from 'react-redux';
+import {RootState} from '@redux/Reducers';
 
 interface Feed {
   navigation: StackNavigationProp<any>;
@@ -37,6 +39,7 @@ interface Feed {
 }
 
 export const Feed: FC<Feed> = ({navigation}: Feed) => {
+  const userData = useSelector((state: RootState) => state?.getUserData);
   const renderItem = (data: any) => {
     const {userName, userId, description, link, likes, comments, share, time} =
       data?.item;
