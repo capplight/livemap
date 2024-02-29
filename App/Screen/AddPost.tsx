@@ -6,7 +6,7 @@ import {
   StyleSheet,
   TextInput,
   ActivityIndicator,
-  Platform,
+  Keyboard,
 } from 'react-native';
 import React, {useState, useEffect, FC, useRef} from 'react';
 import {requestCameraPermission} from '@constants/Permission';
@@ -28,11 +28,10 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import {
   TOKEN_KEY,
-  baseUrl,
+  err_image_uploading_msg,
   homeNavigation,
   horizontalLine,
   showToast,
-  token_expire_message,
 } from '@constants/constValues';
 import {SVGRenderer} from '@components/SVGRenderer';
 import CrossIcon from '@assets/svg/crossLarge.svg';
@@ -43,8 +42,6 @@ import Geolocation from 'react-native-geolocation-service';
 import {MetaData} from '@redux/types';
 import {useSelector} from 'react-redux';
 import {RootState} from '@redux/Reducers';
-import {useToken} from '@constants/userContext';
-import {REACT_APP_BASE_URL_DEV} from '@env';
 import axios from 'axios';
 import {readFile} from 'react-native-fs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -62,6 +59,7 @@ export const AddPost: FC<AddPost> = ({navigation}: AddPost) => {
   );
   const maxLengthSize = 100;
   const refRBSheet = useRef();
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
   const [base64Image, setBase64Image] = useState<string | ArrayBuffer>();
   const [uploadedImage, setUploadedImage] = useState('');
   const [onMap, setOnMapCheck] = useState(true);
@@ -151,14 +149,15 @@ export const AddPost: FC<AddPost> = ({navigation}: AddPost) => {
         },
       )
       .then(response => {
-        const imgUrl = response?.data?.Location;
+        const imgUrl = response?.data?.location;
         console.log('Show res: ', response?.data);
         setUploadedImage(imgUrl);
       })
       .catch(function (error) {
         if (error.response) {
           const errMsg = error?.response?.data?.message;
-          showToast('error', 'Error', errMsg);
+          // showToast('error', 'Error', errMsg);
+          showToast('error', 'Error', err_image_uploading_msg);
           console.log(errMsg);
           console.log(error?.response?.status);
           // console.log(error.response.headers);
@@ -172,6 +171,7 @@ export const AddPost: FC<AddPost> = ({navigation}: AddPost) => {
   };
 
   // console.log('Show token: ', token);
+  // console.log('Image length: ', base64Image);
 
   async function openCamera(openCamera: boolean) {
     try {
@@ -195,12 +195,12 @@ export const AddPost: FC<AddPost> = ({navigation}: AddPost) => {
                     setBase64Image(base64data);
                   };
                   reader.readAsDataURL(blob);
+                  uploadImage();
                 })
                 .catch(error => {
                   console.error('Error converting image to base64:', error);
+                  showToast('error', 'Error', err_image_uploading_msg);
                 });
-
-              uploadImage();
             }
           })
         : launchImageLibrary(
@@ -224,12 +224,12 @@ export const AddPost: FC<AddPost> = ({navigation}: AddPost) => {
                       setBase64Image(base64data);
                     };
                     reader.readAsDataURL(blob);
+                    uploadImage();
                   })
                   .catch(error => {
                     console.error('Error converting image to base64:', error);
+                    showToast('error', 'Error', err_image_uploading_msg);
                   });
-
-                uploadImage();
               }
             },
           );
@@ -250,6 +250,26 @@ export const AddPost: FC<AddPost> = ({navigation}: AddPost) => {
       </View>
     );
   }
+
+  useEffect(() => {
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setKeyboardVisible(true); // or some other action
+      },
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardVisible(false); // or some other action
+      },
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -299,6 +319,7 @@ export const AddPost: FC<AddPost> = ({navigation}: AddPost) => {
               // profileImage === null || description === ''
               showToast('error', 'Required', 'Fields must not be empty');
             } else {
+              // console.log('Sending data: ', sendingData);
               !fetching && dispatch(AddPostRequest(sendingData));
             }
             // console.log(sendingData);
@@ -367,27 +388,29 @@ export const AddPost: FC<AddPost> = ({navigation}: AddPost) => {
             ]}>{`${description.length}/${maxLengthSize}`}</Text>
         </View>
       </View>
-      <View style={[exportStyles.row, styles.buttonViewStyles]}>
-        <CustomButton
-          label="On the Map"
-          onPress={() => {
-            !fetching && setOnMapCheck(!onMap);
-          }}
-          containerStyle={styles.buttonContainerStyles}
-          textOverrideStyle={{color: !onMap ? Colors.darkGrey : 'white'}}
-        />
-        <CustomButton
-          label="On the Profile"
-          onPress={() => {
-            !fetching && setOnMapCheck(!onMap);
-          }}
-          containerStyle={[
-            styles.buttonContainerStyles,
-            {backgroundColor: Colors.activeColor},
-          ]}
-          textOverrideStyle={{color: onMap ? Colors.darkGrey : 'white'}}
-        />
-      </View>
+      {!isKeyboardVisible && (
+        <View style={[exportStyles.row, styles.buttonViewStyles]}>
+          <CustomButton
+            label="On the Map"
+            onPress={() => {
+              !fetching && setOnMapCheck(!onMap);
+            }}
+            containerStyle={styles.buttonContainerStyles}
+            textOverrideStyle={{color: !onMap ? Colors.darkGrey : 'white'}}
+          />
+          <CustomButton
+            label="On the Profile"
+            onPress={() => {
+              !fetching && setOnMapCheck(!onMap);
+            }}
+            containerStyle={[
+              styles.buttonContainerStyles,
+              {backgroundColor: Colors.activeColor},
+            ]}
+            textOverrideStyle={{color: onMap ? Colors.darkGrey : 'white'}}
+          />
+        </View>
+      )}
     </SafeAreaView>
   );
 };

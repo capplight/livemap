@@ -389,17 +389,17 @@ export const Home: FC<Home> = ({navigation}: Home) => {
           ref={mapRef}
           style={styles.map}
           loadingEnabled={newDataArray?.length > 0 ? true : false}
-          // showsUserLocation={true}
-          // followsUserLocation={true}
+          showsUserLocation={true}
+          followsUserLocation={true}
           showsMyLocationButton={true}
           provider={PROVIDER_GOOGLE}
           customMapStyle={mapStyle}
           initialRegion={curLoc}>
-          <Marker
+          {/* <Marker
             style={{height: hp(2), width: wp(2)}}
             coordinate={{latitude: curtLat, longitude: curtLong}}
             image={require('@assets/icons/myLocation.png')}
-          />
+          /> */}
           {newDataArray?.length > 0 &&
             newDataArray?.map((val, i: number) => {
               return (
@@ -468,7 +468,7 @@ export const Home: FC<Home> = ({navigation}: Home) => {
             </SVGRenderer>
           </View>
         </View>
-        {curtLat !== 0 && (
+        {/* {curtLat !== 0 && (
           <TouchableHighlight
             onPress={() => {
               mapRef?.current?.animateToRegion({
@@ -481,7 +481,7 @@ export const Home: FC<Home> = ({navigation}: Home) => {
             style={[styles.gpsBackground, exportStyles.shadowProp]}>
             <MaterialIcon name="my-location" size={26} />
           </TouchableHighlight>
-        )}
+        )} */}
       </View>
     </SafeAreaView>
   );
@@ -508,7 +508,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     position: 'absolute',
     padding: wp(2),
-    marginTop: wp(5),
+    marginTop: wp(10),
     marginHorizontal: wp(2),
     justifyContent: 'space-between',
     alignItems: 'center',

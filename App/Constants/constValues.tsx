@@ -19,6 +19,9 @@ export const profileImageLink =
 
 export const TOKEN_KEY = 'token';
 export const token_expire_message = 'Invalid or expired token';
+export const first_time = 'User First Time';
+export const err_image_uploading_msg =
+  'Error while uploading image, Please try again!!';
 
 export const showToast = (type: ToastType, header: string, message: string) => {
   Toast.show({

@@ -1,7 +1,8 @@
 import {StackNavigationProp} from '@react-navigation/stack';
-import React, {FC, useState} from 'react';
+import React, {FC, useEffect, useState} from 'react';
 import {Text, StyleSheet, View, Image} from 'react-native';
 import {CommonActions} from '@react-navigation/routers';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {
   widthPercentageToDP as wp,
@@ -10,7 +11,7 @@ import {
 import {Colors} from '../Themes/Colors';
 import Fonts from '../Themes/Fonts';
 import CustomButton from '../Components/Buttons/CustomButton';
-import {homeNavigation} from '@constants/constValues';
+import {first_time, homeNavigation} from '@constants/constValues';
 
 interface SplashScreen {
   navigation: StackNavigationProp<any>;
@@ -53,6 +54,21 @@ export const chatView = () => {
 
 export const SplashScreen: FC<SplashScreen> = ({navigation}: SplashScreen) => {
   const [isStarted, setStart] = useState(false);
+  const [firstTime, setFirstTime] = useState(true);
+
+  useEffect(() => {
+    // Check if the app has been opened before
+    AsyncStorage.getItem(first_time).then(value => {
+      if (value !== null) {
+        setFirstTime(false);
+        navigation.navigate('Login');
+        console.log('Second time');
+      } else {
+        AsyncStorage.setItem(first_time, 'true');
+        console.log('First time');
+      }
+    });
+  }, [navigation, firstTime]);
 
   return (
     <SafeAreaView style={styles.container}>
