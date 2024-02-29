@@ -5,9 +5,6 @@ import {
   SignupRequestParams,
 } from '@redux/types';
 import {REACT_APP_BASE_URL_DEV} from '@env';
-import {GetUserDataRequestType} from '@redux/GetUserData/GetUserDataAction';
-
-const baseUrl = 'https://kg4yg99jv0.execute-api.ap-south-1.amazonaws.com';
 
 export const signupApi = ({
   email,
@@ -25,12 +22,13 @@ export const signupApi = ({
     password,
     metaData,
   });
-  return axios.post(`${baseUrl}/dev/user`, params);
+  return axios.post(`${REACT_APP_BASE_URL_DEV}/dev/user`, params);
   // .then(response => console.log('Show res: ', response?.data))
   // .catch(err => console.log(err));
 };
 
 export const postUserDataApi = ({
+  token,
   story_media,
   description,
   metadata,
@@ -40,13 +38,15 @@ export const postUserDataApi = ({
     description,
     metadata,
   });
-  return axios.post(`${baseUrl}/dev/manageStory`, params);
+  return axios.post(`${REACT_APP_BASE_URL_DEV}/dev/manageStory`, params, {
+    headers: {Authorization: `Bearer ${token}`},
+  });
 };
 
 export const getUserDataApi = ({
   token,
 }: GetUserDataRequestParams): Promise<any> => {
-  return axios.get(`${baseUrl}/dev/managePublicStory`, {
+  return axios.get(`${REACT_APP_BASE_URL_DEV}/dev/managePublicStory`, {
     headers: {Authorization: ''},
   });
 };

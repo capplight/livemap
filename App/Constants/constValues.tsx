@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Text, View} from 'react-native';
 import {CommonActions} from '@react-navigation/routers';
 import {
@@ -7,6 +7,7 @@ import {
 } from 'react-native-responsive-screen';
 import {Colors} from '@themes/Colors';
 import Toast, {ToastType} from 'react-native-toast-message';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const baseUrl =
   'https://kg4yg99jv0.execute-api.ap-south-1.amazonaws.com';
@@ -16,12 +17,40 @@ export const coverImageLink =
 export const profileImageLink =
   'https://image.shutterstock.com/image-photo/young-brazilian-man-isolated-on-260nw-2242569333.jpg';
 
+export const TOKEN_KEY = 'token';
+export const token_expire_message = 'Invalid or expired token';
+
 export const showToast = (type: ToastType, header: string, message: string) => {
   Toast.show({
     type: type,
     text1: header,
     text2: message,
   });
+};
+
+// Function to store value in AsyncStorage
+export const storeData = async (tokenVal: string, tokenKey: string) => {
+  try {
+    await AsyncStorage.setItem(tokenKey, tokenVal);
+    console.log('Data stored successfully.');
+  } catch (error) {
+    console.error('Error storing data:', error);
+  }
+};
+
+// Function to retrieve value from AsyncStorage
+export const getData = async (tokenKey: string) => {
+  try {
+    const value = await AsyncStorage.getItem(tokenKey);
+    if (value !== null) {
+      return value;
+    } else {
+      console.log('No data found in AsyncStorage.');
+    }
+    return value;
+  } catch (error) {
+    console.error('Error retrieving data:', error);
+  }
 };
 
 export const expandableData = [

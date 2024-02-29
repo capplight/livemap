@@ -28,7 +28,6 @@ export default function GetUserDataReducer(
       };
 
     case GetUserDataActionTypes.GetUserDataSuccess:
-      console.log('Reducer data: ', action?.resPayload);
       return {
         ...state,
         fetching: false,

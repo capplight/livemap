@@ -13,10 +13,12 @@ import {CustomTextField} from '../Components/TextField/CustomTextField';
 import {LoginButton} from '../Components/Buttons/LoginButton';
 import {
   OrHorizontalLine,
+  TOKEN_KEY,
   baseUrl,
   homeNavigation,
   horizontalLine,
   showToast,
+  storeData,
 } from '@constants/constValues';
 import {socialMediaButton} from '@components/Buttons/SocialMediaButton';
 import {Formik} from 'formik';
@@ -31,14 +33,17 @@ interface Login {
 
 export const Login: FC<Login> = ({navigation}: Login) => {
   const [isLoading, setLoader] = useState(false);
-  const {setToken} = useToken();
+  // const {setToken} = useToken();
+  // const [token, setToken] = useState('');
+
   function callUserSignInApi(value: any) {
     setLoader(true);
     return axios
       .post(`${baseUrl}/dev/manageOauth`, value)
       .then(response => {
         showToast('success', 'Success', 'Successfully logged in');
-        setToken(response?.data?.token);
+        // setToken(response?.data?.token);
+        storeData(response?.data?.token, TOKEN_KEY);
         homeNavigation({navigation});
         setLoader(false);
       })
@@ -67,7 +72,7 @@ export const Login: FC<Login> = ({navigation}: Login) => {
           <Text style={styles.appNameText}>LiveMap</Text>
           <Formik
             // initialValues={{email: 'gaurab@apple.com', password: 'P@ssw00rd'}}
-            initialValues={{email: '', password: ''}}
+            initialValues={{email: 'test@apple.com', password: 'Test123'}}
             validationSchema={signInDataSchema}
             onSubmit={values => callUserSignInApi(values)}>
             {({handleChange, handleSubmit, values, errors}) => (

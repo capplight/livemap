@@ -2,6 +2,7 @@ import {AddPostFailureParams, AddPostSuccessParams} from '@redux/types';
 import {AddPostActionTypes} from './AddPostConstants';
 
 export interface AddPostRequestType {
+  token: any;
   story_media: string;
   description: string;
   metadata: any;

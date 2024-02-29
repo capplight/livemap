@@ -12,12 +12,7 @@ import {Colors} from '@themes/Colors';
 export const socialMediaButton = (isGoogle: boolean, onPress: () => void) => {
   return (
     <TouchableOpacity onPress={onPress} style={styles.socialMediaButtonStyles}>
-      <View
-        style={{
-          flexDirection: 'row',
-          marginHorizontal: wp(2),
-          alignItems: 'center',
-        }}>
+      <View style={styles.containerView}>
         <View style={{marginRight: wp(isGoogle ? 22 : 21)}}>
           {isGoogle ? (
             <AntDesignIcon name={'google'} color={'white'} size={wp(5)} />
@@ -27,12 +22,7 @@ export const socialMediaButton = (isGoogle: boolean, onPress: () => void) => {
             </SVGRenderer>
           )}
         </View>
-        <Text
-          style={{
-            fontWeight: 'bold',
-            fontSize: wp(4),
-            color: 'white',
-          }}>
+        <Text style={styles.textStyles}>
           {`Continue with ${isGoogle ? 'Google' : 'Facebook'}`}
         </Text>
       </View>
@@ -41,6 +31,16 @@ export const socialMediaButton = (isGoogle: boolean, onPress: () => void) => {
 };
 
 const styles = StyleSheet.create({
+  containerView: {
+    flexDirection: 'row',
+    marginHorizontal: wp(2),
+    alignItems: 'center',
+  },
+  textStyles: {
+    fontWeight: 'bold',
+    fontSize: wp(4),
+    color: 'white',
+  },
   socialMediaButtonStyles: {
     width: wp(90),
     height: hp(5),

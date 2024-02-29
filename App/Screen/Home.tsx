@@ -16,9 +16,8 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import MapView, {Callout, Marker, PROVIDER_GOOGLE} from 'react-native-maps';
-import {data} from '../Constants/data';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import {horizontalLine, mapStyle} from '@constants/constValues';
+import {TOKEN_KEY, horizontalLine, mapStyle} from '@constants/constValues';
 import {SVGRenderer} from '@components/SVGRenderer';
 import MapLayer from '@assets/svg/mapLayers.svg';
 import NotificationIcon from '@assets/svg/bell.svg';
@@ -30,7 +29,6 @@ import PeopleIcon from '@assets/svg/people.svg';
 import FavoritesIcon from '@assets/svg/favorites.svg';
 import FilterIcon from '@assets/svg/settings.svg';
 import CrossIcon from '@assets/svg/cross.svg';
-import CurrentLocation from '@assets/svg/currentLocation.svg';
 import {requestMapsPermission} from '@constants/Permission';
 import {
   FeatherIcon,
@@ -49,9 +47,8 @@ import {useDispatch} from 'react-redux';
 import {GetUserDataRequest} from '@redux/GetUserData/GetUserDataAction';
 import {useSelector} from 'react-redux';
 import {RootState} from '@redux/Reducers';
-import axios from 'axios';
 import {UserData} from '@redux/types';
-import {number} from 'yup';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 interface Home {
   navigation: StackNavigationProp<any>;
   route?: any;
@@ -97,7 +94,7 @@ const LayerMapNestedView = ({
 
 export const Home: FC<Home> = ({navigation}: Home) => {
   let newDataArray: Array<UserData> = [];
-  const {token} = useToken();
+  const [token, setToken] = useState('');
   const refRBSheet = useRef();
   const mapRef = useRef(null);
   const dispatch = useDispatch();
@@ -125,8 +122,8 @@ export const Home: FC<Home> = ({navigation}: Home) => {
     longitudeDelta: 0.0421,
   });
 
-  console.log('Bearer ', token);
   useEffect(() => {
+    getToken();
     requestMapsPermission();
     dispatch(GetUserDataRequest({token: token}));
   }, []);
@@ -343,6 +340,12 @@ export const Home: FC<Home> = ({navigation}: Home) => {
         position => {
           setCurLat(position.coords.latitude);
           setCurLong(position.coords.longitude);
+          setCurLoc({
+            latitude: position.coords.latitude,
+            longitude: position.coords.longitude,
+            latitudeDelta: 0.0922,
+            longitudeDelta: 0.0421,
+          });
         },
         error => {
           console.log(error.code, error.message);
@@ -350,6 +353,11 @@ export const Home: FC<Home> = ({navigation}: Home) => {
         {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
       );
     } catch (error) {}
+  }
+
+  async function getToken() {
+    const val = await AsyncStorage.getItem(TOKEN_KEY);
+    setToken(val!);
   }
 
   return (
@@ -434,11 +442,7 @@ export const Home: FC<Home> = ({navigation}: Home) => {
                     source={{
                       uri: val?.story_media,
                     }}
-                    style={{
-                      height: hp(8),
-                      width: wp(12),
-                      borderRadius: 8,
-                    }}
+                    style={styles.markerImageStyles}
                   />
                 </Marker>
               );
@@ -562,6 +566,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: wp(1.2),
   },
+  markerImageStyles: {
+    height: hp(8),
+    width: wp(12),
+    borderRadius: 8,
+  },
   arrayMapTextStyles: {
     fontSize: hp(1.8),
     color: 'white',
@@ -581,8 +590,9 @@ const styles = StyleSheet.create({
     width: circle,
     height: circle,
     borderRadius: circle / 2,
-    bottom: hp(20),
-    marginRight: wp(2),
+    bottom: hp(10),
+    right: wp(2),
+    position: 'absolute',
     justifyContent: 'center',
     alignItems: 'center',
     backgroundColor: Colors.darkGrey,
