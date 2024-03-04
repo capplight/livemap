@@ -93,6 +93,7 @@ export const Register: FC<Register> = ({navigation}: Register) => {
   function showMapView() {
     return (
       <MapView
+        loadingEnabled
         ref={mapRef}
         style={styles.map}
         showsUserLocation={true}

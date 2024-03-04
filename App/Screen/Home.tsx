@@ -468,6 +468,15 @@ export const Home: FC<Home> = ({navigation}: Home) => {
             </SVGRenderer>
           </View>
         </View>
+        {newDataArray?.length > 0 && (
+          <TouchableHighlight
+            onPress={() => {
+              dispatch(GetUserDataRequest({token: token}));
+            }}
+            style={[styles.gpsBackground, exportStyles.shadowProp]}>
+            <Ionicons name="refresh" size={26} />
+          </TouchableHighlight>
+        )}
         {/* {curtLat !== 0 && (
           <TouchableHighlight
             onPress={() => {

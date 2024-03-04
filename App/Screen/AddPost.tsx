@@ -28,6 +28,7 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import {
   TOKEN_KEY,
+  baseUrl,
   err_image_uploading_msg,
   homeNavigation,
   horizontalLine,
@@ -60,7 +61,6 @@ export const AddPost: FC<AddPost> = ({navigation}: AddPost) => {
   const maxLengthSize = 100;
   const refRBSheet = useRef();
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
-  const [base64Image, setBase64Image] = useState<string | ArrayBuffer>();
   const [uploadedImage, setUploadedImage] = useState('');
   const [onMap, setOnMapCheck] = useState(true);
   const [description, setDescription] = useState('');
@@ -131,23 +131,28 @@ export const AddPost: FC<AddPost> = ({navigation}: AddPost) => {
     return new Blob([ia], {type: mimeString});
   }
 
-  const uploadImage = async () => {
+  const toBase64 = (file: any) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = error => reject(error);
+    });
+
+  const uploadImage = async (base64File: any) => {
     const raw = JSON.stringify({
       contentType: 'image/jpeg',
       extension: 'jpg',
-      image: base64Image,
+      image: base64File,
     });
 
     await axios
-      .post(
-        'https://kg4yg99jv0.execute-api.ap-south-1.amazonaws.com/dev/mediaFile',
-        raw,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+      .post(`${baseUrl}/dev/mediaFile`, raw, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          Authorization: `Bearer ${token}`,
         },
-      )
+      })
       .then(response => {
         const imgUrl = response?.data?.location;
         console.log('Show res: ', response?.data);
@@ -166,12 +171,9 @@ export const AddPost: FC<AddPost> = ({navigation}: AddPost) => {
           }
         }
       });
-    // console.log('Image uploaded successfully:', response?.data);
-    // showToast('success', 'Success', 'Image uploaded successfully');
   };
 
   // console.log('Show token: ', token);
-  // console.log('Image length: ', base64Image);
 
   async function openCamera(openCamera: boolean) {
     try {
@@ -188,14 +190,9 @@ export const AddPost: FC<AddPost> = ({navigation}: AddPost) => {
               // Convert image URI to base64
               fetch(imageUri)
                 .then(response => response.blob())
-                .then(blob => {
-                  const reader = new FileReader();
-                  reader.onloadend = () => {
-                    const base64data = reader.result;
-                    setBase64Image(base64data);
-                  };
-                  reader.readAsDataURL(blob);
-                  uploadImage();
+                .then(async blob => {
+                  const image = (await toBase64(blob)) as string;
+                  uploadImage(image);
                 })
                 .catch(error => {
                   console.error('Error converting image to base64:', error);
@@ -217,14 +214,9 @@ export const AddPost: FC<AddPost> = ({navigation}: AddPost) => {
                 // Convert image URI to base64
                 fetch(imageUri)
                   .then(response => response.blob())
-                  .then(blob => {
-                    const reader = new FileReader();
-                    reader.onloadend = () => {
-                      const base64data = reader.result;
-                      setBase64Image(base64data);
-                    };
-                    reader.readAsDataURL(blob);
-                    uploadImage();
+                  .then(async blob => {
+                    const image = (await toBase64(blob)) as string;
+                    uploadImage(image);
                   })
                   .catch(error => {
                     console.error('Error converting image to base64:', error);
@@ -314,9 +306,14 @@ export const AddPost: FC<AddPost> = ({navigation}: AddPost) => {
               story_media: uploadedImage,
               description: description,
               metadata: curLoc,
+              // metadata: {
+              //   latitude: 30.316496,
+              //   longitude: 78.032188,
+              //   latitudeDelta: 0.0922,
+              //   longitudeDelta: 0.0421,
+              // },
             };
             if (description === '' || uploadedImage === '') {
-              // profileImage === null || description === ''
               showToast('error', 'Required', 'Fields must not be empty');
             } else {
               // console.log('Sending data: ', sendingData);
