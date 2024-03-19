@@ -23,6 +23,27 @@ export const first_time = 'User First Time';
 export const err_image_uploading_msg =
   'Error while uploading image, Please try again!!';
 
+export const modalStoryValues = [
+  {
+    content:
+      'https://files.oyebesmartest.com/uploads/preview/vivo-u20-mobile-wallpaper-full-hd-(1)qm6qyz9v60.jpg',
+    type: 'image',
+    finish: 0,
+  },
+  {
+    content:
+      'https://image.freepik.com/free-vector/mobile-wallpaper-with-fluid-shapes_79603-601.jpg',
+    type: 'image',
+    finish: 0,
+  },
+  {
+    content:
+      'https://image.freepik.com/free-vector/universe-mobile-wallpaper-with-planets_79603-600.jpg',
+    type: 'image',
+    finish: 0,
+  },
+];
+
 export const userStories = [
   {
     id: 1, //unique id (required)

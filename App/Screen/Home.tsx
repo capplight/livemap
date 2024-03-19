@@ -24,6 +24,7 @@ import {
   TOKEN_KEY,
   horizontalLine,
   mapStyle,
+  modalStoryValues,
   profileImageLink,
   userStories,
 } from '@constants/constValues';
@@ -60,6 +61,7 @@ import {RootState} from '@redux/Reducers';
 import {UserData} from '@redux/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import GestureRecognizer from 'react-native-swipe-gestures';
+import {NativeInstaStory} from '@components/StoryComponent/NativeInstaStory';
 
 interface Home {
   navigation: StackNavigationProp<any>;
@@ -375,184 +377,13 @@ export const Home: FC<Home> = ({navigation}: Home) => {
     setToken(val!);
   }
 
-  const [current, setCurrent] = useState(0);
-  const [content, setContent] = useState([
-    {
-      content:
-        'https://files.oyebesmartest.com/uploads/preview/vivo-u20-mobile-wallpaper-full-hd-(1)qm6qyz9v60.jpg',
-      type: 'image',
-      finish: 0,
-    },
-    {
-      content:
-        'https://image.freepik.com/free-vector/mobile-wallpaper-with-fluid-shapes_79603-601.jpg',
-      type: 'image',
-      finish: 0,
-    },
-    {
-      content:
-        'https://image.freepik.com/free-vector/universe-mobile-wallpaper-with-planets_79603-600.jpg',
-      type: 'image',
-      finish: 0,
-    },
-  ]);
-  const progress = useRef(new Animated.Value(0)).current;
-  const start = () => {
-    Animated.timing(progress, {
-      toValue: 1,
-      duration: 5000,
-      useNativeDriver: false,
-    }).start(({finished}) => {
-      if (finished) {
-        next();
-      }
-    });
-  };
-  const next = () => {
-    if (current !== content.length - 1) {
-      let tempData = content;
-      tempData[current].finish = 1;
-      setContent(tempData);
-      setCurrent(current + 1);
-      progress.setValue(0);
-    } else {
-      close();
-    }
-  };
-  const previous = () => {
-    if (current - 1 >= 0) {
-      let tempData = content;
-      tempData[current].finish = 0;
-      setContent(tempData);
-      progress.setValue(0);
-      setCurrent(current - 1);
-    } else {
-      close();
-    }
-  };
-  const close = () => {
-    progress.setValue(0);
-    setModalVisible(false);
-  };
-
   return (
     <SafeAreaView style={styles.container}>
-      <Fragment>
-        <GestureRecognizer
-          style={{flex: 1}}
-          onSwipeUp={() => setModalVisible(true)}
-          onSwipeDown={() => setModalVisible(false)}>
-          <Modal animationType="slide" transparent={true} visible={openModal}>
-            <View style={{flex: 1, backgroundColor: 'black'}}>
-              <Image
-                source={{uri: content[current].content}}
-                style={{height: hp(100), width: wp(100), resizeMode: 'cover'}}
-                onLoadEnd={() => {
-                  progress.setValue(0);
-                  start();
-                }}
-              />
-              <View
-                style={{
-                  width: wp(98),
-                  position: 'absolute',
-                  top: hp(1),
-                  justifyContent: 'space-evenly',
-                  alignItems: 'center',
-                  flexDirection: 'row',
-                }}>
-                {content.map((item, index) => {
-                  return (
-                    <View
-                      style={{
-                        flex: 1,
-                        height: 3,
-                        borderRadius: 4,
-                        backgroundColor: 'rgba(255, 255, 255, .5)',
-                        marginLeft: wp(1.5),
-                        flexDirection: 'row',
-                      }}>
-                      <Animated.View
-                        style={{
-                          flex:
-                            current == index ? progress : content[index].finish,
-                          height: 3,
-                          backgroundColor: 'rgba(255, 255, 255, 1)',
-                        }}
-                      />
-                    </View>
-                  );
-                })}
-                <View
-                  style={{
-                    width: wp(100),
-                    justifyContent: 'space-between',
-                    flexDirection: 'row',
-                    position: 'absolute',
-                    top: hp(0),
-                  }}>
-                  <View
-                    style={{
-                      flexDirection: 'row',
-                      alignItems: 'center',
-                      marginLeft: wp(2),
-                    }}>
-                    <CircularImage size={40} link={profileImageLink} />
-                    <Text
-                      numberOfLines={1}
-                      style={[
-                        exportStyles.text5,
-                        {width: wp(40), marginLeft: wp(2)},
-                      ]}>
-                      Organization's Name
-                    </Text>
-                  </View>
-                  <TouchableOpacity
-                    style={{
-                      right: wp(-4),
-                      padding: hp(2),
-                      zIndex: 10,
-                    }}
-                    onPress={() => {
-                      setModalVisible(false);
-                    }}>
-                    <EntypoIcon name="cross" />
-                  </TouchableOpacity>
-                </View>
-              </View>
-              <View
-                style={{
-                  width: wp(100),
-                  height: hp(100),
-                  position: 'absolute',
-                  top: 0,
-                  justifyContent: 'space-between',
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}>
-                <TouchableOpacity
-                  style={{
-                    width: wp(30),
-                    height: hp(100),
-                  }}
-                  onPress={() => {
-                    previous();
-                  }}
-                />
-                <TouchableOpacity
-                  style={{
-                    width: wp(30),
-                    height: hp(100),
-                  }}
-                  onPress={() => {
-                    next();
-                  }}
-                />
-              </View>
-            </View>
-          </Modal>
-        </GestureRecognizer>
-      </Fragment>
+      <NativeInstaStory
+        openModal={openModal}
+        setModalVisible={setModalVisible}
+        values={modalStoryValues}
+      />
       <RBSheet
         ref={refRBSheet}
         closeOnDragDown={true}
