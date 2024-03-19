@@ -391,8 +391,12 @@ PODS:
     - glog
   - react-native-geolocation-service (5.3.1):
     - React
+  - react-native-image-base64 (0.1.4):
+    - React
   - react-native-image-picker (7.1.0):
     - RCT-Folly (= 2021.07.22.00)
+    - React-Core
+  - react-native-image-resizer (1.4.5):
     - React-Core
   - react-native-insta-story (1.1.9):
     - React
@@ -528,18 +532,11 @@ PODS:
     - React-Core
     - SDWebImage (~> 5.11.1)
     - SDWebImageWebPCoder (~> 0.8.4)
+  - RNFS (2.20.0):
+    - React-Core
   - RNGestureHandler (2.13.4):
     - RCT-Folly (= 2021.07.22.00)
     - React-Core
-  - RNImageCropPicker (0.40.3):
-    - React-Core
-    - React-RCTImage
-    - RNImageCropPicker/QBImagePickerController (= 0.40.3)
-    - TOCropViewController
-  - RNImageCropPicker/QBImagePickerController (0.40.3):
-    - React-Core
-    - React-RCTImage
-    - TOCropViewController
   - RNPermissions (4.1.1):
     - React-Core
   - RNReanimated (3.5.4):
@@ -586,7 +583,6 @@ PODS:
     - libwebp (~> 1.0)
     - SDWebImage/Core (~> 5.10)
   - SocketRocket (0.6.1)
-  - TOCropViewController (2.6.1)
   - Yoga (1.14.0)
   - YogaKit (1.18.1):
     - Yoga (~> 1.14)
@@ -639,7 +635,9 @@ DEPENDENCIES:
   - React-jsinspector (from `../node_modules/react-native/ReactCommon/jsinspector`)
   - React-logger (from `../node_modules/react-native/ReactCommon/logger`)
   - react-native-geolocation-service (from `../node_modules/react-native-geolocation-service`)
+  - react-native-image-base64 (from `../node_modules/react-native-image-base64`)
   - react-native-image-picker (from `../node_modules/react-native-image-picker`)
+  - react-native-image-resizer (from `../node_modules/react-native-image-resizer`)
   - react-native-insta-story (from `../node_modules/react-native-insta-story`)
   - react-native-maps (from `../node_modules/react-native-maps`)
   - "react-native-netinfo (from `../node_modules/@react-native-community/netinfo`)"
@@ -666,8 +664,8 @@ DEPENDENCIES:
   - "RNCAsyncStorage (from `../node_modules/@react-native-async-storage/async-storage`)"
   - "RNCMaskedView (from `../node_modules/@react-native-community/masked-view`)"
   - RNFastImage (from `../node_modules/react-native-fast-image`)
+  - RNFS (from `../node_modules/react-native-fs`)
   - RNGestureHandler (from `../node_modules/react-native-gesture-handler`)
-  - RNImageCropPicker (from `../node_modules/react-native-image-crop-picker`)
   - RNPermissions (from `../node_modules/react-native-permissions`)
   - RNReanimated (from `../node_modules/react-native-reanimated`)
   - RNScreens (from `../node_modules/react-native-screens`)
@@ -693,7 +691,6 @@ SPEC REPOS:
     - SDWebImage
     - SDWebImageWebPCoder
     - SocketRocket
-    - TOCropViewController
     - YogaKit
 
 EXTERNAL SOURCES:
@@ -744,8 +741,12 @@ EXTERNAL SOURCES:
     :path: "../node_modules/react-native/ReactCommon/logger"
   react-native-geolocation-service:
     :path: "../node_modules/react-native-geolocation-service"
+  react-native-image-base64:
+    :path: "../node_modules/react-native-image-base64"
   react-native-image-picker:
     :path: "../node_modules/react-native-image-picker"
+  react-native-image-resizer:
+    :path: "../node_modules/react-native-image-resizer"
   react-native-insta-story:
     :path: "../node_modules/react-native-insta-story"
   react-native-maps:
@@ -798,10 +799,10 @@ EXTERNAL SOURCES:
     :path: "../node_modules/@react-native-community/masked-view"
   RNFastImage:
     :path: "../node_modules/react-native-fast-image"
+  RNFS:
+    :path: "../node_modules/react-native-fs"
   RNGestureHandler:
     :path: "../node_modules/react-native-gesture-handler"
-  RNImageCropPicker:
-    :path: "../node_modules/react-native-image-crop-picker"
   RNPermissions:
     :path: "../node_modules/react-native-permissions"
   RNReanimated:
@@ -852,7 +853,9 @@ SPEC CHECKSUMS:
   React-jsinspector: 194e32c6aab382d88713ad3dd0025c5f5c4ee072
   React-logger: cebf22b6cf43434e471dc561e5911b40ac01d289
   react-native-geolocation-service: 608e1da71a1ac31b4de64d9ef2815f697978c55b
+  react-native-image-base64: 2ff9ac788639c87a91361ab6652cc95e871b1e54
   react-native-image-picker: 5e076db26cd81660cfb6db5bcf517cfa12054d45
+  react-native-image-resizer: d9fb629a867335bdc13230ac2a58702bb8c8828f
   react-native-insta-story: 67a7bc0b4ba052973aa54b613708a838f4774bf2
   react-native-maps: 7f058386db652a5c7994f59f7f85e1d21693ab37
   react-native-netinfo: 299dad906cdbf3b67bcc6f693c807f98bdd127cc
@@ -879,8 +882,8 @@ SPEC CHECKSUMS:
   RNCAsyncStorage: 7deab901e27d1f989a83e8be6ce91b673772c848
   RNCMaskedView: 0e1bc4bfa8365eba5fbbb71e07fbdc0555249489
   RNFastImage: 5c9c9fed9c076e521b3f509fe79e790418a544e8
+  RNFS: 4ac0f0ea233904cb798630b3c077808c06931688
   RNGestureHandler: 6e46dde1f87e5f018a54fe5d40cd0e0b942b49ee
-  RNImageCropPicker: e7ab6fb43d2fc3e84651e786ef4a080d63b0ed3d
   RNPermissions: 250047ffa01a1fa65e870fcae3e2b87786acf0d8
   RNReanimated: ab2e96c6d5591c3dfbb38a464f54c8d17fb34a87
   RNScreens: 3c2d122f5e08c192e254c510b212306da97d2581
@@ -889,10 +892,9 @@ SPEC CHECKSUMS:
   SDWebImage: a7f831e1a65eb5e285e3fb046a23fcfbf08e696d
   SDWebImageWebPCoder: 908b83b6adda48effe7667cd2b7f78c897e5111d
   SocketRocket: f32cd54efbe0f095c4d7594881e52619cfe80b17
-  TOCropViewController: edfd4f25713d56905ad1e0b9f5be3fbe0f59c863
   Yoga: b76f1acfda8212aa16b7e26bcce3983230c82603
   YogaKit: f782866e155069a2cca2517aafea43200b01fd5a
 
-PODFILE CHECKSUM: 5875eb356b907c263e5dc62a846ffcd1939f8b30
+PODFILE CHECKSUM: bbfda34045c74906da7f96840170f1a2a3606001
 
 COCOAPODS: 1.15.2

@@ -59,5 +59,6 @@ export const exportStyles = StyleSheet.create({
   },
   text3: {color: 'white', fontSize: hp(1.8), fontWeight: 'bold'},
   text4: {color: Colors.lightWhite, opacity: 0.5, fontSize: hp(1.5)},
+  text5: {color: 'white', fontSize: hp(1.5), fontWeight: 'bold'},
   row: {flexDirection: 'row'},
 });

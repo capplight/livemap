@@ -7,8 +7,11 @@ import {
   Dimensions,
   Image,
   TouchableHighlight,
+  TouchableOpacity,
+  Modal,
+  Animated,
 } from 'react-native';
-import {ScrollView, TouchableOpacity} from 'react-native-gesture-handler';
+import {ScrollView} from 'react-native-gesture-handler';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {Colors} from '../Themes/Colors';
 import {
@@ -17,7 +20,13 @@ import {
 } from 'react-native-responsive-screen';
 import MapView, {Callout, Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import {TOKEN_KEY, horizontalLine, mapStyle} from '@constants/constValues';
+import {
+  TOKEN_KEY,
+  horizontalLine,
+  mapStyle,
+  profileImageLink,
+  userStories,
+} from '@constants/constValues';
 import {SVGRenderer} from '@components/SVGRenderer';
 import MapLayer from '@assets/svg/mapLayers.svg';
 import NotificationIcon from '@assets/svg/bell.svg';
@@ -31,6 +40,7 @@ import FilterIcon from '@assets/svg/settings.svg';
 import CrossIcon from '@assets/svg/cross.svg';
 import {requestMapsPermission} from '@constants/Permission';
 import {
+  EntypoIcon,
   FeatherIcon,
   Ionicons,
   MaterialCommunityIcon,
@@ -40,7 +50,7 @@ import Fonts from '@themes/Fonts';
 import {CustomTextField} from '@components/TextField/CustomTextField';
 import InstaStory from 'react-native-insta-story';
 import {storyData} from '@constants/storyData';
-import {exportStyles} from '@components/ExportStyles';
+import {CircularImage, exportStyles} from '@components/ExportStyles';
 import Geolocation from 'react-native-geolocation-service';
 import {useToken} from '@constants/userContext';
 import {useDispatch} from 'react-redux';
@@ -49,6 +59,8 @@ import {useSelector} from 'react-redux';
 import {RootState} from '@redux/Reducers';
 import {UserData} from '@redux/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import GestureRecognizer from 'react-native-swipe-gestures';
+
 interface Home {
   navigation: StackNavigationProp<any>;
   route?: any;
@@ -114,7 +126,7 @@ export const Home: FC<Home> = ({navigation}: Home) => {
   const [nestedExpandableText, setExpandableText] = useState('');
   const [curtLat, setCurLat] = useState(0);
   const [curtLong, setCurLong] = useState(0);
-  const [openModal, setOpenModal] = useState(false);
+  const [openModal, setModalVisible] = useState(false);
   const [curLoc, setCurLoc] = useState({
     latitude: 30.7993,
     longitude: 76.9149,
@@ -126,6 +138,9 @@ export const Home: FC<Home> = ({navigation}: Home) => {
     getToken();
     requestMapsPermission();
     dispatch(GetUserDataRequest({token: token}));
+    setTimeout(() => {
+      setImageTrack(false);
+    }, 5000);
   }, []);
 
   useEffect(() => {
@@ -360,11 +375,184 @@ export const Home: FC<Home> = ({navigation}: Home) => {
     setToken(val!);
   }
 
+  const [current, setCurrent] = useState(0);
+  const [content, setContent] = useState([
+    {
+      content:
+        'https://files.oyebesmartest.com/uploads/preview/vivo-u20-mobile-wallpaper-full-hd-(1)qm6qyz9v60.jpg',
+      type: 'image',
+      finish: 0,
+    },
+    {
+      content:
+        'https://image.freepik.com/free-vector/mobile-wallpaper-with-fluid-shapes_79603-601.jpg',
+      type: 'image',
+      finish: 0,
+    },
+    {
+      content:
+        'https://image.freepik.com/free-vector/universe-mobile-wallpaper-with-planets_79603-600.jpg',
+      type: 'image',
+      finish: 0,
+    },
+  ]);
+  const progress = useRef(new Animated.Value(0)).current;
+  const start = () => {
+    Animated.timing(progress, {
+      toValue: 1,
+      duration: 5000,
+      useNativeDriver: false,
+    }).start(({finished}) => {
+      if (finished) {
+        next();
+      }
+    });
+  };
+  const next = () => {
+    if (current !== content.length - 1) {
+      let tempData = content;
+      tempData[current].finish = 1;
+      setContent(tempData);
+      setCurrent(current + 1);
+      progress.setValue(0);
+    } else {
+      close();
+    }
+  };
+  const previous = () => {
+    if (current - 1 >= 0) {
+      let tempData = content;
+      tempData[current].finish = 0;
+      setContent(tempData);
+      progress.setValue(0);
+      setCurrent(current - 1);
+    } else {
+      close();
+    }
+  };
+  const close = () => {
+    progress.setValue(0);
+    setModalVisible(false);
+  };
+
   return (
     <SafeAreaView style={styles.container}>
-      {/* <Fragment>
-        <InstaStory data={storyData} duration={5} openModal={true} />
-      </Fragment> */}
+      <Fragment>
+        <GestureRecognizer
+          style={{flex: 1}}
+          onSwipeUp={() => setModalVisible(true)}
+          onSwipeDown={() => setModalVisible(false)}>
+          <Modal animationType="slide" transparent={true} visible={openModal}>
+            <View style={{flex: 1, backgroundColor: 'black'}}>
+              <Image
+                source={{uri: content[current].content}}
+                style={{height: hp(100), width: wp(100), resizeMode: 'cover'}}
+                onLoadEnd={() => {
+                  progress.setValue(0);
+                  start();
+                }}
+              />
+              <View
+                style={{
+                  width: wp(98),
+                  position: 'absolute',
+                  top: hp(1),
+                  justifyContent: 'space-evenly',
+                  alignItems: 'center',
+                  flexDirection: 'row',
+                }}>
+                {content.map((item, index) => {
+                  return (
+                    <View
+                      style={{
+                        flex: 1,
+                        height: 3,
+                        borderRadius: 4,
+                        backgroundColor: 'rgba(255, 255, 255, .5)',
+                        marginLeft: wp(1.5),
+                        flexDirection: 'row',
+                      }}>
+                      <Animated.View
+                        style={{
+                          flex:
+                            current == index ? progress : content[index].finish,
+                          height: 3,
+                          backgroundColor: 'rgba(255, 255, 255, 1)',
+                        }}
+                      />
+                    </View>
+                  );
+                })}
+                <View
+                  style={{
+                    width: wp(100),
+                    justifyContent: 'space-between',
+                    flexDirection: 'row',
+                    position: 'absolute',
+                    top: hp(0),
+                  }}>
+                  <View
+                    style={{
+                      flexDirection: 'row',
+                      alignItems: 'center',
+                      marginLeft: wp(2),
+                    }}>
+                    <CircularImage size={40} link={profileImageLink} />
+                    <Text
+                      numberOfLines={1}
+                      style={[
+                        exportStyles.text5,
+                        {width: wp(40), marginLeft: wp(2)},
+                      ]}>
+                      Organization's Name
+                    </Text>
+                  </View>
+                  <TouchableOpacity
+                    style={{
+                      right: wp(-4),
+                      padding: hp(2),
+                      zIndex: 10,
+                    }}
+                    onPress={() => {
+                      setModalVisible(false);
+                    }}>
+                    <EntypoIcon name="cross" />
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <View
+                style={{
+                  width: wp(100),
+                  height: hp(100),
+                  position: 'absolute',
+                  top: 0,
+                  justifyContent: 'space-between',
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                }}>
+                <TouchableOpacity
+                  style={{
+                    width: wp(30),
+                    height: hp(100),
+                  }}
+                  onPress={() => {
+                    previous();
+                  }}
+                />
+                <TouchableOpacity
+                  style={{
+                    width: wp(30),
+                    height: hp(100),
+                  }}
+                  onPress={() => {
+                    next();
+                  }}
+                />
+              </View>
+            </View>
+          </Modal>
+        </GestureRecognizer>
+      </Fragment>
       <RBSheet
         ref={refRBSheet}
         closeOnDragDown={true}
@@ -410,7 +598,7 @@ export const Home: FC<Home> = ({navigation}: Home) => {
                 //   <Callout
                 //     tooltip
                 //     onPress={() => {
-                //       setOpenModal(true);
+                //       setModalVisible(true);
                 //       console.log('Clicked image of index: ', i);
                 //     }}
                 //     style={{
@@ -434,10 +622,12 @@ export const Home: FC<Home> = ({navigation}: Home) => {
                 //   </Callout>
                 // </Marker>
                 <Marker
-                  onPress={index => {}}
+                  onPress={index => {
+                    setModalVisible(true);
+                  }}
                   key={i}
                   coordinate={val?.metadata}
-                  tracksViewChanges={true}>
+                  tracksViewChanges={imageTrack}>
                   <Image
                     source={{
                       uri: val?.story_media,

@@ -53,10 +53,13 @@ target 'LiveMap' do
   post_install do |installer|
     # https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/react_native_pods.rb#L197-L202
     react_native_post_install(
-      installer,
-      config[:reactNativePath],
-      :mac_catalyst_enabled => false
+      installer
+      # config[:reactNativePath],
+      # :mac_catalyst_enabled => false
     )
-    __apply_Xcode_12_5_M1_post_install_workaround(installer)
+      installer.pods_project.build_configurations.each do |config|
+      config.build_settings["EXCLUDED_ARCHS[sdk=iphonesimulator*]"] = "arm64"
+    end
+    # __apply_Xcode_12_5_M1_post_install_workaround(installer)
   end
 end
