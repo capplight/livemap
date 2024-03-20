@@ -1,4 +1,4 @@
-import React, {Fragment, useRef, useState} from 'react';
+import React, {Fragment, useEffect, useRef, useState} from 'react';
 import {
   Modal,
   View,
@@ -10,13 +10,14 @@ import {
   TouchableWithoutFeedback,
 } from 'react-native';
 import {CircularImage, exportStyles} from '@components/ExportStyles';
-import {profileImageLink} from '@constants/constValues';
+import {Orientation, profileImageLink} from '@constants/constValues';
 import {EntypoIcon} from '@themes/Icons';
 import GestureRecognizer from 'react-native-swipe-gestures';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import Video from 'react-native-video';
 
 interface NativeInstaProps {
   openModal: boolean;
@@ -29,6 +30,9 @@ export const NativeInstaStory = ({
   setModalVisible,
   values,
 }: NativeInstaProps) => {
+  const [orientation, setOrientation] = useState<string>(Orientation.landscape);
+  const [vidDuration, setVidDuration] = useState(10 * 1000);
+  const [mute, setMute] = useState(false);
   const [load, setLoad] = useState<boolean>(true);
   const [pressed, setPressed] = useState<boolean>(false);
   const [current, setCurrent] = useState(0);
@@ -36,15 +40,29 @@ export const NativeInstaStory = ({
   const progress = useRef(new Animated.Value(0)).current;
 
   const startAnimation = () => {
-    Animated.timing(progress, {
-      toValue: 1,
-      duration: 5000,
-      useNativeDriver: false,
-    }).start(({finished}) => {
-      if (finished) {
-        next();
+    if (content[current].type === 'video') {
+      if (load) {
+        Animated.timing(progress, {
+          toValue: 1,
+          duration: vidDuration,
+          useNativeDriver: false,
+        }).start(({finished}) => {
+          if (finished) {
+            next();
+          }
+        });
       }
-    });
+    } else {
+      Animated.timing(progress, {
+        toValue: 1,
+        duration: 5000,
+        useNativeDriver: false,
+      }).start(({finished}) => {
+        if (finished) {
+          next();
+        }
+      });
+    }
   };
   const next = () => {
     if (current !== content.length - 1) {
@@ -68,15 +86,16 @@ export const NativeInstaStory = ({
       close();
     }
   };
-  function start() {
-    setLoad(false);
-    progress.setValue(0);
-    startAnimation();
-  }
   const close = () => {
     progress.setValue(0);
     setModalVisible(false);
   };
+
+  // useEffect(() => {
+  //   if (openModal) {
+  //     setCurrent(0);
+  //   }
+  // }, [openModal]);
 
   return (
     <Fragment>
@@ -85,7 +104,7 @@ export const NativeInstaStory = ({
         onSwipeUp={() => setModalVisible(true)}
         onSwipeDown={() => setModalVisible(false)}>
         <Modal animationType="slide" transparent={true} visible={openModal}>
-          <View style={{flex: 1, backgroundColor: 'black'}}>
+          <View style={styles.container}>
             <View style={styles.pressContainer}>
               <TouchableWithoutFeedback
                 onPressIn={() => progress.stopAnimation()}
@@ -95,6 +114,7 @@ export const NativeInstaStory = ({
                   startAnimation();
                 }}
                 onPress={() => {
+                  setMute(!mute);
                   if (!pressed && !load) {
                     previous();
                   }
@@ -109,6 +129,7 @@ export const NativeInstaStory = ({
                   startAnimation();
                 }}
                 onPress={() => {
+                  setMute(!mute);
                   if (!pressed && !load) {
                     next();
                   }
@@ -116,14 +137,51 @@ export const NativeInstaStory = ({
                 <View style={styles.flex} />
               </TouchableWithoutFeedback>
             </View>
-            <Image
-              source={{uri: content[current].content}}
-              style={styles.imageStyles}
-              onLoadEnd={() => {
-                progress.setValue(0);
-                start();
-              }}
-            />
+            {content[current].type === 'video' ? (
+              <View
+                style={{
+                  height: hp(100),
+                  width: wp(100),
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}>
+                <Video
+                  source={{uri: content[current].content}}
+                  resizeMode="cover"
+                  paused={pressed}
+                  // disableFocus={true}
+                  // onReadyForDisplay={() => {
+                  //   startAnimation();
+                  // }}
+                  onLoad={x => {
+                    setOrientation(x.naturalSize.orientation);
+                    setLoad(true);
+                    startAnimation();
+                    setVidDuration(x.duration * 1000);
+                  }}
+                  onEnd={() => {
+                    next();
+                  }}
+                  muted={mute}
+                  style={{
+                    height: hp(
+                      orientation === Orientation.landscape ? 35 : 100,
+                    ),
+                    width: wp(100),
+                  }}
+                />
+              </View>
+            ) : (
+              <Image
+                source={{uri: content[current].content}}
+                style={styles.imageStyles}
+                onLoadEnd={() => {
+                  progress.setValue(0);
+                  startAnimation();
+                }}
+              />
+            )}
+
             <View style={styles.progressBarView}>
               {content.map((item: any, index: number) => {
                 return (
@@ -188,13 +246,15 @@ const styles = StyleSheet.create({
   flex: {
     flex: 1,
   },
+  container: {flex: 1, backgroundColor: 'black'},
   pressContainer: {
     flex: 1,
     flexDirection: 'row',
     height: hp(100),
-    width: wp(100),
+    width: wp(50),
     position: 'absolute',
     zIndex: 10,
+    alignSelf: 'center',
   },
   imageStyles: {height: hp(100), width: wp(100), resizeMode: 'cover'},
   progressBarView: {

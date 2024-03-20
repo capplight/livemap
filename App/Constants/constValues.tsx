@@ -23,6 +23,11 @@ export const first_time = 'User First Time';
 export const err_image_uploading_msg =
   'Error while uploading image, Please try again!!';
 
+export enum Orientation {
+  landscape = 'landscape',
+  portrait = 'portrait',
+}
+
 export const modalStoryValues = [
   {
     content:
@@ -40,6 +45,29 @@ export const modalStoryValues = [
     content:
       'https://image.freepik.com/free-vector/universe-mobile-wallpaper-with-planets_79603-600.jpg',
     type: 'image',
+    finish: 0,
+  },
+  {
+    content:
+      'https://img.freepik.com/free-photo/indoor-shot-beautiful-happy-african-american-woman-smiling-cheerfully-keeping-her-arms-folded-relaxing-indoors-after-morning-lectures-university_273609-1270.jpg',
+    type: 'image',
+    finish: 0,
+  },
+  {
+    content:
+      'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerJoyrides.mp4',
+    type: 'video',
+    finish: 0,
+  },
+  {
+    content:
+      'http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
+    type: 'video',
+    finish: 0,
+  },
+  {
+    content: 'https://www.exit109.com/~dnn/clips/RW20seconds_1.mp4',
+    type: 'video',
     finish: 0,
   },
 ];
