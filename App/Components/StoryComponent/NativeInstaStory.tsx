@@ -137,14 +137,9 @@ export const NativeInstaStory = ({
                 <View style={styles.flex} />
               </TouchableWithoutFeedback>
             </View>
-            {content[current].type === 'video' ? (
-              <View
-                style={{
-                  height: hp(100),
-                  width: wp(100),
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                }}>
+
+            <View style={styles.mediaViewStyles}>
+              {content[current].type === 'video' ? (
                 <Video
                   source={{uri: content[current].content}}
                   resizeMode="cover"
@@ -170,17 +165,31 @@ export const NativeInstaStory = ({
                     width: wp(100),
                   }}
                 />
-              </View>
-            ) : (
-              <Image
-                source={{uri: content[current].content}}
-                style={styles.imageStyles}
-                onLoadEnd={() => {
-                  progress.setValue(0);
-                  startAnimation();
-                }}
-              />
-            )}
+              ) : (
+                <Image
+                  source={{uri: content[current].content}}
+                  style={[
+                    styles.imageStyles,
+                    {
+                      height: hp(
+                        orientation === Orientation.landscape ? 35 : 100,
+                      ),
+                    },
+                  ]}
+                  onLoad={x => {
+                    setOrientation(
+                      x.nativeEvent.source.width > x.nativeEvent.source.height
+                        ? Orientation.landscape
+                        : Orientation.portrait,
+                    );
+                  }}
+                  onLoadEnd={() => {
+                    progress.setValue(0);
+                    startAnimation();
+                  }}
+                />
+              )}
+            </View>
 
             <View style={styles.progressBarView}>
               {content.map((item: any, index: number) => {
@@ -200,6 +209,7 @@ export const NativeInstaStory = ({
                   </View>
                 );
               })}
+
               <View style={styles.headerViewContainer}>
                 <View style={styles.imageViewStyles}>
                   <CircularImage size={40} link={profileImageLink} />
@@ -221,6 +231,7 @@ export const NativeInstaStory = ({
                 </TouchableOpacity>
               </View>
             </View>
+
             <View style={styles.nextViewContainer}>
               <TouchableOpacity
                 style={styles.nextViewStyles}
@@ -257,6 +268,12 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   imageStyles: {height: hp(100), width: wp(100), resizeMode: 'cover'},
+  mediaViewStyles: {
+    height: hp(100),
+    width: wp(100),
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   progressBarView: {
     width: wp(98),
     position: 'absolute',
