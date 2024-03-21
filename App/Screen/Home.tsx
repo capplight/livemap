@@ -60,7 +60,6 @@ import {useSelector} from 'react-redux';
 import {RootState} from '@redux/Reducers';
 import {UserData} from '@redux/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import GestureRecognizer from 'react-native-swipe-gestures';
 import {NativeInstaStory} from '@components/StoryComponent/NativeInstaStory';
 
 interface Home {
@@ -90,17 +89,17 @@ const LayerMapNestedView = ({
         <Text style={styles.arrayMapTextStyles}>{name}</Text>
       </View>
       {expand ? (
-        <TouchableHighlight style={{padding: wp(1)}} onPress={onPress}>
+        <TouchableOpacity style={{padding: wp(1)}} onPress={onPress}>
           <FeatherIcon name="chevron-right" size={26} color={'white'} />
-        </TouchableHighlight>
+        </TouchableOpacity>
       ) : (
-        <TouchableHighlight style={{padding: wp(1)}} onPress={onPress}>
+        <TouchableOpacity style={{padding: wp(1)}} onPress={onPress}>
           <Ionicons
             name="checkmark-circle-sharp"
             size={26}
             color={isChecked ? Colors.checkedGreen : 'white'}
           />
-        </TouchableHighlight>
+        </TouchableOpacity>
       )}
     </View>
   );
@@ -197,7 +196,7 @@ export const Home: FC<Home> = ({navigation}: Home) => {
             <Text style={styles.layerTextStyles}>
               {isExpandable ? nestedExpandableText : 'Layers on the map'}
             </Text>
-            <TouchableHighlight
+            <TouchableOpacity
               style={{padding: wp(1)}}
               onPress={() => {
                 isExpandable
@@ -205,7 +204,7 @@ export const Home: FC<Home> = ({navigation}: Home) => {
                   : refRBSheet.current.close();
               }}>
               <MaterialCommunityIcon name="close-circle" size={28} />
-            </TouchableHighlight>
+            </TouchableOpacity>
           </View>
           {!isExpandable ? (
             <View style={{alignItems: 'center'}}>

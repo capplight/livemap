@@ -194,7 +194,7 @@ export const NativeInstaStory = ({
             <View style={styles.progressBarView}>
               {content.map((item: any, index: number) => {
                 return (
-                  <View style={styles.contentView}>
+                  <View key={index} style={styles.contentView}>
                     <Animated.View
                       style={[
                         styles.progressAnimStyles,

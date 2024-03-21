@@ -52,13 +52,13 @@ export const Profile: FC<Profile> = ({navigation}: Profile) => {
   ]);
 
   //Aligns data in GridView: It will add a new object in the arrayList to format the data structure in the UI
-  const dummyItemCount = feedData.length % 4;
+  const itemCount = feedData.length % 4;
 
   const [firstRouteData, setFirstRouteData] = useState(
-    dummyItemCount > 0
+    itemCount > 0
       ? [
           ...feedData,
-          ...[...new Array(dummyItemCount).keys()].map((_, idx) => ({
+          ...[...new Array(itemCount).keys()].map((_, idx) => ({
             id: feedData.length + idx,
           })),
         ]
@@ -178,19 +178,14 @@ export const Profile: FC<Profile> = ({navigation}: Profile) => {
     return (
       <View
         style={[
-          styles.expandableView,
+          styles.expandableContainer,
           {height: hp(isExpanded ? (index === 0 ? 16 : 18) : 5)},
         ]}>
-        <View
-          style={{
-            width: wp(92),
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}>
+        <View style={styles.expandableViewStyles}>
           <Text
             style={[
               styles.text2,
-              {alignSelf: isExpanded ? 'flex-start' : 'center'},
+              [{alignSelf: isExpanded ? 'flex-start' : 'center'}],
             ]}>
             {label}
           </Text>
@@ -215,87 +210,88 @@ export const Profile: FC<Profile> = ({navigation}: Profile) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView
+      {/* <ScrollView
         nestedScrollEnabled={false}
         style={{flexGrow: 1}}
-        contentContainerStyle={{flexGrow: 1}}>
-        <View style={styles.scrollContainer}>
-          <View style={{alignItems: 'center', justifyContent: 'center'}}>
-            <Image
-              source={{
-                uri: coverImageLink,
-              }}
-              style={styles.coverImageStyles}
-            />
-            <View style={styles.coverImageBackgroundStyles}>
-              <TouchableOpacity>
-                <FeatherIcon name="lock" size={26} />
-              </TouchableOpacity>
-              <Text style={[exportStyles.text3, {}]}>@ayushmng</Text>
-              <TouchableOpacity
-                onPress={() => {
-                  navigation.navigate('Login');
-                }}>
-                <AntDesignIcon name="setting" size={26} />
-              </TouchableOpacity>
-            </View>
+        contentContainerStyle={{flexGrow: 1}}> */}
+      <View style={styles.scrollContainer}>
+        <View style={{alignItems: 'center', justifyContent: 'center'}}>
+          <Image
+            source={{
+              uri: coverImageLink,
+            }}
+            style={styles.coverImageStyles}
+          />
+          <View style={styles.coverImageBackgroundStyles}>
+            <TouchableOpacity>
+              <FeatherIcon name="lock" size={26} />
+            </TouchableOpacity>
+            <Text style={[exportStyles.text3, {}]}>@ayushmng</Text>
+            <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('Login');
+              }}>
+              <AntDesignIcon name="setting" size={26} />
+            </TouchableOpacity>
           </View>
-          <View style={{position: 'absolute', top: hp(12), left: wp(2)}}>
-            <CircularImage link={profileImageLink} />
-          </View>
-          {detailView(
-            '50',
-            '112M',
-            '100',
-            () => {},
-            () => {},
-          )}
-          <View style={styles.userIdViewStyles}>
-            <Text style={exportStyles.text4}>@ayushmng</Text>
-            <Text style={exportStyles.text3}>Ayush Katuwal</Text>
-          </View>
-          <Text style={styles.text2}>
-            The reason most people fail instead of succeed is they trade what
-            they want most for what they want at the moment.
-          </Text>
-          {mediaLinkView()}
-          {expandableData.map((data, i) => {
-            return (
-              <View key={data?.id}>
-                {expandableView(
-                  i,
-                  data?.name,
-                  data?.id === 0 ? (
-                    <InstaStory
-                      data={storyData}
-                      duration={5}
-                      unPressedBorderColor={'transparent'}
-                      style={{alignSelf: 'flex-start'}}
-                    />
-                  ) : (
-                    <InstaStory
-                      data={storyData}
-                      duration={5}
-                      unPressedBorderColor={'transparent'}
-                      style={{alignSelf: 'flex-start'}}
-                      avatarImageStyle={styles.avatarImageStyles}
-                      avatarWrapperStyle={styles.avatarSquareWrapper}
-                      avatarTextStyle={{bottom: hp(0.5)}}
-                    />
-                  ),
-                )}
-              </View>
-            );
-          })}
         </View>
-        <TabView
-          navigationState={{index, routes}}
-          renderScene={renderScene}
-          onIndexChange={setIndex}
-          renderTabBar={renderTabBar}
-          initialLayout={{width: Dimensions.get('window').width}}
-        />
-      </ScrollView>
+        <View style={{position: 'absolute', top: hp(12), left: wp(2)}}>
+          <CircularImage link={profileImageLink} />
+        </View>
+        {detailView(
+          '50',
+          '112M',
+          '100',
+          () => {},
+          () => {},
+        )}
+        <View style={styles.userIdViewStyles}>
+          <Text style={exportStyles.text4}>@ayushmng</Text>
+          <Text style={exportStyles.text3}>Ayush Katuwal</Text>
+        </View>
+        <Text style={styles.text2}>
+          The reason most people fail instead of succeed is they trade what they
+          want most for what they want at the moment.
+        </Text>
+        {mediaLinkView()}
+        {expandableData.map((data, i) => {
+          return (
+            <View key={data?.id}>
+              {expandableView(
+                i,
+                data?.name,
+                data?.id === 0 ? (
+                  <InstaStory
+                    data={storyData}
+                    duration={5}
+                    unPressedBorderColor={'transparent'}
+                    style={{alignSelf: 'flex-start'}}
+                  />
+                ) : (
+                  <InstaStory
+                    data={storyData}
+                    duration={5}
+                    unPressedBorderColor={'transparent'}
+                    style={{alignSelf: 'flex-start'}}
+                    avatarImageStyle={styles.avatarImageStyles}
+                    avatarWrapperStyle={styles.avatarSquareWrapper}
+                    avatarTextStyle={{bottom: hp(0.5)}}
+                  />
+                ),
+              )}
+            </View>
+          );
+        })}
+      </View>
+      <TabView
+        swipeEnabled={false}
+        navigationState={{index, routes}}
+        renderScene={renderScene}
+        onIndexChange={setIndex}
+        renderTabBar={renderTabBar}
+        initialLayout={{width: Dimensions.get('window').width}}
+      />
+      {/* </ScrollView> */}
     </SafeAreaView>
   );
 };
@@ -375,12 +371,17 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  expandableView: {
+  expandableContainer: {
     width: wp(96),
     borderRadius: 4,
     paddingHorizontal: wp(2),
     marginVertical: hp(0.1),
     backgroundColor: Colors.primaryColor,
+  },
+  expandableViewStyles: {
+    width: wp(92),
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   avatarImageStyles: {
     height: hp(10),

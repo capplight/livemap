@@ -3,29 +3,47 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {View, Text, FlatList, Image, StyleSheet} from 'react-native';
+import {
+  View,
+  Text,
+  FlatList,
+  Image,
+  StyleSheet,
+  ActivityIndicator,
+} from 'react-native';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {Ionicons} from '@themes/Icons';
 import {exportStyles} from '@components/ExportStyles';
 import {Colors} from '@themes/Colors';
 
 interface FirstRouteProps {
+  isLoading?: boolean;
   data: any;
 }
 
-export const FirstRoute = ({data = []}: FirstRouteProps) => {
+export const FirstRoute = ({isLoading = true, data = []}: FirstRouteProps) => {
+  const emptyImageLink =
+    'https://static.vecteezy.com/system/resources/thumbnails/004/141/669/small/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg';
   return (
     <View style={routeStyles.routeViewStyles}>
       <FlatList
         keyExtractor={(item, index) => index.toString()}
+        ListEmptyComponent={
+          <ActivityIndicator
+            size={'large'}
+            color={'white'}
+            style={{marginTop: hp(8)}}
+          />
+        }
         renderItem={({item, index}) => {
           const link = item?.link;
           return (
             <View style={routeStyles.container}>
               <TouchableOpacity>
-                {link !== null || '' ? (
-                  <Image source={{uri: link}} style={routeStyles.imageStyles} />
-                ) : null}
+                <Image
+                  source={{uri: link !== null || '' ? link : emptyImageLink}}
+                  style={routeStyles.imageStyles}
+                />
               </TouchableOpacity>
               {index !== data?.length - 1 ? (
                 <View

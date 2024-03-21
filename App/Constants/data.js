@@ -86,7 +86,7 @@ export const feedData = [
     userName: 'Tengri News',
     userId: '@tengriNews1211',
     description: 'It was an amazing day. I am attaching the proof below',
-    link: 'https://scontent.fktm8-1.fna.fbcdn.net/v/t31.18172-8/26757850_1570221016398019_1169488428549163209_o.png?_nc_cat=106&ccb=1-7&_nc_sid=7a1959&_nc_ohc=mG1qx6s2RRgAX9m_g0q&_nc_ht=scontent.fktm8-1.fna&oh=00_AfAk9kzaegkbsqHmOAno3bBEwy3HNJL9zGA-MIhqcXHHbw&oe=65F68D9E',
+    link: 'https://is1-ssl.mzstatic.com/image/thumb/Purple122/v4/ff/f2/45/fff245bf-fd80-c3bd-3e7b-e433a5ea43ee/AppIcon-0-0-1x_U007emarketing-0-10-0-0-sRGB-85-220.png/1200x600wa.png',
     likes: '3K',
     comments: '615',
     share: '118',
