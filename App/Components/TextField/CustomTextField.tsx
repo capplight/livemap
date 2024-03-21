@@ -82,6 +82,7 @@ const styles = StyleSheet.create({
     height: hp(5),
     width: hp(42),
     color: 'white',
+    fontSize: hp(1.5),
     marginVertical: hp(1),
   },
   visibilityStyles: {

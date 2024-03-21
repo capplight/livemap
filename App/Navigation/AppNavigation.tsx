@@ -24,8 +24,8 @@ export const AppNavigation = () => {
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
         headerShown: false,
       })}>
-      <Stack.Screen name="tabs" component={BottomTabNavigation} />
       <Stack.Screen name="Splash" component={SplashScreen} />
+      <Stack.Screen name="tabs" component={BottomTabNavigation} />
       <Stack.Screen
         name="Login"
         component={Login}

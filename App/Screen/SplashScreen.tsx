@@ -31,7 +31,9 @@ const chatImage = (header: string, message: string) => {
       />
       <View style={{marginLeft: wp(2.5)}}>
         <Text style={styles.chatTextHeader}>{header}</Text>
-        <Text style={{color: Colors.textLight}}>{message}</Text>
+        <Text style={{color: Colors.textLight, fontSize: hp(1.6)}}>
+          {message}
+        </Text>
       </View>
     </View>
   );
@@ -157,7 +159,8 @@ const styles = StyleSheet.create({
   chatTextHeader: {
     width: wp(50),
     color: Colors.primaryColor,
-    fontWeight: '500',
+    fontWeight: 'bold',
+    fontSize: hp(1.6),
   },
   text: {
     alignSelf: 'center',
