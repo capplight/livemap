@@ -1,5 +1,5 @@
 import {StackNavigationProp} from '@react-navigation/stack';
-import React, {useState, useEffect, FC, useRef, Fragment, useMemo} from 'react';
+import React, {useState, useEffect, FC, useRef, useMemo} from 'react';
 import {
   View,
   Text,
@@ -8,8 +8,6 @@ import {
   Image,
   TouchableHighlight,
   TouchableOpacity,
-  Modal,
-  Animated,
 } from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -21,6 +19,7 @@ import {
 import MapView, {Callout, Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import {
+  FCM_TOKEN,
   TOKEN_KEY,
   horizontalLine,
   mapStyle,
@@ -40,20 +39,13 @@ import FavoritesIcon from '@assets/svg/favorites.svg';
 import FilterIcon from '@assets/svg/settings.svg';
 import CrossIcon from '@assets/svg/cross.svg';
 import {requestMapsPermission} from '@constants/Permission';
-import {
-  EntypoIcon,
-  FeatherIcon,
-  Ionicons,
-  MaterialCommunityIcon,
-  MaterialIcon,
-} from '@themes/Icons';
+import {FeatherIcon, Ionicons, MaterialCommunityIcon} from '@themes/Icons';
 import Fonts from '@themes/Fonts';
 import {CustomTextField} from '@components/TextField/CustomTextField';
 import InstaStory from 'react-native-insta-story';
 import {storyData} from '@constants/storyData';
 import {CircularImage, exportStyles} from '@components/ExportStyles';
 import Geolocation from 'react-native-geolocation-service';
-import {useToken} from '@constants/userContext';
 import {useDispatch} from 'react-redux';
 import {GetUserDataRequest} from '@redux/GetUserData/GetUserDataAction';
 import {useSelector} from 'react-redux';
@@ -61,6 +53,7 @@ import {RootState} from '@redux/Reducers';
 import {UserData} from '@redux/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {NativeInstaStory} from '@components/StoryComponent/NativeInstaStory';
+import axios from 'axios';
 
 interface Home {
   navigation: StackNavigationProp<any>;
@@ -108,6 +101,7 @@ const LayerMapNestedView = ({
 export const Home: FC<Home> = ({navigation}: Home) => {
   let newDataArray: Array<UserData> = [];
   const [token, setToken] = useState('');
+  const [fcmToken, setFCMToken] = useState('');
   const refRBSheet = useRef();
   const mapRef = useRef(null);
   const dispatch = useDispatch();
@@ -373,8 +367,16 @@ export const Home: FC<Home> = ({navigation}: Home) => {
 
   async function getToken() {
     const val = await AsyncStorage.getItem(TOKEN_KEY);
+    // const val2 = await AsyncStorage.getItem(FCM_TOKEN);
     setToken(val!);
+    // setFCMToken(val2!);
+    // if (val2!?.length > 0 && val!?.length > 0) {
+    //   sendFCM();
+    // }
   }
+
+  // console.log('Token: ', token);
+  // console.log('FCM Token: ', fcmToken);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -407,9 +409,9 @@ export const Home: FC<Home> = ({navigation}: Home) => {
           ref={mapRef}
           style={styles.map}
           loadingEnabled={newDataArray?.length > 0 ? true : false}
-          showsUserLocation={true}
+          // showsUserLocation={true}
           followsUserLocation={true}
-          showsMyLocationButton={true}
+          // showsMyLocationButton={true}
           provider={PROVIDER_GOOGLE}
           customMapStyle={mapStyle}
           initialRegion={curLoc}>
@@ -482,7 +484,9 @@ export const Home: FC<Home> = ({navigation}: Home) => {
               <NotificationIcon />
             </SVGRenderer>
             <SVGRenderer
-              onPress={() => {}}
+              onPress={() => {
+                navigation.navigate('ChatList', {token: token});
+              }}
               style={{padding: wp(1), marginRight: wp(-4), marginLeft: wp(2)}}>
               <MessageIcon />
             </SVGRenderer>
@@ -537,7 +541,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     position: 'absolute',
     padding: wp(2),
-    marginTop: wp(10),
+    marginTop: wp(8),
     marginHorizontal: wp(2),
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -557,6 +561,7 @@ const styles = StyleSheet.create({
     color: 'white',
     textAlign: 'center',
     marginHorizontal: wp(1),
+    paddingRight: wp(2),
   },
   searchViewStyles: {
     flexDirection: 'row',

@@ -31,7 +31,7 @@ export default function BottomTabNavigation() {
           marginTop: isIOS ? hp(-0.2) : hp(-0.7),
           marginBottom: hp(isIOS ? 0.1 : 0.2),
         },
-        tabBarStyle: {height: hp(7), backgroundColor: '#17041E'},
+        tabBarStyle: {height: hp(8.5), backgroundColor: '#17041E'},
       }}>
       <Tab.Screen
         name="Home"

@@ -8,6 +8,9 @@ import BottomTabNavigation from './BottomTabNavigation';
 import {SplashScreen} from '../Screen/SplashScreen';
 import {Login} from '../Screen/Login';
 import {Register} from '../Screen/Register';
+import {Chat} from '@screens/Chat/Chat';
+import ChatScreen from '@screens/Chat/ChatScreen';
+import {ChatList} from '@screens/Chat/ChatList';
 // import {TabAppSwitch} from '@components/TabSwitch/tabAppSwitch';
 // import {LoginScreen} from '../Screen/Auth/LoginScreen';
 // import {LogoutScreen} from '../Screen/Auth/Logout';
@@ -22,19 +25,29 @@ export const AppNavigation = () => {
       initialRouteName="splash"
       screenOptions={() => ({
         cardStyleInterpolator: CardStyleInterpolators.forHorizontalIOS,
+        navigationBarColor: Colors.backgroundColor,
         headerShown: false,
       })}>
-      <Stack.Screen name="tabs" component={BottomTabNavigation} />
       <Stack.Screen name="Splash" component={SplashScreen} />
+      <Stack.Screen name="tabs" component={BottomTabNavigation} />
+      {/* <Stack.Screen name="Chat" component={Chat} /> */}
+      <Stack.Screen name="ChatScreen" component={ChatScreen} />
+      <Stack.Screen name="ChatList" component={ChatList} />
       <Stack.Screen
         name="Login"
         component={Login}
-        options={{title: 'Login', headerShown: false}}
+        options={{
+          title: 'Login',
+          headerShown: false,
+        }}
       />
       <Stack.Screen
         name="Register"
         component={Register}
-        options={{title: 'Register', headerShown: false}}
+        options={{
+          title: 'Register',
+          headerShown: false,
+        }}
       />
 
       {/* <Stack.Screen
@@ -47,12 +60,6 @@ export const AppNavigation = () => {
             return <DefaultLayout />;
           },
         }}
-      /> */}
-
-      {/* <Stack.Screen
-        name="TabAppSwitch"
-        component={TabAppSwitch}
-        options={{headerShown: false}}
       /> */}
     </Stack.Navigator>
   );

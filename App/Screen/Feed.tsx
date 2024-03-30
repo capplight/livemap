@@ -32,6 +32,7 @@ import {SVGRenderer} from '@components/SVGRenderer';
 import CrossIcon from '@assets/svg/crossLarge.svg';
 import {useSelector} from 'react-redux';
 import {RootState} from '@redux/Reducers';
+import {TopHeaderView} from '@components/TopHeaderView';
 
 interface Feed {
   navigation: StackNavigationProp<any>;
@@ -115,27 +116,12 @@ export const Feed: FC<Feed> = ({navigation}: Feed) => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.topViewStyles}>
-        <SVGRenderer
-          touchable
-          style={{padding: wp(2)}}
-          onPress={() => {
-            homeNavigation({navigation});
-          }}>
-          <CrossIcon />
-        </SVGRenderer>
-        <Text
-          style={[
-            exportStyles.text1,
-            {marginVertical: hp(2), fontSize: hp(2)},
-          ]}>
-          Posts
-        </Text>
-        <TouchableHighlight style={{alignSelf: 'flex-end'}}>
-          <FeatherIcon name="search" size={28} color={Colors.lightWhite} />
-        </TouchableHighlight>
-      </View>
+    <SafeAreaView style={exportStyles.container}>
+      <TopHeaderView
+        navigation={navigation}
+        navigateBack={false}
+        title="Posts"
+      />
       <FlatList
         showsVerticalScrollIndicator={false}
         data={feedData}
@@ -147,24 +133,12 @@ export const Feed: FC<Feed> = ({navigation}: Feed) => {
 };
 
 export const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: Colors.backgroundDark,
-  },
   renderingViewStyles: {
     width: wp(98),
     padding: wp(2),
     flexDirection: 'row',
     marginHorizontal: wp(2),
     justifyContent: 'space-around',
-  },
-  topViewStyles: {
-    width: wp(96),
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
   },
   headLineViewStyles: {
     width: wp(74),

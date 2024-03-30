@@ -1,6 +1,13 @@
 import {StackNavigationProp} from '@react-navigation/stack';
-import React, {FC, useState} from 'react';
-import {Text, StyleSheet, View, Pressable, ScrollView} from 'react-native';
+import React, {FC, useEffect, useState} from 'react';
+import {
+  Text,
+  StyleSheet,
+  View,
+  Pressable,
+  ScrollView,
+  StatusBar,
+} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {
   widthPercentageToDP as wp,
@@ -12,8 +19,10 @@ import {Ionicons} from '../Themes/Icons';
 import {CustomTextField} from '../Components/TextField/CustomTextField';
 import {LoginButton} from '../Components/Buttons/LoginButton';
 import {
+  FCM_TOKEN,
   OrHorizontalLine,
   TOKEN_KEY,
+  USER_ID,
   baseUrl,
   homeNavigation,
   horizontalLine,
@@ -24,8 +33,9 @@ import {socialMediaButton} from '@components/Buttons/SocialMediaButton';
 import {Formik} from 'formik';
 import {signInDataSchema} from '../Services/validationSchema';
 import axios from 'axios';
-import {useToken} from '@constants/userContext';
-
+import changeNavigationBarColor from 'react-native-navigation-bar-color';
+import {REACT_APP_BASE_URL_DEV} from '@env';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 interface Login {
   navigation: StackNavigationProp<any>;
   route?: any;
@@ -34,32 +44,67 @@ interface Login {
 export const Login: FC<Login> = ({navigation}: Login) => {
   const [isLoading, setLoader] = useState(false);
   // const {setToken} = useToken();
-  // const [token, setToken] = useState('');
+  const [fcmToken, setFCMToken] = useState('');
 
-  function callUserSignInApi(value: any) {
+  console.log('Show fcm token: ', fcmToken);
+
+  async function callUserSignInApi(value: any) {
     setLoader(true);
-    return axios
-      .post(`${baseUrl}/dev/manageOauth`, value)
+    try {
+      const response = await axios.post(`${baseUrl}/dev/manageOauth`, value);
+      showToast('success', 'Success', 'Successfully logged in');
+      // setToken(response?.data?.token);
+      const token = response?.data?.token;
+      const userId = response?.data?._id;
+      storeData(token, TOKEN_KEY);
+      storeData(userId, USER_ID);
+      sendFCM(token);
+    } catch (err) {
+      console.log('Error message:', err);
+      showToast(
+        'error',
+        'Error',
+        'Please check your credentials and try again!!',
+      );
+      setLoader(false);
+    }
+  }
+
+  const sendFCM = async (token: string) => {
+    console.log('Show token: ', token);
+    console.log('Show fcm token: ', fcmToken);
+    const params = JSON.stringify({fcm_token: fcmToken});
+    await axios
+      .put(`${REACT_APP_BASE_URL_DEV}/dev/user`, params, {
+        headers: {Authorization: `Bearer ${token}`},
+      })
       .then(response => {
-        showToast('success', 'Success', 'Successfully logged in');
-        // setToken(response?.data?.token);
-        storeData(response?.data?.token, TOKEN_KEY);
+        console.log('Show response: ', response?.data?.message);
         homeNavigation({navigation});
         setLoader(false);
       })
-      .catch(err => {
-        console.log('Error message:', err);
-        showToast(
-          'error',
-          'Error',
-          'Please check your credentials and try again!!',
-        );
+      .catch(error => {
+        console.error('Error sending message:', error);
+        if (error?.response?.status === 403) {
+          navigation.navigate('Login', {});
+        }
         setLoader(false);
       });
+  };
+
+  useEffect(() => {
+    getFCMToken();
+    changeNavigationBarColor('transparent');
+  }, []);
+
+  async function getFCMToken() {
+    const val = await AsyncStorage.getItem(FCM_TOKEN);
+    setFCMToken(val!);
   }
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar backgroundColor={Colors.backgroundColor} />
       <ScrollView>
         <View style={styles.container}>
           <Pressable
@@ -71,7 +116,7 @@ export const Login: FC<Login> = ({navigation}: Login) => {
           </Pressable>
           <Text style={styles.appNameText}>LiveMap</Text>
           <Formik
-            // initialValues={{email: 'gaurab@apple.com', password: 'P@ssw00rd'}}
+            // initialValues={{email: 'gaurab@apples.com', password: 'P@ssw00rd'}}
             initialValues={{email: 'test@apple.com', password: 'Test123'}}
             validationSchema={signInDataSchema}
             onSubmit={values => callUserSignInApi(values)}>

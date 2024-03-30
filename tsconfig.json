@@ -29,11 +29,11 @@
       "@redux/*": ["App/Redux/*"],
       // "@saga/*": ["App/saga/*"],
       // "@static/*": ["App/static/*"],
-      // "@utils/*": ["App/utility/*"],
+      "@utils/*": ["App/Utils/*"],
       "@navigation/*": ["App/Navigation/*"],
       "@themes/*": ["App/Themes/*"],
       "@assets/*": ["App/Assets/*"],
-      "@icons/*":["App/Assets/icons"]
+      "@icons/*": ["App/Assets/icons"]
     }
   },
   "exclude": [

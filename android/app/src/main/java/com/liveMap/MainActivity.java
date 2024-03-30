@@ -1,4 +1,4 @@
-package com.glims;
+package com.liveMap;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

@@ -1,20 +1,21 @@
 import React from 'react';
 import {Colors} from '@themes/Colors';
-import {Image, Platform, StyleSheet} from 'react-native';
+import {Image, Platform, StyleProp, StyleSheet, ViewStyle} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
+import {profileImageLink} from '@constants/constValues';
 
 interface ImageStyleProps {
   size?: number;
-  link: string;
+  link?: string;
 }
 export const CircularImage = ({size = 72, link}: ImageStyleProps) => {
   return (
     <Image
       source={{
-        uri: link,
+        uri: link ?? profileImageLink,
       }}
       style={{height: size, width: size, borderRadius: size / 2}}
     />
@@ -23,6 +24,10 @@ export const CircularImage = ({size = 72, link}: ImageStyleProps) => {
 
 const size = 40;
 export const exportStyles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: Colors.backgroundColor,
+  },
   avatarSquareWrapper: {
     height: hp(12),
     width: wp(20),

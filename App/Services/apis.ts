@@ -5,6 +5,8 @@ import {
   SignupRequestParams,
 } from '@redux/types';
 import {REACT_APP_BASE_URL_DEV} from '@env';
+import {ChatListRequestParams} from '@redux/ChatList/ChatListTypes';
+import {ChatDetailsRequestParams} from '@redux/ChatDetails/ChatDetailsTypes';
 
 export const signupApi = ({
   email,
@@ -48,5 +50,30 @@ export const getUserDataApi = ({
 }: GetUserDataRequestParams): Promise<any> => {
   return axios.get(`${REACT_APP_BASE_URL_DEV}/dev/managePublicStory`, {
     headers: {Authorization: ''},
+  });
+};
+
+export const getChatListApi = ({
+  token,
+  page,
+  limit,
+}: ChatListRequestParams): Promise<any> => {
+  const params = `list=true&page=${page}&limit=${limit}`;
+  // console.log('Show params: ', params);
+  return axios.get(`${REACT_APP_BASE_URL_DEV}/dev/message?${params}`, {
+    headers: {Authorization: `Bearer ${token}`},
+  });
+};
+
+export const getChatDetailsApi = ({
+  token,
+  receiver_id,
+  page,
+  limit,
+}: ChatDetailsRequestParams): Promise<any> => {
+  const params = `receiver_id=${receiver_id}&page=${page}&limit=${limit}`;
+  // console.log('Show params: ', params);
+  return axios.get(`${REACT_APP_BASE_URL_DEV}/dev/message?${params}`, {
+    headers: {Authorization: `Bearer ${token}`},
   });
 };

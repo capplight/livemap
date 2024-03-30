@@ -4,6 +4,7 @@ import {postUserDataApi} from '../../Services/apis';
 import {AddPostRequest} from './AddPostAction';
 import {AddPostActionTypes} from './AddPostConstants';
 import {showToast} from '@constants/constValues';
+import {navigate} from '../../Navigation/RootNavigationRef';
 
 export function* AddPostSaga({
   payload,
@@ -28,7 +29,10 @@ export function* AddPostSaga({
     });
     showToast('success', 'Success', 'Added post successfully');
   } catch (error: any) {
-    console.log(error?.message, 'error response in saga');
+    if (error?.response?.status === 403) {
+      navigate('Login', {});
+    }
+    console.log(error?.response, 'error response in saga');
     yield put({
       type: AddPostActionTypes.AddPostFailure,
       error,

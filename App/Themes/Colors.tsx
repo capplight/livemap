@@ -12,5 +12,6 @@ export const Colors = {
   darkGrey: '#1E1F1F',
   liteGrey: '#4F5052',
   checkedGreen: '#40D257',
+  senderChatColor: '#36253C',
   notificationBackgroundColor: '#C880D7',
 };

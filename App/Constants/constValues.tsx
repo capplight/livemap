@@ -18,6 +18,9 @@ export const profileImageLink =
   'https://image.shutterstock.com/image-photo/young-brazilian-man-isolated-on-260nw-2242569333.jpg';
 
 export const TOKEN_KEY = 'token';
+export const FCM_TOKEN = 'fcmToken';
+export const USER_ID = 'userId';
+export const CHAT_USER_KEY = 'chatUserKey';
 export const token_expire_message = 'Invalid or expired token';
 export const first_time = 'User First Time';
 export const err_image_uploading_msg =
@@ -112,7 +115,7 @@ export const showToast = (type: ToastType, header: string, message: string) => {
 export const storeData = async (tokenVal: string, tokenKey: string) => {
   try {
     await AsyncStorage.setItem(tokenKey, tokenVal);
-    console.log('Data stored successfully.');
+    // console.log('Data stored successfully.');
   } catch (error) {
     console.error('Error storing data:', error);
   }

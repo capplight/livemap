@@ -8,6 +8,7 @@ import {
   ScrollView,
   Dimensions,
   TouchableOpacity,
+  StatusBar,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {
@@ -35,6 +36,8 @@ import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
 import {useSelector} from 'react-redux';
 import {RootState} from '@redux/Reducers';
+import changeNavigationBarColor from 'react-native-navigation-bar-color';
+import {exportStyles} from '@components/ExportStyles';
 interface Register {
   navigation: StackNavigationProp<any>;
   route?: any;
@@ -116,8 +119,12 @@ export const Register: FC<Register> = ({navigation}: Register) => {
     );
   }
 
+  useEffect(() => {
+    changeNavigationBarColor('transparent');
+  }, []);
+
   return (
-    <SafeAreaView>
+    <SafeAreaView style={exportStyles.container}>
       <ScrollView>
         <View style={styles.container}>
           <Pressable
@@ -130,6 +137,11 @@ export const Register: FC<Register> = ({navigation}: Register) => {
           <Text style={styles.appNameText}>LiveMap</Text>
           <Text style={styles.text1}>
             Sign up so you can track live events more efficiently.
+          </Text>
+          {showMapView()}
+          <Text style={styles.noteText}>
+            Note: Please use long press to drag the marker on your desired
+            location or your current location will be set as default.
           </Text>
           <Formik
             initialValues={{
@@ -181,11 +193,6 @@ export const Register: FC<Register> = ({navigation}: Register) => {
                   placeHolder="Password"
                 />
                 {errors && ErrorText(errors?.password)}
-                {showMapView()}
-                <Text style={styles.noteText}>
-                  Note: Please use long press to drag the marker on your desired
-                  location or your current location will be set as default.
-                </Text>
                 <LoginButton
                   label="Sign up"
                   loading={fetching}
@@ -231,9 +238,8 @@ const styles = StyleSheet.create({
     backgroundColor: Colors.backgroundColor,
   },
   map: {
-    width: wp(100),
-    height: hp(32),
-    marginHorizontal: wp(2),
+    width: wp(98),
+    height: hp(30),
   },
   appNameText: {
     fontFamily: Fonts.righteousRegular,
@@ -271,10 +277,11 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
   noteText: {
-    alignSelf: 'flex-start',
-    marginLeft: wp(1),
-    fontStyle: 'italic',
     padding: wp(1),
+    alignSelf: 'flex-start',
+    fontStyle: 'italic',
+    marginLeft: wp(1),
+    marginBottom: hp(2),
   },
   buttonContainerStyle: {
     height: hp(5),

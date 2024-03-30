@@ -1,6 +1,6 @@
 import {StackNavigationProp} from '@react-navigation/stack';
 import React, {FC, useEffect, useState} from 'react';
-import {Text, StyleSheet, View, Image} from 'react-native';
+import {Text, StyleSheet, View, Image, StatusBar} from 'react-native';
 import {CommonActions} from '@react-navigation/routers';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -74,6 +74,7 @@ export const SplashScreen: FC<SplashScreen> = ({navigation}: SplashScreen) => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <StatusBar backgroundColor={'black'} />
       <Image
         source={require('../Assets/icons/backgroundCover.png')}
         style={[

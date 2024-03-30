@@ -11,7 +11,9 @@
           "@redux": "./App/Redux",
           "@assets": "./App/Assets",
           "@themes": "./App/Themes",
-          "@services": "./App/Services"
+          "@services": "./App/Services",
+          "@utils": "./App/Utils",
+          "@navigation": "./App/Navigation"
         }
       }
     ]

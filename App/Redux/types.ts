@@ -17,7 +17,7 @@ export interface SignupFailureParams {
 }
 
 export interface AddPostRequestParams {
-  token: string,
+  token: string;
   story_media: string;
   description: string;
   metadata: MetaData;

@@ -12,6 +12,7 @@ import Icon10 from 'react-native-vector-icons/EvilIcons';
 import Icon11 from 'react-native-vector-icons/FontAwesome5';
 import Icon12 from 'react-native-vector-icons/SimpleLineIcons';
 import Icon13 from 'react-native-vector-icons/Fontisto';
+import Icon14 from 'react-native-vector-icons/FontAwesome6';
 import {Dimensions, Platform} from 'react-native';
 
 export const isIOS = Platform.OS === 'ios';
@@ -35,6 +36,15 @@ export const FontAwesomeIcon = ({
   size = 30,
 }: IconParams) => {
   return <Icon1 name={name} color={color} size={size} />;
+};
+
+//FontAwesome6
+export const FontAwesome6Icon = ({
+  name,
+  color = 'white',
+  size = 30,
+}: IconParams) => {
+  return <Icon14 name={name} color={color} size={size} />;
 };
 
 //AntDesign

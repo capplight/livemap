@@ -3,7 +3,7 @@ import {StrictEffect, call, put} from 'redux-saga/effects';
 import {signupApi} from '../../Services/apis';
 import {SignupRequest} from './SignupAction';
 import {SignupActionTypes} from './SignupConstants';
-import { showToast } from '@constants/constValues';
+import {showToast} from '@constants/constValues';
 
 export function* signupSaga({
   payload,

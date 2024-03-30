@@ -4,6 +4,7 @@ import {getUserDataApi} from '../../Services/apis';
 import {GetUserDataRequest} from './GetUserDataAction';
 import {GetUserDataActionTypes} from './GetUserDataConstants';
 import {showToast} from '@constants/constValues';
+import {navigate} from '../../Navigation/RootNavigationRef';
 
 export function* GetUserDataSaga({
   payload,
@@ -21,7 +22,10 @@ export function* GetUserDataSaga({
     });
     // showToast('success', 'Success', 'Signed up successfully');
   } catch (error: any) {
-    console.log(error?.message, 'error response in saga');
+    if (error?.response?.status === 403) {
+      navigate('Login', {});
+    }
+    console.log(error?.response, 'error response in saga');
     yield put({
       type: GetUserDataActionTypes.GetUserDataFailure,
       error,

@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "815842896087",
+    "project_id": "livemap-413709",
+    "storage_bucket": "livemap-413709.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:815842896087:android:23428a6871b8765bbf6892",
+        "android_client_info": {
+          "package_name": "com.liveMap"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBTj2oCqtgzWtYBbA6qrHvW1kNOXfdE8Ko"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
