@@ -11,7 +11,7 @@ import {useDispatch} from 'react-redux';
 import {ChatDetailsRequest} from '@redux/ChatDetails/ChatDetailsAction';
 import {useSelector} from 'react-redux';
 import {RootState} from '@redux/Reducers';
-import {CHAT_USER_KEY, USER_ID, profileImageLink} from '@constants/constValues';
+import {CHAT_USER_KEY, profileImageLink} from '@constants/constValues';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Colors} from '@themes/Colors';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -36,35 +36,28 @@ const ChatScreen: React.FC = ({route}: ChatProps) => {
   const token = route?.params?.token;
   const senderId = route?.params?.senderId;
   const lastMsg = route?.params?.lastMessage;
-  // const receiverId = route?.params?.receiverId;
   const senderName = route?.params?.senderName;
-  // const [lastMessage, setLastMessage] = useState('');
-  const [messages, setMessages] = useState<IMessage[]>([]);
-  const chatData = useSelector((state: RootState) => state?.chatDetails);
-  const lastMessage = useRef(lastMsg);
 
-  console.log('Show sender id: ', senderId);
+  const lastMessage = useRef(lastMsg);
+  const [messages, setMessages] = useState<IMessage[]>([]);
+  const chatDetails = useSelector(
+    (state: RootState) => state?.chatDetails?.data,
+  );
+  const chatData = chatDetails?.chatHistory;
+  const currentPage = chatDetails?.currentPage;
+  const totalPages = chatDetails?.totalPages;
 
   async function getSenderData() {
     const data = await AsyncStorage.getItem(CHAT_USER_KEY);
     const val = JSON.parse(`${data}`);
     const updatedMsg = val?.data?.message;
     const sender_id = val?.data?.sender_id;
-    // console.log('Show sender id: ', sender_id);
-    // console.log('Show ids: ', userId);
-    // console.log('Show rendering values: ', val);
 
     if (val !== null) {
-      // console.log('It is here.....1');
       if (updatedMsg !== '') {
-        // console.log('It is here.....2');
-        // console.log('Msg1: ', lastMessage.current);
         if (lastMessage.current === '' || lastMessage.current !== updatedMsg) {
-          // console.log('It is here.....3');
           lastMessage.current = val?.data?.message;
-          // console.log('Show ids: ', userId, sender_id);
           if (sender_id !== '' && userId !== sender_id) {
-            // console.log('It is here.....4');
             const newMessage = [
               {
                 _id: val?.messageId,
@@ -85,18 +78,6 @@ const ChatScreen: React.FC = ({route}: ChatProps) => {
     }
   }
 
-  // console.log('Show last message: ', lastMessage);
-  // console.log('Token: ', token);
-  // console.log('User Id: ', userId, senderId, receiver_id);
-  // console.log('Chat detail data: ', messages);
-  // console.log('Chat id: ', chatId);
-  // console.log('Chat length: ', chatData?.data?.length);
-
-  // const timerID = setInterval(function run() {
-  //   console.log('This will run only once after 1 second');
-  //   clearInterval(timerID);
-  // }, 5000);
-
   useEffect(() => {
     const intervalId = setInterval(() => {
       getSenderData();
@@ -114,14 +95,14 @@ const ChatScreen: React.FC = ({route}: ChatProps) => {
         token: token,
         receiver_id: senderId,
         page: 1,
-        limit: 50,
+        limit: 100,
       }),
     );
   }, []);
 
   useEffect(() => {
-    if (chatData?.data?.length > 0) {
-      const msgs = chatData?.data?.map((data: any) => ({
+    if (chatData?.length > 0) {
+      const msgs = chatData?.map((data: any) => ({
         _id: data?._id,
         text: data?.message,
         createdAt: new Date(data?.createdAt),
@@ -136,31 +117,7 @@ const ChatScreen: React.FC = ({route}: ChatProps) => {
     }
   }, []);
 
-  const fetchMessages = async () => {
-    try {
-      const response = await axios.get(
-        `${REACT_APP_BASE_URL_DEV}/dev/message?list=true&page=1&limit=10`,
-        {headers: {Authorization: `Bearer ${token}`}},
-      );
-      // console.log('Res: ', response?.data?.users);
-      const msgs = response?.data?.users.map((message: any) => ({
-        ...message,
-        text: message?.lastMessage?.message,
-        createdAt: new Date(message?.lastMessage?.createdAt),
-      }));
-      // const newArray = messages.map(message => ({ _id: message.id, createdAt: message.createdAt, text: message.body, user: { _id: //user_id, name: //username } }))
-      // const messages = response?.data?.users.map((message: IMessage) => ({
-      //   ...message,
-      //   createdAt: new Date(message.createdAt),
-      // }));
-      setMessages(msgs);
-    } catch (error) {
-      console.error('Error fetching messages:', error);
-    }
-  };
-
   const onSend = useCallback(async (newMessage: any) => {
-    // console.log('Show msg: ', newMessage);
     setMessages(previousMessages =>
       GiftedChat.append(previousMessages, newMessage),
     );
@@ -199,6 +156,21 @@ const ChatScreen: React.FC = ({route}: ChatProps) => {
         onSend={newMessages => onSend(newMessages)}
         user={{
           _id: userId,
+        }}
+        listViewProps={{
+          scrollEventThrottle: 400,
+          onScroll: ({nativeEvent}) => {
+            if (currentPage + 1 <= totalPages) {
+              dispatch(
+                ChatDetailsRequest({
+                  token: token,
+                  receiver_id: senderId,
+                  page: currentPage + 1,
+                  limit: 20,
+                }),
+              );
+            }
+          },
         }}
         textInputStyle={{color: 'white'}}
         // messagesContainerStyle={{height: hp(86)}}
@@ -243,7 +215,6 @@ const ChatScreen: React.FC = ({route}: ChatProps) => {
 };
 
 const styles = StyleSheet.create({
-  // chatInputBackground: {backgroundColor: Colors.backgroundDark, height: hp(20)},
   chatInputContainer: {},
   navigationBarStyles: {
     height: hp(6),

@@ -103,11 +103,17 @@ export const userStories = [
   },
 ];
 
-export const showToast = (type: ToastType, header: string, message: string) => {
+export const showToast = (
+  type: ToastType,
+  header: string,
+  message: string,
+  visibilityTime?: number,
+) => {
   Toast.show({
     type: type,
     text1: header,
     text2: message,
+    visibilityTime: visibilityTime ?? 3000,
   });
 };
 

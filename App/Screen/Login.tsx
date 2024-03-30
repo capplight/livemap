@@ -43,17 +43,14 @@ interface Login {
 
 export const Login: FC<Login> = ({navigation}: Login) => {
   const [isLoading, setLoader] = useState(false);
-  // const {setToken} = useToken();
   const [fcmToken, setFCMToken] = useState('');
-
-  console.log('Show fcm token: ', fcmToken);
 
   async function callUserSignInApi(value: any) {
     setLoader(true);
     try {
       const response = await axios.post(`${baseUrl}/dev/manageOauth`, value);
       showToast('success', 'Success', 'Successfully logged in');
-      // setToken(response?.data?.token);
+
       const token = response?.data?.token;
       const userId = response?.data?._id;
       storeData(token, TOKEN_KEY);
@@ -71,8 +68,6 @@ export const Login: FC<Login> = ({navigation}: Login) => {
   }
 
   const sendFCM = async (token: string) => {
-    console.log('Show token: ', token);
-    console.log('Show fcm token: ', fcmToken);
     const params = JSON.stringify({fcm_token: fcmToken});
     await axios
       .put(`${REACT_APP_BASE_URL_DEV}/dev/user`, params, {
@@ -169,12 +164,7 @@ export const Login: FC<Login> = ({navigation}: Login) => {
               <Text style={styles.bold}> Privacy Policy.</Text>
             </Text>
             {horizontalLine(wp(100))}
-            <View
-              style={{
-                flexDirection: 'row',
-                alignSelf: 'center',
-                marginVertical: hp(1),
-              }}>
+            <View style={styles.bottomTextView}>
               <Text
                 style={[
                   styles.bottomTextStyles,
@@ -186,17 +176,7 @@ export const Login: FC<Login> = ({navigation}: Login) => {
                 onPress={() => {
                   navigation.navigate('Register');
                 }}>
-                <Text
-                  style={[
-                    styles.text,
-                    {
-                      marginVertical: hp(0),
-                      fontSize: hp(2),
-                      fontWeight: 'bold',
-                    },
-                  ]}>
-                  Sign up
-                </Text>
+                <Text style={[styles.text2]}>Sign up</Text>
               </Pressable>
             </View>
           </View>
@@ -227,6 +207,13 @@ const styles = StyleSheet.create({
     marginVertical: hp(0.5),
     marginRight: wp(2),
   },
+  text2: {
+    color: Colors.textBlue,
+    textAlign: 'right',
+    fontSize: hp(2),
+    fontWeight: 'bold',
+    marginRight: wp(2),
+  },
   buttonContainerStyle: {
     height: hp(5),
     width: wp(90),
@@ -253,5 +240,10 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     marginLeft: wp(6),
     marginTop: hp(-1),
+  },
+  bottomTextView: {
+    flexDirection: 'row',
+    alignSelf: 'center',
+    marginVertical: hp(1),
   },
 });

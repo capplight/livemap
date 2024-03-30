@@ -7,7 +7,7 @@ export interface ChatDetailsStateType {
   errorMsg: string;
   isAuthorized: boolean;
   isError: boolean;
-  data?: ChatHistory[];
+  data?: any;
 }
 
 export const InitialState: ChatDetailsStateType = {
@@ -35,7 +35,7 @@ export default function ChatDetailsReducer(
         fetching: false,
         isError: false,
         isAuthorized: true,
-        data: action?.resPayload?.chatHistory,
+        data: action?.resPayload,
         errorMsg: '',
       };
 

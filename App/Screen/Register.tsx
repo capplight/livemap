@@ -1,15 +1,6 @@
 import {StackNavigationProp} from '@react-navigation/stack';
 import React, {FC, useEffect, useRef, useState} from 'react';
-import {
-  Text,
-  StyleSheet,
-  View,
-  Pressable,
-  ScrollView,
-  Dimensions,
-  TouchableOpacity,
-  StatusBar,
-} from 'react-native';
+import {Text, StyleSheet, View, Pressable, ScrollView} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {
   widthPercentageToDP as wp,
@@ -25,7 +16,6 @@ import {
   homeNavigation,
   horizontalLine,
   mapStyle,
-  showToast,
 } from '@constants/constValues';
 import {socialMediaButton} from '@components/Buttons/SocialMediaButton';
 import {Formik} from 'formik';
@@ -83,16 +73,6 @@ export const Register: FC<Register> = ({navigation}: Register) => {
     } catch (error) {}
   }
 
-  useEffect(() => {
-    getMyCurrentPosition();
-  }, [curtLat, curtLong, isAuthorized]);
-
-  useEffect(() => {
-    if (isAuthorized) {
-      homeNavigation({navigation});
-    }
-  }, [isAuthorized, navigation]);
-
   function showMapView() {
     return (
       <MapView
@@ -118,6 +98,16 @@ export const Register: FC<Register> = ({navigation}: Register) => {
       </MapView>
     );
   }
+
+  useEffect(() => {
+    getMyCurrentPosition();
+  }, [curtLat, curtLong, isAuthorized]);
+
+  useEffect(() => {
+    if (isAuthorized) {
+      homeNavigation({navigation});
+    }
+  }, [isAuthorized, navigation]);
 
   useEffect(() => {
     changeNavigationBarColor('transparent');

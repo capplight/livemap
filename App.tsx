@@ -6,44 +6,13 @@ import {NavigationContainer} from '@react-navigation/native';
 import {isReadyRef, navigationRef} from './App/Navigation/RootNavigationRef';
 import {store} from './App/Config/AppStore';
 import {AppNavigation} from './App/Navigation/AppNavigation';
-import {Alert, Platform, StatusBar} from 'react-native';
+import {StatusBar} from 'react-native';
 import {UserTokenProvider} from '@constants/userContext';
 import Toast from 'react-native-toast-message';
-import notifee, {EventType} from '@notifee/react-native';
 import messaging from '@react-native-firebase/messaging';
 import {CHAT_USER_KEY, FCM_TOKEN, storeData} from '@constants/constValues';
 
 const App: React.FC = () => {
-  // useEffect(() => {
-  //   const unsubscribe = messaging().onMessage(async remoteMessage => {
-  //     console.log('Received a notification', remoteMessage);
-  //     const notification = await notifee.createNotification({
-  //       title: remoteMessage.notification?.title,
-  //       body: remoteMessage.notification?.body,
-  //     });
-  //     await notifee.displayNotification(notification);
-  //   });
-
-  //   const onBackgroundNotificationOpened = async ({
-  //     detail: {notification},
-  //   }: EventType<'backgroundNotificationOpened'>) => {
-  //     console.log('Notification opened', notification);
-  //     // Handle notification opening when the app is in the background
-  //   };
-
-  //   if (Platform.OS === 'android') {
-  //     notifee.onBackgroundEvent(
-  //       'backgroundNotificationOpened',
-  //       onBackgroundNotificationOpened,
-  //     );
-  //   }
-
-  //   return () => {
-  //     unsubscribe();
-  //   };
-  // }, []);
-
-  // Register background handler
   messaging().setBackgroundMessageHandler(async remoteMessage => {
     console.log('Message handled in the background!', remoteMessage);
   });
@@ -57,10 +26,6 @@ const App: React.FC = () => {
       );
       // storeData(CHAT_USER_KEY, remoteMessage);
     });
-
-  // messaging().getInitialNotification(async remoteMessage => {
-  //   console.log('Message handled in the background!', remoteMessage);
-  // });
 
   const getDeviceToken = async () => {
     let msgToken = await messaging().getToken();

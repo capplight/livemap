@@ -44,9 +44,6 @@ export const ChatList = ({navigation, route}: ChatListProps) => {
   const [userId, setUserId] = useState('');
   const chatListData = useSelector((state: RootState) => state?.chatList);
 
-  // console.log('Show token: ', token);
-  // console.log('Show userId: ', userId);
-
   async function getUserId() {
     const val = await AsyncStorage.getItem(USER_ID);
     setUserId(val!);
@@ -122,7 +119,6 @@ export const ChatList = ({navigation, route}: ChatListProps) => {
       />
       <View style={styles.headerView}>
         <Text style={exportStyles.text5}>Messages</Text>
-        <Text style={exportStyles.text5}>{`My User Id: ${userId}`}</Text>
         <TouchableOpacity onPress={() => {}}>
           <Text style={[exportStyles.text5, {opacity: 0.8}]}>Requests</Text>
         </TouchableOpacity>

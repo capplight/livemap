@@ -8,7 +8,7 @@ import {
   FlatList,
   TouchableOpacity,
 } from 'react-native';
-import React, {useState, useEffect, FC, useRef} from 'react';
+import React, {FC} from 'react';
 import {Colors} from '@themes/Colors';
 import {
   widthPercentageToDP as wp,
@@ -16,20 +16,13 @@ import {
 } from 'react-native-responsive-screen';
 import {feedData} from '@constants/data';
 import {exportStyles} from '@components/ExportStyles';
-import {TouchableHighlight} from 'react-native-gesture-handler';
 import {
   AntDesignIcon,
   FeatherIcon,
   Ionicons,
   MaterialCommunityIcon,
 } from '@themes/Icons';
-import {
-  VerticalLine,
-  homeNavigation,
-  horizontalLine,
-} from '@constants/constValues';
-import {SVGRenderer} from '@components/SVGRenderer';
-import CrossIcon from '@assets/svg/crossLarge.svg';
+import {VerticalLine, horizontalLine} from '@constants/constValues';
 import {useSelector} from 'react-redux';
 import {RootState} from '@redux/Reducers';
 import {TopHeaderView} from '@components/TopHeaderView';

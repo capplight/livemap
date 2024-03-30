@@ -14,9 +14,11 @@ export function* ChatDetailsSaga({
     const response: AxiosResponse = yield call(() =>
       getChatDetailsApi({token, receiver_id, page, limit}),
     );
-    yield put({
-      type: ChatDetailsActionTypes.ChatDetailsReset,
-    });
+    if (page === 1) {
+      yield put({
+        type: ChatDetailsActionTypes.ChatDetailsReset,
+      });
+    }
     const resPayload = response?.data;
     yield put({
       type: ChatDetailsActionTypes.ChatDetailsSuccess,

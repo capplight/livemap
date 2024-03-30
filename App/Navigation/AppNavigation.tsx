@@ -8,16 +8,10 @@ import BottomTabNavigation from './BottomTabNavigation';
 import {SplashScreen} from '../Screen/SplashScreen';
 import {Login} from '../Screen/Login';
 import {Register} from '../Screen/Register';
-import {Chat} from '@screens/Chat/Chat';
 import ChatScreen from '@screens/Chat/ChatScreen';
 import {ChatList} from '@screens/Chat/ChatList';
-// import {TabAppSwitch} from '@components/TabSwitch/tabAppSwitch';
-// import {LoginScreen} from '../Screen/Auth/LoginScreen';
-// import {LogoutScreen} from '../Screen/Auth/Logout';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const Stack = createStackNavigator();
-// const Tab = createBottomTabNavigator();
 
 export const AppNavigation = () => {
   return (
@@ -28,9 +22,8 @@ export const AppNavigation = () => {
         navigationBarColor: Colors.backgroundColor,
         headerShown: false,
       })}>
-      <Stack.Screen name="Splash" component={SplashScreen} />
       <Stack.Screen name="tabs" component={BottomTabNavigation} />
-      {/* <Stack.Screen name="Chat" component={Chat} /> */}
+      <Stack.Screen name="Splash" component={SplashScreen} />
       <Stack.Screen name="ChatScreen" component={ChatScreen} />
       <Stack.Screen name="ChatList" component={ChatList} />
       <Stack.Screen
@@ -49,18 +42,6 @@ export const AppNavigation = () => {
           headerShown: false,
         }}
       />
-
-      {/* <Stack.Screen
-        name="Logout"
-        component={LogoutScreen}
-        options={{
-          title: 'Logout User',
-          // headerShown: false,
-          header: () => {
-            return <DefaultLayout />;
-          },
-        }}
-      /> */}
     </Stack.Navigator>
   );
 };

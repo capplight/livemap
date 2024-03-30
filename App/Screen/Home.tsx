@@ -19,13 +19,10 @@ import {
 import MapView, {Callout, Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import {
-  FCM_TOKEN,
   TOKEN_KEY,
   horizontalLine,
   mapStyle,
   modalStoryValues,
-  profileImageLink,
-  userStories,
 } from '@constants/constValues';
 import {SVGRenderer} from '@components/SVGRenderer';
 import MapLayer from '@assets/svg/mapLayers.svg';
@@ -44,7 +41,7 @@ import Fonts from '@themes/Fonts';
 import {CustomTextField} from '@components/TextField/CustomTextField';
 import InstaStory from 'react-native-insta-story';
 import {storyData} from '@constants/storyData';
-import {CircularImage, exportStyles} from '@components/ExportStyles';
+import {exportStyles} from '@components/ExportStyles';
 import Geolocation from 'react-native-geolocation-service';
 import {useDispatch} from 'react-redux';
 import {GetUserDataRequest} from '@redux/GetUserData/GetUserDataAction';
@@ -53,13 +50,11 @@ import {RootState} from '@redux/Reducers';
 import {UserData} from '@redux/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {NativeInstaStory} from '@components/StoryComponent/NativeInstaStory';
-import axios from 'axios';
 
 interface Home {
   navigation: StackNavigationProp<any>;
   route?: any;
 }
-
 interface nestedMapViewProps {
   icon: any;
   name: string;
@@ -99,9 +94,8 @@ const LayerMapNestedView = ({
 };
 
 export const Home: FC<Home> = ({navigation}: Home) => {
-  let newDataArray: Array<UserData> = [];
+  // let newDataArray: Array<UserData> = [];
   const [token, setToken] = useState('');
-  const [fcmToken, setFCMToken] = useState('');
   const refRBSheet = useRef();
   const mapRef = useRef(null);
   const dispatch = useDispatch();
@@ -129,28 +123,18 @@ export const Home: FC<Home> = ({navigation}: Home) => {
     longitudeDelta: 0.0421,
   });
 
-  useEffect(() => {
-    getToken();
-    requestMapsPermission();
-    dispatch(GetUserDataRequest({token: token}));
-    setTimeout(() => {
-      setImageTrack(false);
-    }, 5000);
-  }, []);
-
-  useEffect(() => {
-    getCurrentPosition();
-  }, [curtLat, curtLong, mapRef]);
-
-  useMemo(() => {
+  const newDataArray: Array<UserData> = useMemo(() => {
     const indexWithMetaData = findIndexWithMetaData(userData?.data);
+    let val: Array<UserData> = [];
     if (indexWithMetaData?.length > 0) {
       indexWithMetaData.map(indices => {
-        newDataArray.push(userData?.data[indices]);
+        val.push(userData?.data[indices]);
       });
     }
-  }, [newDataArray, userData?.data]);
+    return val;
+  }, [userData?.data]);
 
+  //Pushes only data containing MetaData i.e. 'Lat' & 'Long' attributes on array
   function findIndexWithMetaData(array: Array<object>): Array<number> {
     var indices = [];
     for (var i = 0; i < array?.length; i++) {
@@ -195,7 +179,7 @@ export const Home: FC<Home> = ({navigation}: Home) => {
               onPress={() => {
                 isExpandable
                   ? setExpandable(false)
-                  : refRBSheet.current.close();
+                  : refRBSheet?.current?.close();
               }}>
               <MaterialCommunityIcon name="close-circle" size={28} />
             </TouchableOpacity>
@@ -361,22 +345,28 @@ export const Home: FC<Home> = ({navigation}: Home) => {
           console.log(error.code, error.message);
         },
         {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
+        //Time to obtain current location, if it couldn't get until 15secs then this function will terminate
       );
     } catch (error) {}
   }
 
   async function getToken() {
     const val = await AsyncStorage.getItem(TOKEN_KEY);
-    // const val2 = await AsyncStorage.getItem(FCM_TOKEN);
     setToken(val!);
-    // setFCMToken(val2!);
-    // if (val2!?.length > 0 && val!?.length > 0) {
-    //   sendFCM();
-    // }
   }
 
-  // console.log('Token: ', token);
-  // console.log('FCM Token: ', fcmToken);
+  useEffect(() => {
+    getToken();
+    requestMapsPermission();
+    dispatch(GetUserDataRequest({token: token}));
+    setTimeout(() => {
+      setImageTrack(false);
+    }, 5000);
+  }, []);
+
+  useEffect(() => {
+    getCurrentPosition();
+  }, [curtLat, curtLong, mapRef]);
 
   return (
     <SafeAreaView style={styles.container}>
