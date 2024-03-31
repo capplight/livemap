@@ -70,7 +70,7 @@ export const ChatList = ({navigation, route}: ChatListProps) => {
             <CircularImage size={50} link={`${profileImageLink}`} />
             <View style={{marginLeft: wp(2)}}>
               <Text style={[exportStyles.text5]}>
-                {oppositeUser?.first_name}
+                {`${oppositeUser?.first_name} ${oppositeUser?.last_name}`}
               </Text>
               <View style={{flexDirection: 'row', alignItems: 'center'}}>
                 <View style={{paddingTop: wp(1), marginRight: wp(0.8)}}>

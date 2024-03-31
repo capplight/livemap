@@ -22,8 +22,8 @@ export const AppNavigation = () => {
         navigationBarColor: Colors.backgroundColor,
         headerShown: false,
       })}>
-      <Stack.Screen name="tabs" component={BottomTabNavigation} />
       <Stack.Screen name="Splash" component={SplashScreen} />
+      <Stack.Screen name="tabs" component={BottomTabNavigation} />
       <Stack.Screen name="ChatScreen" component={ChatScreen} />
       <Stack.Screen name="ChatList" component={ChatList} />
       <Stack.Screen

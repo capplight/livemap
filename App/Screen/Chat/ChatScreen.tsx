@@ -15,7 +15,7 @@ import {CHAT_USER_KEY, profileImageLink} from '@constants/constValues';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Colors} from '@themes/Colors';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {StatusBar, StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, View} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -89,7 +89,7 @@ const ChatScreen: React.FC = ({route}: ChatProps) => {
   }, []);
 
   useEffect(() => {
-    // changeNavigationBarColor(Colors.primaryColor);
+    changeNavigationBarColor('transparent');
     dispatch(
       ChatDetailsRequest({
         token: token,
@@ -115,7 +115,7 @@ const ChatScreen: React.FC = ({route}: ChatProps) => {
       }));
       setMessages(msgs);
     }
-  }, []);
+  }, [chatData]);
 
   const onSend = useCallback(async (newMessage: any) => {
     setMessages(previousMessages =>
@@ -136,7 +136,6 @@ const ChatScreen: React.FC = ({route}: ChatProps) => {
 
   return (
     <SafeAreaView style={exportStyles.container}>
-      <StatusBar backgroundColor={Colors.backgroundDark} />
       <View style={styles.navigationBarStyles}>
         <TouchableOpacity
           onPress={() => {
@@ -173,7 +172,7 @@ const ChatScreen: React.FC = ({route}: ChatProps) => {
           },
         }}
         textInputStyle={{color: 'white'}}
-        // messagesContainerStyle={{height: hp(86)}}
+        // messagesContainerStyle={{height: hp(88), bottom: hp(4)}}
         renderInputToolbar={props => {
           return (
             <InputToolbar
@@ -217,12 +216,13 @@ const ChatScreen: React.FC = ({route}: ChatProps) => {
 const styles = StyleSheet.create({
   chatInputContainer: {},
   navigationBarStyles: {
-    height: hp(6),
-    width: wp(100),
+    height: hp(10),
     backgroundColor: Colors.backgroundDark,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: wp(2),
+    paddingTop: hp(4),
+    top: hp(-4),
   },
   userBackgroundStyles: {
     marginLeft: wp(6),

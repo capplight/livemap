@@ -115,7 +115,7 @@ export const Register: FC<Register> = ({navigation}: Register) => {
 
   return (
     <SafeAreaView style={exportStyles.container}>
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.container}>
           <Pressable
             style={{alignSelf: 'flex-end', margin: wp(2), padding: hp(2)}}

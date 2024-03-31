@@ -31,7 +31,8 @@ export default function BottomTabNavigation() {
           marginTop: isIOS ? hp(-0.2) : hp(-0.7),
           marginBottom: hp(isIOS ? 0.1 : 0.2),
         },
-        tabBarStyle: {height: hp(8.5), backgroundColor: '#17041E'},
+        tabBarStyle: {backgroundColor: '#17041E'},
+        // tabBarStyle: {height: hp(8.5), backgroundColor: '#17041E'},
       }}>
       <Tab.Screen
         name="Home"
@@ -92,7 +93,7 @@ export default function BottomTabNavigation() {
         options={{
           tabBarLabel: '',
           tabBarIcon: ({color, size, focused}) => (
-            <View style={{top: hp(1), position: 'absolute'}}>
+            <View style={{top: hp(0.5), position: 'absolute'}}>
               <AntDesignIcon name="pluscircleo" color={color} size={wp(10)} />
             </View>
           ),

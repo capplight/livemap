@@ -50,6 +50,7 @@ import {RootState} from '@redux/Reducers';
 import {UserData} from '@redux/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {NativeInstaStory} from '@components/StoryComponent/NativeInstaStory';
+import changeNavigationBarColor from 'react-native-navigation-bar-color';
 
 interface Home {
   navigation: StackNavigationProp<any>;
@@ -356,6 +357,7 @@ export const Home: FC<Home> = ({navigation}: Home) => {
   }
 
   useEffect(() => {
+    // changeNavigationBarColor('transparent');
     getToken();
     requestMapsPermission();
     dispatch(GetUserDataRequest({token: token}));

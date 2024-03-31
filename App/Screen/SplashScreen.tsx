@@ -175,7 +175,7 @@ const styles = StyleSheet.create({
     width: wp(50),
     alignSelf: 'center',
     position: 'absolute',
-    bottom: hp(3),
+    bottom: hp(5),
   },
   notificationBackground: {
     height: hp(6),
