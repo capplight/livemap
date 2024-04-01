@@ -22,13 +22,15 @@ import Video from 'react-native-video';
 interface NativeInstaProps {
   openModal: boolean;
   setModalVisible: React.Dispatch<React.SetStateAction<boolean>>;
-  values: any;
+  content: any;
+  setContent: React.Dispatch<any>;
 }
 
 export const NativeInstaStory = ({
   openModal = false,
   setModalVisible,
-  values,
+  content,
+  setContent,
 }: NativeInstaProps) => {
   const [orientation, setOrientation] = useState<string>(Orientation.landscape);
   const [vidDuration, setVidDuration] = useState(10 * 1000);
@@ -36,11 +38,10 @@ export const NativeInstaStory = ({
   const [load, setLoad] = useState<boolean>(true);
   const [pressed, setPressed] = useState<boolean>(false);
   const [current, setCurrent] = useState(0);
-  const [content, setContent] = useState(values);
   const progress = useRef(new Animated.Value(0)).current;
 
   const startAnimation = () => {
-    if (content[current].type === 'video') {
+    if (content[current]?.type === 'video') {
       if (load) {
         Animated.timing(progress, {
           toValue: 1,
@@ -88,14 +89,15 @@ export const NativeInstaStory = ({
   };
   const close = () => {
     progress.setValue(0);
+    setCurrent(0);
     setModalVisible(false);
   };
 
-  // useEffect(() => {
-  //   if (openModal) {
-  //     setCurrent(0);
-  //   }
-  // }, [openModal]);
+  useEffect(() => {
+    if (openModal) {
+      setCurrent(0);
+    }
+  }, [openModal]);
 
   return (
     <Fragment>
@@ -139,9 +141,9 @@ export const NativeInstaStory = ({
             </View>
 
             <View style={styles.mediaViewStyles}>
-              {content[current].type === 'video' ? (
+              {content[current]?.type === 'video' ? (
                 <Video
-                  source={{uri: content[current].content}}
+                  source={{uri: content[current]?.content}}
                   resizeMode="cover"
                   paused={pressed}
                   // disableFocus={true}
@@ -167,7 +169,7 @@ export const NativeInstaStory = ({
                 />
               ) : (
                 <Image
-                  source={{uri: content[current].content}}
+                  source={{uri: content[current]?.content}}
                   style={[
                     styles.imageStyles,
                     {

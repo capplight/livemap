@@ -1,3 +1,4 @@
+import {UserData} from '@redux/types';
 import {GetUserActions} from './GetUserDataAction';
 import {GetUserDataActionTypes} from './GetUserDataConstants';
 
@@ -6,7 +7,7 @@ export interface GetUserDataStateType {
   errorMsg: string;
   isAuthorized: boolean;
   isError: boolean;
-  data?: any;
+  data?: UserData;
 }
 
 export const InitialState: GetUserDataStateType = {

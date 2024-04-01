@@ -32,17 +32,30 @@ export interface AddPostFailureParams {
   data?: any;
 }
 
+export interface MapData {
+  userId: UserData[];
+}
+
 export interface UserData {
   _id: string;
   story_media: string;
   description: string;
-  user_id: string;
   metadata: MetaData;
+  user_id: UserId;
   createdAt: string;
   updatedAt: string;
 }
 
+export interface UserId {
+  user_id: {
+    _id: string;
+    metaData: MetaData;
+    email: string;
+  };
+}
+
 export interface MetaData {
+  apple: number | string;
   latitude: any;
   latitudeDelta: any;
   longitude: any;
@@ -54,7 +67,7 @@ export interface GetUserDataRequestParams {
 }
 
 export interface GetUserDataSuccessParams {
-  data: [];
+  data: MapData;
 }
 
 export interface GetUserDataFailureParams {

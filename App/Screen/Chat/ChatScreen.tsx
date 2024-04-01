@@ -15,7 +15,7 @@ import {CHAT_USER_KEY, profileImageLink} from '@constants/constValues';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Colors} from '@themes/Colors';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {StyleSheet, Text, View} from 'react-native';
+import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -155,6 +155,15 @@ const ChatScreen: React.FC = ({route}: ChatProps) => {
         onSend={newMessages => onSend(newMessages)}
         user={{
           _id: userId,
+        }}
+        renderLoading={() => {
+          return (
+            <ActivityIndicator
+              size={'large'}
+              color={'white'}
+              style={{marginTop: hp(10)}}
+            />
+          );
         }}
         listViewProps={{
           scrollEventThrottle: 400,

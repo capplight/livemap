@@ -48,9 +48,12 @@ export const postUserDataApi = ({
 export const getUserDataApi = ({
   token,
 }: GetUserDataRequestParams): Promise<any> => {
-  return axios.get(`${REACT_APP_BASE_URL_DEV}/dev/managePublicStory`, {
-    headers: {Authorization: ''},
-  });
+  return axios.get(
+    `${REACT_APP_BASE_URL_DEV}/dev/managePublicStory?state=new`,
+    {
+      headers: {Authorization: ''},
+    },
+  );
 };
 
 export const getChatListApi = ({

@@ -16,7 +16,7 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import MapView, {Callout, Marker, PROVIDER_GOOGLE} from 'react-native-maps';
+import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import {
   TOKEN_KEY,
@@ -40,7 +40,6 @@ import {FeatherIcon, Ionicons, MaterialCommunityIcon} from '@themes/Icons';
 import Fonts from '@themes/Fonts';
 import {CustomTextField} from '@components/TextField/CustomTextField';
 import InstaStory from 'react-native-insta-story';
-import {storyData} from '@constants/storyData';
 import {exportStyles} from '@components/ExportStyles';
 import Geolocation from 'react-native-geolocation-service';
 import {useDispatch} from 'react-redux';
@@ -50,6 +49,7 @@ import {RootState} from '@redux/Reducers';
 import {UserData} from '@redux/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {NativeInstaStory} from '@components/StoryComponent/NativeInstaStory';
+import CurrentLocation from '@assets/svg/currentLocation.svg';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
 
 interface Home {
@@ -117,6 +117,7 @@ export const Home: FC<Home> = ({navigation}: Home) => {
   const [curtLat, setCurLat] = useState(0);
   const [curtLong, setCurLong] = useState(0);
   const [openModal, setModalVisible] = useState(false);
+  const [storyData, setStoryData] = useState(modalStoryValues);
   const [curLoc, setCurLoc] = useState({
     latitude: 30.7993,
     longitude: 76.9149,
@@ -124,27 +125,46 @@ export const Home: FC<Home> = ({navigation}: Home) => {
     longitudeDelta: 0.0421,
   });
 
-  const newDataArray: Array<UserData> = useMemo(() => {
-    const indexWithMetaData = findIndexWithMetaData(userData?.data);
-    let val: Array<UserData> = [];
-    if (indexWithMetaData?.length > 0) {
-      indexWithMetaData.map(indices => {
-        val.push(userData?.data[indices]);
-      });
-    }
-    return val;
-  }, [userData?.data]);
+  // const [jsonData, setJsonData] = useState(userData?.data);
+  let jsonData = userData?.data;
 
-  //Pushes only data containing MetaData i.e. 'Lat' & 'Long' attributes on array
-  function findIndexWithMetaData(array: Array<object>): Array<number> {
-    var indices = [];
-    for (var i = 0; i < array?.length; i++) {
-      if ('metadata' in array[i]) {
-        indices.push(i);
+  const newDataArray: Array<UserData> = useMemo(() => {
+    const userDataArray: any[] = [];
+    userDataArray.push(userData?.data);
+
+    if (jsonData !== undefined && userDataArray?.length > 0) {
+      for (const userId in jsonData) {
+        if (jsonData.hasOwnProperty(userId)) {
+          const userObjects = jsonData[userId];
+          // Filter out objects where metadata is undefined
+          const filteredObjects = userObjects.filter(
+            obj => obj.metadata !== undefined && obj.story_media !== undefined,
+          );
+          // Update the user's array with filtered objects
+          jsonData[userId] = filteredObjects;
+        }
       }
+
+      //To remove empty objects:
+      for (let key in jsonData) {
+        if (jsonData[key].length === 0) {
+          delete jsonData[key];
+        }
+      }
+
+      // Initialize an empty array to store the reformatted data
+      const reformattedData = [];
+      // Iterate over each key-value pair in the JSON object
+      for (const key in jsonData) {
+        // Extract metadata and story_media from the first index of the array
+        const {userId, metadata, story_media} = jsonData[key][0];
+        // Push the extracted data into the reformatted array
+        reformattedData.push({userId, metadata, story_media});
+      }
+
+      return reformattedData;
     }
-    return indices;
-  }
+  }, [userData?.data]);
 
   function topSearchView() {
     return (
@@ -370,13 +390,18 @@ export const Home: FC<Home> = ({navigation}: Home) => {
     getCurrentPosition();
   }, [curtLat, curtLong, mapRef]);
 
+  // console.log('Show story data: ', storyData);
+
   return (
     <SafeAreaView style={styles.container}>
-      <NativeInstaStory
-        openModal={openModal}
-        setModalVisible={setModalVisible}
-        values={modalStoryValues}
-      />
+      {storyData.length > 0 && (
+        <NativeInstaStory
+          openModal={openModal}
+          setModalVisible={setModalVisible}
+          content={storyData}
+          setContent={setStoryData}
+        />
+      )}
       <RBSheet
         ref={refRBSheet}
         closeOnDragDown={true}
@@ -407,46 +432,23 @@ export const Home: FC<Home> = ({navigation}: Home) => {
           provider={PROVIDER_GOOGLE}
           customMapStyle={mapStyle}
           initialRegion={curLoc}>
-          {/* <Marker
-            style={{height: hp(2), width: wp(2)}}
-            coordinate={{latitude: curtLat, longitude: curtLong}}
-            image={require('@assets/icons/myLocation.png')}
-          /> */}
           {newDataArray?.length > 0 &&
             newDataArray?.map((val, i: number) => {
+              // console.log('Show data: ', val);
               return (
-                // <Marker key={i} coordinate={val.coords} tracksViewChanges={false}>
-                //   <SVGRenderer style={{padding: wp(2)}}>
-                //     <CurrentLocation />
-                //   </SVGRenderer>
-                //   <Callout
-                //     tooltip
-                //     onPress={() => {
-                //       setModalVisible(true);
-                //       console.log('Clicked image of index: ', i);
-                //     }}
-                //     style={{
-                //       height: hp(14),
-                //       width: wp(16),
-                //     }}>
-                //     <Text
-                //       style={{
-                //         height: hp(100),
-                //         width: wp(100),
-                //       }}>
-                //       <Image
-                //         source={{uri: val.img}}
-                //         style={{
-                //           height: 80,
-                //           width: 80,
-                //           borderRadius: 8,
-                //         }}
-                //       />
-                //     </Text>
-                //   </Callout>
-                // </Marker>
                 <Marker
                   onPress={index => {
+                    setStoryData([]);
+                    const reformattedData: any[] = [];
+                    jsonData[val?.userId].forEach(obj => {
+                      reformattedData.push({
+                        content: obj.story_media,
+                        type: 'image',
+                        finish: 0,
+                      });
+                    });
+                    console.log('Show reformatted data: ', reformattedData);
+                    setStoryData(prevData => [...prevData, ...reformattedData]);
                     setModalVisible(true);
                   }}
                   key={i}
@@ -458,6 +460,10 @@ export const Home: FC<Home> = ({navigation}: Home) => {
                     }}
                     style={styles.markerImageStyles}
                   />
+                  <SVGRenderer
+                    style={{paddingLeft: wp(3.7), paddingTop: hp(0.5)}}>
+                    <CurrentLocation />
+                  </SVGRenderer>
                 </Marker>
               );
             })}
