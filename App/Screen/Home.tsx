@@ -51,6 +51,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {NativeInstaStory} from '@components/StoryComponent/NativeInstaStory';
 import CurrentLocation from '@assets/svg/currentLocation.svg';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
+import {Float} from 'react-native/Libraries/Types/CodegenTypes';
 
 interface Home {
   navigation: StackNavigationProp<any>;
@@ -62,6 +63,13 @@ interface nestedMapViewProps {
   isChecked: boolean;
   expand?: boolean;
   onPress: () => void;
+}
+
+interface GeoLocationCords {
+  latitude: Float;
+  longitude: Float;
+  latitudeDelta: Float;
+  longitudeDelta: Float;
 }
 
 const LayerMapNestedView = ({
@@ -95,7 +103,6 @@ const LayerMapNestedView = ({
 };
 
 export const Home: FC<Home> = ({navigation}: Home) => {
-  // let newDataArray: Array<UserData> = [];
   const [token, setToken] = useState('');
   const refRBSheet = useRef();
   const mapRef = useRef(null);
@@ -118,17 +125,11 @@ export const Home: FC<Home> = ({navigation}: Home) => {
   const [curtLong, setCurLong] = useState(0);
   const [openModal, setModalVisible] = useState(false);
   const [storyData, setStoryData] = useState(modalStoryValues);
-  const [curLoc, setCurLoc] = useState({
-    latitude: 30.7993,
-    longitude: 76.9149,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
-  });
+  const [curLoc, setCurLoc] = useState<GeoLocationCords>();
 
-  // const [jsonData, setJsonData] = useState(userData?.data);
   let jsonData = userData?.data;
 
-  const newDataArray: Array<UserData> = useMemo(() => {
+  const newDataArray: Array<any> = useMemo(() => {
     const userDataArray: any[] = [];
     userDataArray.push(userData?.data);
 
@@ -138,7 +139,8 @@ export const Home: FC<Home> = ({navigation}: Home) => {
           const userObjects = jsonData[userId];
           // Filter out objects where metadata is undefined
           const filteredObjects = userObjects.filter(
-            obj => obj.metadata !== undefined && obj.story_media !== undefined,
+            (obj: any) =>
+              obj.metadata !== undefined && obj.story_media !== undefined,
           );
           // Update the user's array with filtered objects
           jsonData[userId] = filteredObjects;
@@ -153,18 +155,41 @@ export const Home: FC<Home> = ({navigation}: Home) => {
       }
 
       // Initialize an empty array to store the reformatted data
-      const reformattedData = [];
+      const reformattedData: {
+        userId: string;
+        metadata: any;
+        story_media: any;
+      }[] = [];
       // Iterate over each key-value pair in the JSON object
       for (const key in jsonData) {
-        // Extract metadata and story_media from the first index of the array
-        const {userId, metadata, story_media} = jsonData[key][0];
-        // Push the extracted data into the reformatted array
-        reformattedData.push({userId, metadata, story_media});
+        if (jsonData?.hasOwnProperty(key)) {
+          let lastIndex = jsonData[key].length - 1;
+          let lastObject = jsonData[key][lastIndex];
+
+          if (lastIndex !== undefined && lastObject !== undefined) {
+            //Checks if the metadata and story_media field are inside the object or not
+            if (lastObject?.metadata && lastObject?.story_media) {
+              // Extract metadata and story_media from the last index of the array
+              const {userId, metadata, story_media} = lastObject;
+              // Add metadata and story_media to the reformatted data array
+              reformattedData.push({userId, metadata, story_media});
+            } else {
+              // Extract metadata and story_media from the second last index of the array if couldn't find those fields inside
+              lastObject = jsonData[key][lastIndex--];
+              // Extract metadata and story_media from the first index of the array
+              const {userId, metadata, story_media} = lastObject;
+              // Add metadata and story_media to the reformatted data array
+              reformattedData.push({userId, metadata, story_media});
+            }
+          }
+        }
       }
 
       return reformattedData;
+    } else {
+      return [];
     }
-  }, [userData?.data]);
+  }, [userData?.data, jsonData]);
 
   function topSearchView() {
     return (
@@ -383,8 +408,8 @@ export const Home: FC<Home> = ({navigation}: Home) => {
     dispatch(GetUserDataRequest({token: token}));
     setTimeout(() => {
       setImageTrack(false);
-    }, 5000);
-  }, []);
+    }, 8000);
+  }, [imageTrack]);
 
   useEffect(() => {
     getCurrentPosition();
@@ -422,52 +447,56 @@ export const Home: FC<Home> = ({navigation}: Home) => {
         {searchPressed ? searchBottomSheetView() : bottomSheetView()}
       </RBSheet>
       <View style={styles.mapContainer}>
-        <MapView
-          ref={mapRef}
-          style={styles.map}
-          loadingEnabled={newDataArray?.length > 0 ? true : false}
-          // showsUserLocation={true}
-          followsUserLocation={true}
-          // showsMyLocationButton={true}
-          provider={PROVIDER_GOOGLE}
-          customMapStyle={mapStyle}
-          initialRegion={curLoc}>
-          {newDataArray?.length > 0 &&
-            newDataArray?.map((val, i: number) => {
-              // console.log('Show data: ', val);
-              return (
-                <Marker
-                  onPress={index => {
-                    setStoryData([]);
-                    const reformattedData: any[] = [];
-                    jsonData[val?.userId].forEach(obj => {
-                      reformattedData.push({
-                        content: obj.story_media,
-                        type: 'image',
-                        finish: 0,
+        {curLoc !== undefined && curLoc?.latitude.toString().length > 0 && (
+          <MapView
+            ref={mapRef}
+            style={styles.map}
+            loadingEnabled={newDataArray?.length > 0 ? true : false}
+            // showsUserLocation={true}
+            followsUserLocation={true}
+            // showsMyLocationButton={true}
+            provider={PROVIDER_GOOGLE}
+            customMapStyle={mapStyle}
+            initialRegion={curLoc}>
+            {newDataArray?.length > 0 &&
+              newDataArray?.map((val, i: number) => {
+                // console.log('Show data: ', val);
+                return (
+                  <Marker
+                    onPress={index => {
+                      setStoryData([]);
+                      const reformattedData: any[] = [];
+                      jsonData[val?.userId].forEach(obj => {
+                        reformattedData.push({
+                          content: obj.story_media,
+                          type: 'image',
+                          finish: 0,
+                        });
                       });
-                    });
-                    console.log('Show reformatted data: ', reformattedData);
-                    setStoryData(prevData => [...prevData, ...reformattedData]);
-                    setModalVisible(true);
-                  }}
-                  key={i}
-                  coordinate={val?.metadata}
-                  tracksViewChanges={imageTrack}>
-                  <Image
-                    source={{
-                      uri: val?.story_media,
+                      setStoryData(prevData => [
+                        ...prevData,
+                        ...reformattedData,
+                      ]);
+                      setModalVisible(true);
                     }}
-                    style={styles.markerImageStyles}
-                  />
-                  <SVGRenderer
-                    style={{paddingLeft: wp(3.7), paddingTop: hp(0.5)}}>
-                    <CurrentLocation />
-                  </SVGRenderer>
-                </Marker>
-              );
-            })}
-        </MapView>
+                    key={i}
+                    coordinate={val?.metadata}
+                    tracksViewChanges={imageTrack}>
+                    <Image
+                      source={{
+                        uri: val?.story_media,
+                      }}
+                      style={styles.markerImageStyles}
+                    />
+                    <SVGRenderer
+                      style={{paddingLeft: wp(3.7), paddingTop: hp(0.5)}}>
+                      <CurrentLocation />
+                    </SVGRenderer>
+                  </Marker>
+                );
+              })}
+          </MapView>
+        )}
         <View style={styles.topViewStyles}>
           <SVGRenderer
             onPress={() => {
@@ -493,6 +522,7 @@ export const Home: FC<Home> = ({navigation}: Home) => {
         {newDataArray?.length > 0 && (
           <TouchableHighlight
             onPress={() => {
+              setImageTrack(true);
               dispatch(GetUserDataRequest({token: token}));
             }}
             style={[styles.gpsBackground, exportStyles.shadowProp]}>
@@ -524,6 +554,7 @@ const styles = StyleSheet.create({
     flex: 1,
     alignContent: 'center',
     justifyContent: 'center',
+    backgroundColor: '#242f3e',
   },
   mapContainer: {
     ...StyleSheet.absoluteFillObject,

@@ -58,6 +58,9 @@ export const AddPost: FC<AddPost> = ({navigation}: AddPost) => {
   const fetching: boolean = useSelector(
     (state: RootState) => state?.addPost?.fetching,
   );
+  const isAuthorized: boolean = useSelector(
+    (state: RootState) => state?.addPost?.isAuthorized,
+  );
   const maxLengthSize = 100;
   const refRBSheet = useRef();
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
@@ -101,11 +104,6 @@ export const AddPost: FC<AddPost> = ({navigation}: AddPost) => {
       );
     } catch (error) {}
   }
-
-  useEffect(() => {
-    getToken();
-    getCurrentPosition();
-  }, []);
 
   const loadImageBase64 = async capturedImageURI => {
     try {
@@ -155,7 +153,7 @@ export const AddPost: FC<AddPost> = ({navigation}: AddPost) => {
       })
       .then(response => {
         const imgUrl = response?.data?.location;
-        console.log('Show res: ', response?.data);
+        // console.log('Show res: ', response?.data);
         setUploadedImage(imgUrl);
       })
       .catch(function (error) {
@@ -172,8 +170,6 @@ export const AddPost: FC<AddPost> = ({navigation}: AddPost) => {
         }
       });
   };
-
-  // console.log('Show token: ', token);
 
   async function openCamera(openCamera: boolean) {
     try {
@@ -263,12 +259,24 @@ export const AddPost: FC<AddPost> = ({navigation}: AddPost) => {
     };
   }, []);
 
+  useEffect(() => {
+    getToken();
+    getCurrentPosition();
+  }, []);
+
+  useEffect(() => {
+    if (isAuthorized) {
+      setDescription('');
+      setProfileImage(null);
+    }
+  }, [isAuthorized]);
+
   return (
     <SafeAreaView style={styles.container}>
       {fetching && (
         <ActivityIndicator
           animating={fetching}
-          color={Colors.activeColor}
+          color={'white'}
           size="large"
           style={styles.activityIndicatorStyles}
         />
@@ -298,31 +306,26 @@ export const AddPost: FC<AddPost> = ({navigation}: AddPost) => {
           }}>
           <CrossIcon />
         </SVGRenderer>
-        <Text style={[exportStyles.text3]}>Post</Text>
+        <Text style={[exportStyles.text3, {fontSize: hp(2)}]}>Post</Text>
         <TouchableOpacity
           onPress={() => {
+            Keyboard.dismiss();
             const sendingData = {
               token: token,
               story_media: uploadedImage,
               description: description,
               metadata: curLoc,
-              // metadata: {
-              //   latitude: 30.316496,
-              //   longitude: 78.032188,
-              //   latitudeDelta: 0.0922,
-              //   longitudeDelta: 0.0421,
-              // },
             };
             if (description === '' || uploadedImage === '') {
               showToast('error', 'Required', 'Fields must not be empty');
             } else {
-              // console.log('Sending data: ', sendingData);
               !fetching && dispatch(AddPostRequest(sendingData));
             }
-            // console.log(sendingData);
           }}
           style={{marginRight: wp(4)}}>
-          <Text style={[exportStyles.text3]}>Publish</Text>
+          <Text style={[exportStyles.text3]}>{`${
+            fetching ? 'Publishing...' : 'Publish'
+          }`}</Text>
         </TouchableOpacity>
       </View>
       <View style={{alignItems: 'center'}}>
@@ -334,13 +337,6 @@ export const AddPost: FC<AddPost> = ({navigation}: AddPost) => {
             }}
           />
         )}
-        {/* {profileImage && (
-          <Image
-            source={{uri: profileImage}}
-            style={{height: hp(28), width: wp(150)}}
-            resizeMode="contain"
-          />
-        )} */}
         {profileImage === null && (
           <TouchableOpacity
             style={{alignItems: 'center', marginTop: hp(6)}}
@@ -414,8 +410,9 @@ export const AddPost: FC<AddPost> = ({navigation}: AddPost) => {
 
 const styles = StyleSheet.create({
   header: {
-    height: hp(8),
+    height: hp(10),
     width: wp(100),
+    paddingTop: hp(2.5),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
@@ -469,7 +466,7 @@ const styles = StyleSheet.create({
   activityIndicatorStyles: {
     left: 0,
     right: 0,
-    top: hp(5),
+    top: hp(32),
     bottom: 0,
     alignSelf: 'center',
     position: 'absolute',

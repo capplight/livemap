@@ -93,8 +93,8 @@ export default function BottomTabNavigation() {
         options={{
           tabBarLabel: '',
           tabBarIcon: ({color, size, focused}) => (
-            <View style={{top: hp(0.5), position: 'absolute'}}>
-              <AntDesignIcon name="pluscircleo" color={color} size={wp(10)} />
+            <View style={{top: hp(0.7), position: 'absolute'}}>
+              <AntDesignIcon name="pluscircleo" color={color} size={wp(9.5)} />
             </View>
           ),
         }}

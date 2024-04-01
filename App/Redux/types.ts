@@ -16,22 +16,6 @@ export interface SignupFailureParams {
   data?: any;
 }
 
-export interface AddPostRequestParams {
-  token: string;
-  story_media: string;
-  description: string;
-  metadata: MetaData;
-}
-
-export interface AddPostSuccessParams {
-  message?: string;
-}
-
-export interface AddPostFailureParams {
-  message?: string;
-  data?: any;
-}
-
 export interface MapData {
   userId: UserData[];
 }
@@ -53,9 +37,7 @@ export interface UserId {
     email: string;
   };
 }
-
 export interface MetaData {
-  apple: number | string;
   latitude: any;
   latitudeDelta: any;
   longitude: any;

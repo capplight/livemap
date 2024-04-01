@@ -1,5 +1,5 @@
-import {AddPostFailureParams, AddPostSuccessParams} from '@redux/types';
 import {AddPostActionTypes} from './AddPostConstants';
+import {AddPostFailureParams, AddPostSuccessParams} from './AddPostTypes';
 
 export interface AddPostRequestType {
   token: any;
