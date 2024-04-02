@@ -13,7 +13,11 @@ import {ChatList} from '@screens/Chat/ChatList';
 
 const Stack = createStackNavigator();
 
-export const AppNavigation = () => {
+interface AppNavigationProps {
+  handleChatScreenValue: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export const AppNavigation = ({handleChatScreenValue}: AppNavigationProps) => {
   return (
     <Stack.Navigator
       initialRouteName="splash"
@@ -24,8 +28,12 @@ export const AppNavigation = () => {
       })}>
       <Stack.Screen name="tabs" component={BottomTabNavigation} />
       <Stack.Screen name="Splash" component={SplashScreen} />
-      <Stack.Screen name="ChatScreen" component={ChatScreen} />
       <Stack.Screen name="ChatList" component={ChatList} />
+      <Stack.Screen name="ChatScreen">
+        {(props: any) => (
+          <ChatScreen {...props} isScreenFocused={handleChatScreenValue} />
+        )}
+      </Stack.Screen>
       <Stack.Screen
         name="Login"
         component={Login}

@@ -15,7 +15,13 @@ import {CHAT_USER_KEY, profileImageLink} from '@constants/constValues';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Colors} from '@themes/Colors';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {ActivityIndicator, StyleSheet, Text, View} from 'react-native';
+import {
+  ActivityIndicator,
+  BackHandler,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -25,12 +31,16 @@ import {EntypoIcon} from '@themes/Icons';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {goBack} from '../../Navigation/RootNavigationRef';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
+import {useIsFocused} from '@react-navigation/native';
 
 interface ChatProps {
   route?: any;
+  isScreenFocused: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const ChatScreen: React.FC = ({route}: ChatProps) => {
+const ChatScreen = ({route, isScreenFocused}: ChatProps) => {
+  const isFocused = useIsFocused();
+  // useScreenContext().setValue(true);
   const dispatch = useDispatch();
   const userId = route?.params?.userId;
   const token = route?.params?.token;
@@ -79,6 +89,7 @@ const ChatScreen: React.FC = ({route}: ChatProps) => {
   }
 
   useEffect(() => {
+    isScreenFocused(isFocused);
     const intervalId = setInterval(() => {
       getSenderData();
     }, 3000);
@@ -134,11 +145,31 @@ const ChatScreen: React.FC = ({route}: ChatProps) => {
     }
   }, []);
 
+  function handleBackButtonClick() {
+    isScreenFocused(false);
+    goBack();
+    return true;
+  }
+
+  const backHandle = () => {
+    BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
+    return () => {
+      BackHandler.removeEventListener(
+        'hardwareBackPress',
+        handleBackButtonClick,
+      );
+    };
+  };
+  useEffect(() => {
+    backHandle();
+  });
+
   return (
     <SafeAreaView style={exportStyles.container}>
       <View style={styles.navigationBarStyles}>
         <TouchableOpacity
           onPress={() => {
+            isScreenFocused(false);
             goBack();
           }}>
           <EntypoIcon name="chevron-left" size={32} />

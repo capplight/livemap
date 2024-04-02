@@ -1,4 +1,4 @@
-import React, {useEffect} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Provider} from 'react-redux';
 import {SafeAreaProvider} from 'react-native-safe-area-context';
 import 'react-native-gesture-handler';
@@ -10,9 +10,12 @@ import {StatusBar} from 'react-native';
 import {UserTokenProvider} from '@constants/userContext';
 import Toast from 'react-native-toast-message';
 import messaging from '@react-native-firebase/messaging';
+import notifee, {EventType} from '@notifee/react-native';
 import {CHAT_USER_KEY, FCM_TOKEN, storeData} from '@constants/constValues';
 
 const App: React.FC = () => {
+  const [isFocused, setFocused] = useState(false);
+
   messaging().setBackgroundMessageHandler(async remoteMessage => {
     console.log('Message handled in the background!', remoteMessage);
   });
@@ -37,15 +40,32 @@ const App: React.FC = () => {
     getDeviceToken();
   }, []);
 
+  async function notification(message: any) {
+    const channelId = await notifee.createChannel({
+      id: 'default',
+      name: 'Default Channel',
+    });
+
+    await notifee.requestPermission();
+    await notifee.displayNotification({
+      title: message?.notification?.title,
+      body: message?.notification?.body,
+      android: {
+        channelId,
+      },
+    });
+  }
+
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
-      console.log('Message in foreground: ', remoteMessage);
+      !isFocused && notification(remoteMessage);
+      console.log('Message in foreground: ', isFocused, remoteMessage);
       const newMessage = JSON.stringify(remoteMessage);
       storeData(newMessage, CHAT_USER_KEY);
     });
 
     return unsubscribe;
-  }, []);
+  }, [isFocused]);
 
   return (
     <UserTokenProvider>
@@ -57,7 +77,7 @@ const App: React.FC = () => {
             onReady={() => {
               isReadyRef.current = true;
             }}>
-            <AppNavigation />
+            <AppNavigation handleChatScreenValue={setFocused} />
             <Toast />
           </NavigationContainer>
         </SafeAreaProvider>
