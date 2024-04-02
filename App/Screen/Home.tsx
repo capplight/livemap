@@ -46,7 +46,6 @@ import {useDispatch} from 'react-redux';
 import {GetUserDataRequest} from '@redux/GetUserData/GetUserDataAction';
 import {useSelector} from 'react-redux';
 import {RootState} from '@redux/Reducers';
-import {UserData} from '@redux/types';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {NativeInstaStory} from '@components/StoryComponent/NativeInstaStory';
 import CurrentLocation from '@assets/svg/currentLocation.svg';
@@ -415,8 +414,6 @@ export const Home: FC<Home> = ({navigation}: Home) => {
     getCurrentPosition();
   }, [curtLat, curtLong, mapRef]);
 
-  // console.log('Show story data: ', storyData);
-
   return (
     <SafeAreaView style={styles.container}>
       {storyData.length > 0 && (
@@ -510,13 +507,19 @@ export const Home: FC<Home> = ({navigation}: Home) => {
             <SVGRenderer onPress={() => {}} style={{padding: wp(1)}}>
               <NotificationIcon />
             </SVGRenderer>
-            <SVGRenderer
-              onPress={() => {
-                navigation.navigate('ChatList', {token: token});
-              }}
-              style={{padding: wp(1), marginRight: wp(-4), marginLeft: wp(2)}}>
-              <MessageIcon />
-            </SVGRenderer>
+            {token?.length > 0 && (
+              <SVGRenderer
+                onPress={() => {
+                  navigation.navigate('ChatList', {token: token});
+                }}
+                style={{
+                  padding: wp(1),
+                  marginRight: wp(-4),
+                  marginLeft: wp(2),
+                }}>
+                <MessageIcon />
+              </SVGRenderer>
+            )}
           </View>
         </View>
         {newDataArray?.length > 0 && (
@@ -570,7 +573,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     position: 'absolute',
     padding: wp(2),
-    marginTop: wp(8),
+    marginTop: wp(10),
     marginHorizontal: wp(2),
     justifyContent: 'space-between',
     alignItems: 'center',
@@ -653,7 +656,7 @@ const styles = StyleSheet.create({
     width: circle,
     height: circle,
     borderRadius: circle / 2,
-    bottom: hp(10),
+    bottom: hp(8),
     right: wp(2),
     position: 'absolute',
     justifyContent: 'center',

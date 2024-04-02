@@ -59,7 +59,6 @@ export const ChatList = ({navigation, route}: ChatListProps) => {
             token: token,
             userId: userId,
             senderId: oppositeUser?.id,
-            // receiverId: _id?.receiver_id,
             senderName: oppositeUser?.first_name,
             lastMessage: lastMessage?.message,
           });

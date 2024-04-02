@@ -21,7 +21,6 @@ import {Colors} from '@themes/Colors';
 
 interface HeaderViewProps {
   navigation: StackNavigationProp<any>;
-  //   icon?: any;
   navigateBack?: boolean;
   title: string;
 }
@@ -29,12 +28,11 @@ interface HeaderViewProps {
 export const TopHeaderView = ({
   navigation,
   title = 'Posts',
-  //   icon = <CrossIcon />,
   navigateBack = true,
 }: HeaderViewProps) => {
   return (
     <View style={{backgroundColor: Colors.backgroundDark}}>
-      <View style={{height: hp(2.5)}} />
+      <View style={{height: hp(3)}} />
       <SafeAreaView style={styles.topViewStyles}>
         {!navigateBack ? (
           <SVGRenderer
@@ -74,7 +72,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: wp(2),
-    // paddingTop: hp(4),
+    paddingTop: hp(1),
     justifyContent: 'space-between',
     // backgroundColor: Colors.backgroundDark,
   },

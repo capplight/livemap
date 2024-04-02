@@ -111,8 +111,8 @@ export const Login: FC<Login> = ({navigation}: Login) => {
           </Pressable>
           <Text style={styles.appNameText}>LiveMap</Text>
           <Formik
-            // initialValues={{email: 'gaurab@apples.com', password: 'P@ssw00rd'}}
-            initialValues={{email: 'test@apple.com', password: 'Test123'}}
+            initialValues={{email: 'gaurab@apples.com', password: 'P@ssw00rd'}}
+            // initialValues={{email: 'test@apple.com', password: 'Test123'}}
             validationSchema={signInDataSchema}
             onSubmit={values => callUserSignInApi(values)}>
             {({handleChange, handleSubmit, values, errors}) => (

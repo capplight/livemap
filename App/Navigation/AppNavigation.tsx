@@ -26,8 +26,8 @@ export const AppNavigation = ({handleChatScreenValue}: AppNavigationProps) => {
         navigationBarColor: Colors.backgroundColor,
         headerShown: false,
       })}>
-      <Stack.Screen name="tabs" component={BottomTabNavigation} />
       <Stack.Screen name="Splash" component={SplashScreen} />
+      <Stack.Screen name="tabs" component={BottomTabNavigation} />
       <Stack.Screen name="ChatList" component={ChatList} />
       <Stack.Screen name="ChatScreen">
         {(props: any) => (

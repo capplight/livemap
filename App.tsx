@@ -27,7 +27,6 @@ const App: React.FC = () => {
         'Notification caused app to open from quit state:',
         remoteMessage,
       );
-      // storeData(CHAT_USER_KEY, remoteMessage);
     });
 
   const getDeviceToken = async () => {
@@ -59,7 +58,7 @@ const App: React.FC = () => {
   useEffect(() => {
     const unsubscribe = messaging().onMessage(async remoteMessage => {
       !isFocused && notification(remoteMessage);
-      console.log('Message in foreground: ', isFocused, remoteMessage);
+      // console.log('Message in foreground: ', isFocused, remoteMessage);
       const newMessage = JSON.stringify(remoteMessage);
       storeData(newMessage, CHAT_USER_KEY);
     });

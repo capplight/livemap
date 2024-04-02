@@ -18,6 +18,9 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {
   ActivityIndicator,
   BackHandler,
+  KeyboardAvoidingView,
+  Platform,
+  StatusBar,
   StyleSheet,
   Text,
   View,
@@ -31,7 +34,7 @@ import {EntypoIcon} from '@themes/Icons';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {goBack} from '../../Navigation/RootNavigationRef';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
-import {useIsFocused} from '@react-navigation/native';
+import {useIsFocused, useFocusEffect} from '@react-navigation/native';
 
 interface ChatProps {
   route?: any;
@@ -40,14 +43,12 @@ interface ChatProps {
 
 const ChatScreen = ({route, isScreenFocused}: ChatProps) => {
   const isFocused = useIsFocused();
-  // useScreenContext().setValue(true);
   const dispatch = useDispatch();
   const userId = route?.params?.userId;
   const token = route?.params?.token;
   const senderId = route?.params?.senderId;
   const lastMsg = route?.params?.lastMessage;
   const senderName = route?.params?.senderName;
-
   const lastMessage = useRef(lastMsg);
   const [messages, setMessages] = useState<IMessage[]>([]);
   const chatDetails = useSelector(
@@ -89,6 +90,7 @@ const ChatScreen = ({route, isScreenFocused}: ChatProps) => {
   }
 
   useEffect(() => {
+    // changeNavigationBarColor('transparent');
     isScreenFocused(isFocused);
     const intervalId = setInterval(() => {
       getSenderData();
@@ -165,21 +167,24 @@ const ChatScreen = ({route, isScreenFocused}: ChatProps) => {
   });
 
   return (
-    <SafeAreaView style={exportStyles.container}>
-      <View style={styles.navigationBarStyles}>
-        <TouchableOpacity
-          onPress={() => {
-            isScreenFocused(false);
-            goBack();
-          }}>
-          <EntypoIcon name="chevron-left" size={32} />
-        </TouchableOpacity>
-        <View style={styles.userBackgroundStyles}>
-          <CircularImage size={32} />
-          <Text style={[exportStyles.text3, {marginLeft: wp(2.5)}]}>
-            {senderName}
-          </Text>
-        </View>
+    <View style={exportStyles.container}>
+      <View style={{backgroundColor: Colors.backgroundDark}}>
+        <View style={{height: hp(1)}} />
+        <SafeAreaView style={styles.navigationBarStyles}>
+          <TouchableOpacity
+            onPress={() => {
+              isScreenFocused(false);
+              goBack();
+            }}>
+            <EntypoIcon name="chevron-left" size={32} />
+          </TouchableOpacity>
+          <View style={styles.userBackgroundStyles}>
+            <CircularImage size={32} />
+            <Text style={[exportStyles.text3, {marginLeft: wp(2.5)}]}>
+              {senderName}
+            </Text>
+          </View>
+        </SafeAreaView>
       </View>
       <GiftedChat
         messages={messages}
@@ -187,6 +192,8 @@ const ChatScreen = ({route, isScreenFocused}: ChatProps) => {
         user={{
           _id: userId,
         }}
+        isKeyboardInternallyHandled={false}
+        keyboardShouldPersistTaps="handled"
         renderLoading={() => {
           return (
             <ActivityIndicator
@@ -249,20 +256,18 @@ const ChatScreen = ({route, isScreenFocused}: ChatProps) => {
           );
         }}
       />
-    </SafeAreaView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-  chatInputContainer: {},
   navigationBarStyles: {
     height: hp(10),
     backgroundColor: Colors.backgroundDark,
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: wp(2),
-    paddingTop: hp(4),
-    top: hp(-4),
+    // paddingTop: hp(1.5),
   },
   userBackgroundStyles: {
     marginLeft: wp(6),
