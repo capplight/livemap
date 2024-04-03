@@ -35,6 +35,7 @@ import {requestNotificationPermission} from '@constants/Permission';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
 import {LoginButton} from '@components/Buttons/LoginButton';
 import {UserList} from '@redux/SuggestedUsersList/GetUserListTypes';
+import {GetUserDetailsRequest} from '@redux/GetUserDetails/GetUserDetailsAction';
 
 interface ChatListProps {
   navigation: StackNavigationProp<any>;
@@ -50,11 +51,17 @@ export const ChatList = ({navigation, route}: ChatListProps) => {
     (state: RootState) => state?.getUserList?.data,
   );
   let userList: UserList[] = [];
-  chatListData?.data.map(data => {
-    userList = apiData?.filter(
-      item => item._id !== userId && item._id !== data?.oppositeUser?.id,
-    );
-  });
+  if (chatListData !== undefined && chatListData?.data?.length > 0) {
+    chatListData?.data.map((data: any) => {
+      userList = apiData?.filter(
+        item => item?._id !== userId && item?._id !== data?.oppositeUser?.id,
+      );
+    });
+  } else {
+    userList = apiData?.filter(item => item?._id !== userId);
+  }
+
+  console.log('Show my id: ', userList?.length);
 
   async function getUserId() {
     const val = await AsyncStorage.getItem(USER_ID);
@@ -231,6 +238,7 @@ export const ChatList = ({navigation, route}: ChatListProps) => {
           }
         />
       )}
+      {chatListData?.data?.length < 1 && footer()}
     </SafeAreaView>
   );
 };

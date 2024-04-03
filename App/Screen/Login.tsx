@@ -48,7 +48,7 @@ interface Login {
 
 export const Login: FC<Login> = ({navigation}: Login) => {
   const dispatch = useDispatch();
-  const isFetching: boolean = useSelector(
+  const isAuthorized: boolean = useSelector(
     (state: RootState) => state?.getUserDetails?.isAuthorized,
   );
   const [isLoading, setLoader] = useState(false);
@@ -85,7 +85,7 @@ export const Login: FC<Login> = ({navigation}: Login) => {
       .then(response => {
         // console.log('Show response: ', response?.data?.message);
         dispatch(GetUserDetailsRequest({token: token, navigation: navigation}));
-        setLoader(false);
+        setLoader(isAuthorized);
       })
       .catch(error => {
         console.error('Error sending message:', error);

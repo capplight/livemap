@@ -7,6 +7,7 @@ import {
   ViewStyle,
   Pressable,
   KeyboardType,
+  KeyboardAvoidingView,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -42,7 +43,7 @@ export const CustomTextField = ({
 }: TextFieldProps) => {
   const [visibleText, setVisibility] = useState(true);
   return (
-    <SafeAreaView style={[styles.container, containerStyle]}>
+    <KeyboardAvoidingView style={[styles.container, containerStyle]}>
       {showIcon && icon}
       <TextInput
         value={value}
@@ -61,10 +62,14 @@ export const CustomTextField = ({
             setVisibility(!visibleText);
           }}
           style={styles.visibilityStyles}>
-          <FeatherIcon name="eye-off" color={'white'} size={wp(5)} />
+          <FeatherIcon
+            name={`${!visibleText ? 'eye' : 'eye-off'}`}
+            color={'white'}
+            size={wp(5)}
+          />
         </Pressable>
       )}
-    </SafeAreaView>
+    </KeyboardAvoidingView>
   );
 };
 
@@ -89,6 +94,6 @@ const styles = StyleSheet.create({
     alignItems: 'flex-end',
     position: 'absolute',
     right: wp(2),
-    padding: 2,
+    padding: wp(2),
   },
 });
