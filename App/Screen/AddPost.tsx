@@ -321,7 +321,7 @@ export const AddPost: FC<AddPost> = ({navigation}: AddPost) => {
               token: token,
               story_media: uploadedImage,
               description: description,
-              metadata: curLoc,
+              // metadata: curLoc,
             };
             if (uploadedImage === '') {
               showToast(

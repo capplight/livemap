@@ -41,9 +41,9 @@ export interface UserId {
 }
 export interface MetaData {
   latitude: any;
-  latitudeDelta: any;
   longitude: any;
-  longitudeDelta: any;
+  latitudeDelta: 0.0922;
+  longitudeDelta: 0.0421;
 }
 
 export interface GetUserDataRequestParams {

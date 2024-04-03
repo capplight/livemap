@@ -1,7 +1,6 @@
-import {StackNavigationProp} from '@react-navigation/stack';
 import {MetaData} from '@redux/types';
 
-export interface UserDetails {
+export interface UserList {
   _id: string;
   role: string;
   first_name: string;
@@ -15,16 +14,15 @@ export interface UserDetails {
   fcm_token: string;
 }
 
-export interface GetUserDetailsRequestParams {
+export interface GetUserListRequestParams {
   token: string;
-  navigation: StackNavigationProp<any>;
 }
 
-export interface GetUserDetailsSuccessParams {
-  data?: UserDetails[];
+export interface GetUserListSuccessParams {
+  data?: UserList[];
 }
 
-export interface GetUserDetailsFailureParams {
+export interface GetUserListFailureParams {
   message?: string;
   data?: any;
 }

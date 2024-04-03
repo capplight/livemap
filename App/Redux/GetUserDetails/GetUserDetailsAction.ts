@@ -26,9 +26,10 @@ export interface GetUserDetailsResetType {
 
 export const GetUserDetailsRequest = ({
   token,
+  navigation,
 }: GetUserDetailsRequestParams) => ({
   type: GetUserDetailsActionTypes.GetUserDetailsRequest,
-  payload: {token},
+  payload: {token, navigation},
 });
 
 export const GetUserDetailsSuccess = ({

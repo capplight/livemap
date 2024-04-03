@@ -3,7 +3,7 @@ import {StrictEffect, call, put, takeLatest} from 'redux-saga/effects';
 import {getUserDetailsApi} from '../../Services/apis';
 import {GetUserDetailsRequest} from './GetUserDetailsAction';
 import {GetUserDetailsActionTypes} from './GetUserDetailsConstants';
-import {showToast} from '@constants/constValues';
+import {homeNavigation, showToast} from '@constants/constValues';
 import {navigate} from '../../Navigation/RootNavigationRef';
 
 export function* GetUserDetailsSaga({
@@ -13,7 +13,7 @@ export function* GetUserDetailsSaga({
   void,
   any
 > {
-  const {token} = payload;
+  const {token, navigation} = payload;
   try {
     const response: AxiosResponse = yield call(() =>
       getUserDetailsApi({token}),
@@ -26,6 +26,7 @@ export function* GetUserDetailsSaga({
       type: GetUserDetailsActionTypes.GetUserDetailsSuccess,
       resPayload,
     });
+    homeNavigation({navigation});
     // showToast('success', 'Success', 'Signed up successfully');
   } catch (error: any) {
     if (error?.response?.status === 403) {

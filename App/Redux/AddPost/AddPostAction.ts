@@ -5,7 +5,7 @@ export interface AddPostRequestType {
   token: any;
   story_media: string;
   description: string;
-  metadata: any;
+  metadata?: any;
 }
 
 export interface AddPostSuccessType {

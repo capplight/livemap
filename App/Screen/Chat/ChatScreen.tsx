@@ -18,9 +18,6 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {
   ActivityIndicator,
   BackHandler,
-  KeyboardAvoidingView,
-  Platform,
-  StatusBar,
   StyleSheet,
   Text,
   View,
@@ -34,7 +31,7 @@ import {EntypoIcon} from '@themes/Icons';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {goBack} from '../../Navigation/RootNavigationRef';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
-import {useIsFocused, useFocusEffect} from '@react-navigation/native';
+import {useIsFocused} from '@react-navigation/native';
 
 interface ChatProps {
   route?: any;
@@ -152,7 +149,6 @@ const ChatScreen = ({route, isScreenFocused}: ChatProps) => {
     goBack();
     return true;
   }
-
   const backHandle = () => {
     BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
     return () => {

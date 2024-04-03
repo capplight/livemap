@@ -40,6 +40,7 @@ import {useDispatch} from 'react-redux';
 import {GetUserDetailsRequest} from '@redux/GetUserDetails/GetUserDetailsAction';
 import {useSelector} from 'react-redux';
 import {RootState} from '@redux/Reducers';
+import {goBack} from '@navigation/RootNavigationRef';
 interface Login {
   navigation: StackNavigationProp<any>;
   route?: any;
@@ -83,9 +84,8 @@ export const Login: FC<Login> = ({navigation}: Login) => {
       })
       .then(response => {
         // console.log('Show response: ', response?.data?.message);
-        dispatch(GetUserDetailsRequest({token: token}));
-        !isFetching && homeNavigation({navigation});
-        setLoader(isFetching);
+        dispatch(GetUserDetailsRequest({token: token, navigation: navigation}));
+        setLoader(false);
       })
       .catch(error => {
         console.error('Error sending message:', error);
@@ -116,14 +116,21 @@ export const Login: FC<Login> = ({navigation}: Login) => {
         <View style={styles.container}>
           <Pressable
             onPress={() => {
-              navigation.navigate('Splash');
+              goBack();
             }}
             style={{alignSelf: 'flex-end', margin: wp(2), padding: hp(1)}}>
             <Ionicons name="close" color={'white'} size={wp(8)} />
           </Pressable>
           <Text style={styles.appNameText}>LiveMap</Text>
           <Formik
-            initialValues={{email: 'gaurab@apples.com', password: 'P@ssw00rd'}}
+            initialValues={{
+              email: 'ayushmng.21@gmail.com',
+              password: 'Ayush21',
+            }}
+            // initialValues={{
+            //   email: 'nauryzbek.ali@gmail.com',
+            //   password: 'Nauryzbek123',
+            // }}
             // initialValues={{email: 'test@apple.com', password: 'Test123'}}
             validationSchema={signInDataSchema}
             onSubmit={values => callUserSignInApi(values)}>

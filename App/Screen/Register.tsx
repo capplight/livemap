@@ -94,6 +94,7 @@ export const Register: FC<Register> = ({navigation}: Register) => {
           onDragEnd={e => {
             setCurLoc(e.nativeEvent.coordinate);
           }}
+          style={{padding: wp(1)}}
         />
       </MapView>
     );
@@ -105,7 +106,7 @@ export const Register: FC<Register> = ({navigation}: Register) => {
 
   useEffect(() => {
     if (isAuthorized) {
-      homeNavigation({navigation});
+      navigation.navigate('Login');
     }
   }, [isAuthorized, navigation]);
 
@@ -229,7 +230,7 @@ const styles = StyleSheet.create({
   },
   map: {
     width: wp(98),
-    height: hp(30),
+    height: hp(36),
   },
   appNameText: {
     fontFamily: Fonts.righteousRegular,

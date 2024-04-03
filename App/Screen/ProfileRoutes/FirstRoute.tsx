@@ -56,13 +56,7 @@ export const FirstRoute = ({isLoading = true, data = []}: FirstRouteProps) => {
                     size={18}
                     color={Colors.lightWhite}
                   />
-                  <Text
-                    style={[
-                      exportStyles.text1,
-                      {fontWeight: 'normal', marginLeft: wp(1)},
-                    ]}>
-                    2M
-                  </Text>
+                  <Text style={routeStyles.text}>2M</Text>
                 </View>
               ) : null}
             </View>
@@ -90,5 +84,10 @@ export const routeStyles = StyleSheet.create({
     flexGrow: 1,
     flexDirection: 'row',
     justifyContent: 'flex-start',
+  },
+  text: {
+    fontSize: hp(1.5),
+    marginLeft: wp(1),
+    color: Colors.lightWhite,
   },
 });

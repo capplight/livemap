@@ -52,6 +52,10 @@ import CurrentLocation from '@assets/svg/currentLocation.svg';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
 import {Float} from 'react-native/Libraries/Types/CodegenTypes';
 import {dummyStoryData} from '@constants/storyData';
+import {UserDetails} from '@redux/GetUserDetails/GetUserDetailsTypes';
+import {MetaData} from '@redux/types';
+import {GetUserListRequest} from '@redux/SuggestedUsersList/GetUserListAction';
+import {UserList} from '@redux/SuggestedUsersList/GetUserListTypes';
 
 interface Home {
   navigation: StackNavigationProp<any>;
@@ -62,13 +66,6 @@ interface nestedMapViewProps {
   isChecked: boolean;
   expand?: boolean;
   onPress: () => void;
-}
-
-interface GeoLocationCords {
-  latitude: Float;
-  longitude: Float;
-  latitudeDelta: Float;
-  longitudeDelta: Float;
 }
 
 const LayerMapNestedView = ({
@@ -107,6 +104,13 @@ export const Home: FC<Home> = ({navigation}: Home) => {
   const mapRef = useRef(null);
   const dispatch = useDispatch();
   const userData = useSelector((state: RootState) => state?.getUserData);
+  const userDetails: UserDetails[] = useSelector(
+    (state: RootState) => state?.getUserDetails?.data,
+  );
+  const userList: UserList[] = useSelector(
+    (state: RootState) => state?.getUserList?.data,
+  );
+
   const [imageTrack, setImageTrack] = useState(true);
   const [allMap, setAllMap] = useState(true);
   const [open, setOpen] = useState(true);
@@ -124,7 +128,7 @@ export const Home: FC<Home> = ({navigation}: Home) => {
   const [curtLong, setCurLong] = useState(0);
   const [openModal, setModalVisible] = useState(false);
   const [storyData, setStoryData] = useState(modalStoryValues);
-  const [curLoc, setCurLoc] = useState<GeoLocationCords>();
+  const [curLoc, setCurLoc] = useState<MetaData>();
 
   let jsonData = userData?.data;
 
@@ -379,12 +383,19 @@ export const Home: FC<Home> = ({navigation}: Home) => {
         position => {
           setCurLat(position.coords.latitude);
           setCurLong(position.coords.longitude);
-          setCurLoc({
-            latitude: position.coords.latitude,
-            longitude: position.coords.longitude,
-            latitudeDelta: 0.0922,
-            longitudeDelta: 0.0421,
-          });
+          userDetails?.length > 0
+            ? setCurLoc({
+                latitude: userDetails[0]?.metaData?.latitude,
+                longitude: userDetails[0]?.metaData?.longitude,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+              })
+            : setCurLoc({
+                latitude: position.coords.latitude,
+                longitude: position.coords.longitude,
+                latitudeDelta: 0.0922,
+                longitudeDelta: 0.0421,
+              });
         },
         error => {
           console.log(error.code, error.message);
@@ -401,10 +412,17 @@ export const Home: FC<Home> = ({navigation}: Home) => {
   }
 
   useEffect(() => {
-    // changeNavigationBarColor('transparent');
     getToken();
     requestMapsPermission();
     dispatch(GetUserDataRequest({token: token}));
+    dispatch(GetUserListRequest({token: token}));
+    changeNavigationBarColor('transparent');
+    return () => {
+      changeNavigationBarColor('transparent');
+    };
+  }, [token]);
+
+  useEffect(() => {
     setTimeout(() => {
       setImageTrack(false);
     }, 8000);
@@ -507,7 +525,7 @@ export const Home: FC<Home> = ({navigation}: Home) => {
             <SVGRenderer onPress={() => {}} style={{padding: wp(1)}}>
               <NotificationIcon />
             </SVGRenderer>
-            {token?.length > 0 && (
+            {token?.length > 0 && userList?.length > 0 && (
               <SVGRenderer
                 onPress={() => {
                   navigation.navigate('ChatList', {token: token});

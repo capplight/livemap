@@ -33,6 +33,8 @@ import {FontAwesome6Icon} from '@themes/Icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {requestNotificationPermission} from '@constants/Permission';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
+import {LoginButton} from '@components/Buttons/LoginButton';
+import {UserList} from '@redux/SuggestedUsersList/GetUserListTypes';
 
 interface ChatListProps {
   navigation: StackNavigationProp<any>;
@@ -44,6 +46,15 @@ export const ChatList = ({navigation, route}: ChatListProps) => {
   const dispatch = useDispatch();
   const [userId, setUserId] = useState('');
   const chatListData = useSelector((state: RootState) => state?.chatList);
+  const apiData: UserList[] = useSelector(
+    (state: RootState) => state?.getUserList?.data,
+  );
+  let userList: UserList[] = [];
+  chatListData?.data.map(data => {
+    userList = apiData?.filter(
+      item => item._id !== userId && item._id !== data?.oppositeUser?.id,
+    );
+  });
 
   async function getUserId() {
     const val = await AsyncStorage.getItem(USER_ID);
@@ -95,6 +106,60 @@ export const ChatList = ({navigation, route}: ChatListProps) => {
     );
   };
 
+  const footer = () => {
+    return (
+      <View style={styles.footerViewStyles}>
+        {userList?.length > 0 && (
+          <Text style={[exportStyles.text3, {marginBottom: hp(2)}]}>
+            Suggestions for you
+          </Text>
+        )}
+        <FlatList
+          data={userList}
+          renderItem={data => {
+            const usersListData = data?.item;
+            return (
+              <View
+                style={[
+                  styles.renderViewStyles,
+                  {marginHorizontal: wp(0), marginVertical: hp(0.5)},
+                ]}>
+                <View style={styles.childViewStyles}>
+                  <CircularImage size={50} link={`${profileImageLink}`} />
+                  <View style={{marginLeft: wp(2)}}>
+                    <Text style={[exportStyles.text5]}>
+                      {`${usersListData?.first_name} ${usersListData?.last_name}`}
+                    </Text>
+                    <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                      <Text
+                        style={[styles.messageText, {fontWeight: 'normal'}]}>
+                        Followed by... +2 more
+                      </Text>
+                    </View>
+                  </View>
+                </View>
+                <LoginButton
+                  label="Message"
+                  buttonContainerStyle={styles.buttonStyles}
+                  textStyles={styles.buttonTextStyles}
+                  onPress={() => {
+                    navigation.navigate('ChatScreen', {
+                      token: token,
+                      userId: userId,
+                      senderId: usersListData?._id,
+                      senderName: usersListData?.first_name,
+                      lastMessage: '',
+                    });
+                  }}
+                />
+              </View>
+            );
+          }}
+        />
+      </View>
+    );
+  };
+
   useEffect(() => {
     changeNavigationBarColor('transparent');
     Platform.OS === 'android'
@@ -113,6 +178,20 @@ export const ChatList = ({navigation, route}: ChatListProps) => {
     };
   }, []);
 
+  useEffect(() => {
+    const unsubscribe = navigation.addListener('focus', () => {
+      dispatch(
+        ChatListRequest({
+          token: token,
+          page: 1,
+          limit: 10,
+        }),
+      );
+    });
+
+    return unsubscribe;
+  }, [navigation]);
+
   return (
     <SafeAreaView style={exportStyles.container}>
       <StatusBar backgroundColor={Colors.backgroundDark} />
@@ -121,26 +200,37 @@ export const ChatList = ({navigation, route}: ChatListProps) => {
         navigateBack={true}
         title="Inbox"
       />
-      <View style={styles.headerView}>
-        <Text style={exportStyles.text5}>Messages</Text>
-        <TouchableOpacity onPress={() => {}}>
-          <Text style={[exportStyles.text5, {opacity: 0.8}]}>Requests</Text>
-        </TouchableOpacity>
-      </View>
-      <View style={[styles.horizontalViewStyles]}>
-        {chatListData?.data?.length > 0 && horizontalLine(wp(85))}
-      </View>
-      <FlatList
-        renderItem={renderItem}
-        data={chatListData?.data}
-        ListEmptyComponent={
-          <ActivityIndicator
-            color={'white'}
-            size={'large'}
-            style={{marginTop: hp(24)}}
-          />
-        }
-      />
+      {chatListData?.data?.length > 0 && (
+        <View style={styles.headerView}>
+          <Text style={exportStyles.text5}>Messages</Text>
+          <TouchableOpacity onPress={() => {}}>
+            <Text style={[exportStyles.text5, {opacity: 0.8}]}>Requests</Text>
+          </TouchableOpacity>
+        </View>
+      )}
+      {chatListData?.data?.length > 0 && (
+        <View style={[styles.horizontalViewStyles]}>
+          {chatListData?.data?.length > 0 && horizontalLine(wp(85))}
+        </View>
+      )}
+      {chatListData?.data?.length > 0 && (
+        <FlatList
+          renderItem={renderItem}
+          data={chatListData?.data}
+          ListFooterComponent={footer}
+          ListEmptyComponent={
+            chatListData?.fetching ? (
+              <ActivityIndicator
+                color={'white'}
+                size={'large'}
+                style={{marginTop: hp(8)}}
+              />
+            ) : (
+              <View />
+            )
+          }
+        />
+      )}
     </SafeAreaView>
   );
 };
@@ -159,7 +249,11 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
     marginHorizontal: wp(2),
   },
-  childViewStyles: {flexDirection: 'row', marginBottom: hp(0.5)},
+  childViewStyles: {
+    flexDirection: 'row',
+    marginBottom: hp(0.5),
+    alignItems: 'center',
+  },
   horizontalViewStyles: {alignSelf: 'flex-end', marginBottom: hp(0.5)},
   horizontalView2Styles: {alignSelf: 'flex-end', marginTop: hp(0.5)},
   messageText: {
@@ -168,5 +262,24 @@ const styles = StyleSheet.create({
     fontSize: hp(1.4),
     fontWeight: 'bold',
     marginTop: hp(0.5),
+  },
+  footerViewStyles: {
+    marginTop: hp(2),
+    marginLeft: wp(2.5),
+  },
+  buttonStyles: {
+    height: hp(3.8),
+    width: wp(25),
+    borderRadius: 6,
+    marginTop: hp(1),
+    marginRight: wp(2),
+    backgroundColor: Colors.activeColor,
+  },
+  buttonTextStyles: {
+    fontSize: hp(1.6),
+    color: 'white',
+    opacity: 1,
+    paddingRight: wp(2),
+    alignSelf: 'center',
   },
 });

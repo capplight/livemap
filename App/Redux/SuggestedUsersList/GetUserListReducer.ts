@@ -1,34 +1,34 @@
-import {ChatDetailsActions} from './ChatDetailsAction';
-import {ChatDetailsActionTypes} from './ChatDetailsConstants';
-import {ChatHistory} from './ChatDetailsTypes';
+import {GetUserActions} from './GetUserListAction';
+import {GetUserListActionTypes} from './GetUserListConstants';
+import {UserList} from './GetUserListTypes';
 
-export interface ChatDetailsStateType {
+export interface GetUserListStateType {
   fetching: boolean;
   errorMsg: string;
   isAuthorized: boolean;
   isError: boolean;
-  data?: any;
+  data?: UserList[];
 }
 
-export const InitialState: ChatDetailsStateType = {
+export const InitialState: GetUserListStateType = {
   fetching: false,
   errorMsg: '',
   isAuthorized: false,
   isError: false,
 };
 
-export default function ChatDetailsReducer(
+export default function GetUserListReducer(
   state = InitialState,
-  action: ChatDetailsActions,
-): ChatDetailsStateType {
+  action: GetUserActions,
+): GetUserListStateType {
   switch (action.type) {
-    case ChatDetailsActionTypes.ChatDetailsRequest:
+    case GetUserListActionTypes.GetUserListRequest:
       return {
         ...state,
         fetching: true,
       };
 
-    case ChatDetailsActionTypes.ChatDetailsSuccess:
+    case GetUserListActionTypes.GetUserListSuccess:
       return {
         ...state,
         fetching: false,
@@ -38,8 +38,7 @@ export default function ChatDetailsReducer(
         errorMsg: '',
       };
 
-    case ChatDetailsActionTypes.ChatDetailsFailure:
-      console.log('Error getting user details');
+    case GetUserListActionTypes.GetUserListFailure:
       return {
         ...state,
         fetching: false,
@@ -48,7 +47,7 @@ export default function ChatDetailsReducer(
         isAuthorized: false,
       };
 
-    case ChatDetailsActionTypes.ChatDetailsReset:
+    case GetUserListActionTypes.GetUserListReset:
       return {
         ...state,
         isError: false,

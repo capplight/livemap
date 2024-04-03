@@ -9,7 +9,7 @@ import {
   Dimensions,
   ScrollView,
 } from 'react-native';
-import React, {useState, useEffect, FC, useRef} from 'react';
+import React, {useState, useEffect, FC} from 'react';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -34,6 +34,9 @@ import {dummyStoryData} from '@constants/storyData';
 import {TabView, TabBar} from 'react-native-tab-view';
 import {feedData} from '@constants/data';
 import {FirstRoute} from './ProfileRoutes/FirstRoute';
+import {useSelector} from 'react-redux';
+import {RootState} from '@redux/Reducers';
+import {UserDetails} from '@redux/GetUserDetails/GetUserDetailsTypes';
 
 interface Profile {
   navigation: StackNavigationProp<any>;
@@ -43,6 +46,10 @@ interface Profile {
 export const Profile: FC<Profile> = ({navigation}: Profile) => {
   const iconSize = 18;
   const [index, setIndex] = React.useState(0);
+  const [isDataAvailable, setDataAvailability] = useState(false);
+  const userDetails: UserDetails[] = useSelector(
+    (state: RootState) => state?.getUserDetails?.data,
+  );
   const [routes] = React.useState([
     {key: 'first', title: 'Reels'},
     {key: 'second', title: 'Feed'},
@@ -52,14 +59,14 @@ export const Profile: FC<Profile> = ({navigation}: Profile) => {
   ]);
 
   //Aligns data in GridView: It will add a new object in the arrayList to format the data structure in the UI
-  const itemCount = feedData.length % 4;
+  const itemCount = feedData?.length % 4;
 
   const [firstRouteData, setFirstRouteData] = useState(
     itemCount > 0
       ? [
           ...feedData,
           ...[...new Array(itemCount).keys()].map((_, idx) => ({
-            id: feedData.length + idx,
+            id: feedData?.length + idx,
           })),
         ]
       : feedData,
@@ -208,6 +215,14 @@ export const Profile: FC<Profile> = ({navigation}: Profile) => {
     );
   }
 
+  useEffect(() => {
+    if (userDetails?.length > 0) {
+      setDataAvailability(true);
+    } else {
+      setDataAvailability(false);
+    }
+  }, [userDetails]);
+
   return (
     <SafeAreaView style={styles.container}>
       {/* <ScrollView
@@ -226,7 +241,9 @@ export const Profile: FC<Profile> = ({navigation}: Profile) => {
             <TouchableOpacity>
               <FeatherIcon name="lock" size={26} />
             </TouchableOpacity>
-            <Text style={[exportStyles.text3, {}]}>@ayushmng</Text>
+            <Text style={[exportStyles.text3, {}]}>{`${
+              isDataAvailable ? userDetails[0]?.email : 'user@gmail.com'
+            }`}</Text>
             <TouchableOpacity
               onPress={() => {
                 navigation.navigate('Login');
@@ -246,8 +263,16 @@ export const Profile: FC<Profile> = ({navigation}: Profile) => {
           () => {},
         )}
         <View style={styles.userIdViewStyles}>
-          <Text style={exportStyles.text4}>@ayushmng</Text>
-          <Text style={exportStyles.text3}>Ayush Katuwal</Text>
+          <Text numberOfLines={1} style={[exportStyles.text4]}>{`${
+            isDataAvailable ? userDetails[0]?.user_name : '@userName'
+          }`}</Text>
+          <Text
+            numberOfLines={1}
+            style={[exportStyles.text1, {padding: hp(0.1)}]}>{`${
+            isDataAvailable
+              ? `${userDetails[0]?.first_name} ${userDetails[0]?.last_name}`
+              : 'User Name'
+          }`}</Text>
         </View>
         <Text style={styles.text2}>
           The reason most people fail instead of succeed is they trade what they
@@ -308,12 +333,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   coverImageStyles: {
-    height: hp(14),
+    height: hp(16),
     width: wp(100),
   },
   userIdViewStyles: {
-    marginTop: hp(7),
-    marginLeft: wp(2.8),
+    width: wp(32),
+    marginTop: hp(6),
+    marginLeft: wp(3),
     alignSelf: 'flex-start',
   },
   roundImageStyles: {position: 'absolute'},
@@ -324,7 +350,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   userDetailViewStyle: {
-    marginTop: hp(16.5),
+    marginTop: hp(17),
     paddingRight: wp(1),
     alignSelf: 'flex-end',
     position: 'absolute',

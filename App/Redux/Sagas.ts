@@ -6,6 +6,7 @@ import {watchAddPost} from './AddPost/AddPostSaga';
 import {watchChatList} from './ChatList/ChatListSaga';
 import {watchChatDetails} from './ChatDetails/ChatDetailsSaga';
 import {watchGetUserDetailsList} from './GetUserDetails/GetUserDetailsSaga';
+import {watchGetUserList} from './SuggestedUsersList/GetUserListSaga';
 
 export default function* rootSagas() {
   yield all([takeLatest(SignupActionTypes.SignupRequest, signupSaga)]);
@@ -14,4 +15,5 @@ export default function* rootSagas() {
   yield all([fork(watchChatList)]);
   yield all([fork(watchChatDetails)]);
   yield all([fork(watchGetUserDetailsList)]);
+  yield all([fork(watchGetUserList)]);
 }

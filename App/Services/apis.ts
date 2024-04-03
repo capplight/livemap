@@ -61,6 +61,14 @@ export const getUserDetailsApi = ({
   });
 };
 
+export const getUserListApi = ({
+  token,
+}: GetUserDataRequestParams): Promise<any> => {
+  return axios.get(`${REACT_APP_BASE_URL_DEV}/dev/user?list=true`, {
+    headers: {Authorization: `Bearer ${token}`},
+  });
+};
+
 export const getChatListApi = ({
   token,
   page,
