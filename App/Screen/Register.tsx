@@ -28,6 +28,7 @@ import {useSelector} from 'react-redux';
 import {RootState} from '@redux/Reducers';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
 import {exportStyles} from '@components/ExportStyles';
+import {MetaData} from '@redux/types';
 interface Register {
   navigation: StackNavigationProp<any>;
   route?: any;
@@ -45,12 +46,7 @@ export const Register: FC<Register> = ({navigation}: Register) => {
   );
   const [curtLat, setCurLat] = useState(0);
   const [curtLong, setCurLong] = useState(0);
-  const [curLoc, setCurLoc] = useState({
-    latitude: 30.7993,
-    longitude: 76.9149,
-    latitudeDelta: 0.0922,
-    longitudeDelta: 0.0421,
-  });
+  const [curLoc, setCurLoc] = useState<MetaData>();
 
   function getMyCurrentPosition() {
     try {

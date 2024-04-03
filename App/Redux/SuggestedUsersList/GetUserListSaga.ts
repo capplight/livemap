@@ -13,6 +13,7 @@ export function* GetUserListSaga({
   try {
     const response: AxiosResponse = yield call(() => getUserListApi({token}));
     const resPayload = response?.data;
+    // console.log('Show users: ', resPayload);
     yield put({
       type: GetUserListActionTypes.GetUserListReset,
     });

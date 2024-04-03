@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {
   ActivityIndicator,
   FlatList,
@@ -18,11 +18,7 @@ import {useSelector} from 'react-redux';
 import {useDispatch} from 'react-redux';
 import {CircularImage, exportStyles} from '@components/ExportStyles';
 import {TopHeaderView} from '@components/TopHeaderView';
-import {
-  USER_ID,
-  horizontalLine,
-  profileImageLink,
-} from '@constants/constValues';
+import {horizontalLine, profileImageLink} from '@constants/constValues';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {ChatListRequest} from '@redux/ChatList/ChatListAction';
 import {Users} from '@redux/ChatList/ChatListTypes';
@@ -30,12 +26,10 @@ import {RootState} from '@redux/Reducers';
 import {DateConverter} from '@utils/dateConverter';
 import {Colors} from '@themes/Colors';
 import {FontAwesome6Icon} from '@themes/Icons';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import {requestNotificationPermission} from '@constants/Permission';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
 import {LoginButton} from '@components/Buttons/LoginButton';
 import {UserList} from '@redux/SuggestedUsersList/GetUserListTypes';
-import {GetUserDetailsRequest} from '@redux/GetUserDetails/GetUserDetailsAction';
 
 interface ChatListProps {
   navigation: StackNavigationProp<any>;
@@ -44,29 +38,27 @@ interface ChatListProps {
 
 export const ChatList = ({navigation, route}: ChatListProps) => {
   const token = route?.params?.token;
+  const userId = route?.params?.userId;
   const dispatch = useDispatch();
-  const [userId, setUserId] = useState('');
   const chatListData = useSelector((state: RootState) => state?.chatList);
   const apiData: UserList[] = useSelector(
     (state: RootState) => state?.getUserList?.data,
   );
-  let userList: UserList[] = [];
-  if (chatListData !== undefined && chatListData?.data?.length > 0) {
-    chatListData?.data.map((data: any) => {
-      userList = apiData?.filter(
-        item => item?._id !== userId && item?._id !== data?.oppositeUser?.id,
-      );
-    });
-  } else {
-    userList = apiData?.filter(item => item?._id !== userId);
+  let userList: UserList[] = apiData;
+  if (apiData?.length > 0) {
+    if (chatListData !== undefined && chatListData?.data?.length > 0) {
+      chatListData?.data.map((data: any) => {
+        userList = apiData?.filter(
+          item => item?._id !== userId && item?._id !== data?.oppositeUser?.id,
+        );
+      });
+    } else {
+      userList = apiData?.filter(item => item?._id !== userId);
+    }
   }
 
-  console.log('Show my id: ', userList?.length);
-
-  async function getUserId() {
-    const val = await AsyncStorage.getItem(USER_ID);
-    setUserId(val!);
-  }
+  // console.log('Show my id: ', userId);
+  // console.log('Show users list: ', userList);
 
   const renderItem = (data: any) => {
     const {_id, sender, receiver, oppositeUser, lastMessage}: Users =
@@ -155,7 +147,6 @@ export const ChatList = ({navigation, route}: ChatListProps) => {
                       userId: userId,
                       senderId: usersListData?._id,
                       senderName: usersListData?.first_name,
-                      lastMessage: '',
                     });
                   }}
                 />
@@ -172,7 +163,6 @@ export const ChatList = ({navigation, route}: ChatListProps) => {
     Platform.OS === 'android'
       ? Platform.Version > 31 && requestNotificationPermission()
       : requestNotificationPermission();
-    getUserId();
     dispatch(
       ChatListRequest({
         token: token,
@@ -220,25 +210,24 @@ export const ChatList = ({navigation, route}: ChatListProps) => {
           {chatListData?.data?.length > 0 && horizontalLine(wp(85))}
         </View>
       )}
-      {chatListData?.data?.length > 0 && (
-        <FlatList
-          renderItem={renderItem}
-          data={chatListData?.data}
-          ListFooterComponent={footer}
-          ListEmptyComponent={
-            chatListData?.fetching ? (
-              <ActivityIndicator
-                color={'white'}
-                size={'large'}
-                style={{marginTop: hp(8)}}
-              />
-            ) : (
-              <View />
-            )
-          }
-        />
-      )}
-      {chatListData?.data?.length < 1 && footer()}
+      {/* {chatListData?.data?.length > 0 && ( */}
+      <FlatList
+        renderItem={renderItem}
+        data={chatListData?.data}
+        ListFooterComponent={footer}
+        ListEmptyComponent={
+          chatListData?.fetching ? (
+            <ActivityIndicator
+              color={'white'}
+              size={'large'}
+              style={{marginTop: hp(8)}}
+            />
+          ) : (
+            <View />
+          )
+        }
+      />
+      {/* )} */}
     </SafeAreaView>
   );
 };

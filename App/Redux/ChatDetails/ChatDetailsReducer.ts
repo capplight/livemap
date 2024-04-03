@@ -15,6 +15,7 @@ export const InitialState: ChatDetailsStateType = {
   errorMsg: '',
   isAuthorized: false,
   isError: false,
+  data: [],
 };
 
 export default function ChatDetailsReducer(

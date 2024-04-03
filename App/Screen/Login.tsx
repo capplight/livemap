@@ -131,7 +131,7 @@ export const Login: FC<Login> = ({navigation}: Login) => {
             //   email: 'nauryzbek.ali@gmail.com',
             //   password: 'Nauryzbek123',
             // }}
-            // initialValues={{email: 'test@apple.com', password: 'Test123'}}
+            // initialValues={{email: 'gaurab@apple.com', password: 'P@ssw00rd'}}
             validationSchema={signInDataSchema}
             onSubmit={values => callUserSignInApi(values)}>
             {({handleChange, handleSubmit, values, errors}) => (

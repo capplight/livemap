@@ -7,7 +7,6 @@ import {
   ViewStyle,
   Pressable,
   KeyboardType,
-  KeyboardAvoidingView,
 } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -43,7 +42,7 @@ export const CustomTextField = ({
 }: TextFieldProps) => {
   const [visibleText, setVisibility] = useState(true);
   return (
-    <KeyboardAvoidingView style={[styles.container, containerStyle]}>
+    <SafeAreaView style={[styles.container, containerStyle]}>
       {showIcon && icon}
       <TextInput
         value={value}
@@ -69,7 +68,7 @@ export const CustomTextField = ({
           />
         </Pressable>
       )}
-    </KeyboardAvoidingView>
+    </SafeAreaView>
   );
 };
 

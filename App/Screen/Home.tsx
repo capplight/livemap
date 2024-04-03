@@ -20,6 +20,7 @@ import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import {
   TOKEN_KEY,
+  USER_ID,
   horizontalLine,
   mapStyle,
   modalStoryValues,
@@ -50,7 +51,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {NativeInstaStory} from '@components/StoryComponent/NativeInstaStory';
 import CurrentLocation from '@assets/svg/currentLocation.svg';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
-import {Float} from 'react-native/Libraries/Types/CodegenTypes';
 import {dummyStoryData} from '@constants/storyData';
 import {UserDetails} from '@redux/GetUserDetails/GetUserDetailsTypes';
 import {MetaData} from '@redux/types';
@@ -114,6 +114,7 @@ export const Home: FC<Home> = ({navigation}: Home) => {
   const [imageTrack, setImageTrack] = useState(true);
   const [allMap, setAllMap] = useState(true);
   const [open, setOpen] = useState(true);
+  const [userId, setUserId] = useState('');
   const [searchText, setSearchText] = useState('');
   const [streaming, setStreaming] = useState(true);
   const [activeHighlights, setActiveHighlights] = useState(true);
@@ -409,6 +410,8 @@ export const Home: FC<Home> = ({navigation}: Home) => {
   async function getToken() {
     const val = await AsyncStorage.getItem(TOKEN_KEY);
     setToken(val!);
+    const val2 = await AsyncStorage.getItem(USER_ID);
+    setUserId(val2!);
   }
 
   useEffect(() => {
@@ -525,19 +528,24 @@ export const Home: FC<Home> = ({navigation}: Home) => {
             <SVGRenderer onPress={() => {}} style={{padding: wp(1)}}>
               <NotificationIcon />
             </SVGRenderer>
-            {token?.length > 0 && userList?.length > 0 && (
-              <SVGRenderer
-                onPress={() => {
-                  navigation.navigate('ChatList', {token: token});
-                }}
-                style={{
-                  padding: wp(1),
-                  marginRight: wp(-4),
-                  marginLeft: wp(2),
-                }}>
-                <MessageIcon />
-              </SVGRenderer>
-            )}
+            {token?.length > 0 &&
+              userId?.length > 0 &&
+              userList?.length > 0 && (
+                <SVGRenderer
+                  onPress={() => {
+                    navigation.navigate('ChatList', {
+                      token: token,
+                      userId: userId,
+                    });
+                  }}
+                  style={{
+                    padding: wp(1),
+                    marginRight: wp(-4),
+                    marginLeft: wp(2),
+                  }}>
+                  <MessageIcon />
+                </SVGRenderer>
+              )}
           </View>
         </View>
         {newDataArray?.length > 0 && (
@@ -545,6 +553,7 @@ export const Home: FC<Home> = ({navigation}: Home) => {
             onPress={() => {
               setImageTrack(true);
               dispatch(GetUserDataRequest({token: token}));
+              dispatch(GetUserListRequest({token: token}));
             }}
             style={[styles.gpsBackground, exportStyles.shadowProp]}>
             <Ionicons name="refresh" size={26} />
