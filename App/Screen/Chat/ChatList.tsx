@@ -32,6 +32,7 @@ import {Colors} from '@themes/Colors';
 import {FontAwesome6Icon} from '@themes/Icons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {requestNotificationPermission} from '@constants/Permission';
+import changeNavigationBarColor from 'react-native-navigation-bar-color';
 
 interface ChatListProps {
   navigation: StackNavigationProp<any>;
@@ -95,6 +96,7 @@ export const ChatList = ({navigation, route}: ChatListProps) => {
   };
 
   useEffect(() => {
+    changeNavigationBarColor('transparent');
     Platform.OS === 'android'
       ? Platform.Version > 31 && requestNotificationPermission()
       : requestNotificationPermission();
@@ -106,6 +108,9 @@ export const ChatList = ({navigation, route}: ChatListProps) => {
         limit: 10,
       }),
     );
+    return () => {
+      changeNavigationBarColor('transparent');
+    };
   }, []);
 
   return (

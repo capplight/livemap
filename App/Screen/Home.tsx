@@ -51,10 +51,10 @@ import {NativeInstaStory} from '@components/StoryComponent/NativeInstaStory';
 import CurrentLocation from '@assets/svg/currentLocation.svg';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
 import {Float} from 'react-native/Libraries/Types/CodegenTypes';
+import {dummyStoryData} from '@constants/storyData';
 
 interface Home {
   navigation: StackNavigationProp<any>;
-  route?: any;
 }
 interface nestedMapViewProps {
   icon: any;
@@ -361,7 +361,7 @@ export const Home: FC<Home> = ({navigation}: Home) => {
           </View>
         </View>
         <InstaStory
-          data={storyData}
+          data={dummyStoryData}
           duration={5}
           unPressedBorderColor={Colors.textBlue}
           style={{alignSelf: 'flex-start'}}

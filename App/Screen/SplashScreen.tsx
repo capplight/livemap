@@ -11,6 +11,7 @@ import {Colors} from '../Themes/Colors';
 import Fonts from '../Themes/Fonts';
 import CustomButton from '../Components/Buttons/CustomButton';
 import {first_time, homeNavigation} from '@constants/constValues';
+import changeNavigationBarColor from 'react-native-navigation-bar-color';
 
 interface SplashScreen {
   navigation: StackNavigationProp<any>;
@@ -70,6 +71,13 @@ export const SplashScreen: FC<SplashScreen> = ({navigation}: SplashScreen) => {
       }
     });
   }, [navigation, firstTime]);
+
+  useEffect(() => {
+    changeNavigationBarColor('transparent');
+    return () => {
+      changeNavigationBarColor('transparent');
+    };
+  }, []);
 
   return (
     <SafeAreaView style={styles.container}>

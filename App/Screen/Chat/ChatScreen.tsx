@@ -90,7 +90,7 @@ const ChatScreen = ({route, isScreenFocused}: ChatProps) => {
   }
 
   useEffect(() => {
-    // changeNavigationBarColor('transparent');
+    changeNavigationBarColor(Colors.primaryColor);
     isScreenFocused(isFocused);
     const intervalId = setInterval(() => {
       getSenderData();
@@ -98,11 +98,11 @@ const ChatScreen = ({route, isScreenFocused}: ChatProps) => {
     return () => {
       // Clears the interval when the component unmounts
       clearInterval(intervalId);
+      changeNavigationBarColor('transparent');
     };
   }, []);
 
   useEffect(() => {
-    changeNavigationBarColor('transparent');
     dispatch(
       ChatDetailsRequest({
         token: token,
@@ -169,7 +169,7 @@ const ChatScreen = ({route, isScreenFocused}: ChatProps) => {
   return (
     <View style={exportStyles.container}>
       <View style={{backgroundColor: Colors.backgroundDark}}>
-        <View style={{height: hp(1)}} />
+        {/* <View style={{height: hp(1)}} /> */}
         <SafeAreaView style={styles.navigationBarStyles}>
           <TouchableOpacity
             onPress={() => {
@@ -262,7 +262,7 @@ const ChatScreen = ({route, isScreenFocused}: ChatProps) => {
 
 const styles = StyleSheet.create({
   navigationBarStyles: {
-    height: hp(10),
+    height: hp(6),
     backgroundColor: Colors.backgroundDark,
     flexDirection: 'row',
     alignItems: 'center',

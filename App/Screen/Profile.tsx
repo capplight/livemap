@@ -30,7 +30,7 @@ import {
 import {Colors} from '@themes/Colors';
 import {LoginButton} from '@components/Buttons/LoginButton';
 import InstaStory from 'react-native-insta-story';
-import {storyData} from '@constants/storyData';
+import {dummyStoryData} from '@constants/storyData';
 import {TabView, TabBar} from 'react-native-tab-view';
 import {feedData} from '@constants/data';
 import {FirstRoute} from './ProfileRoutes/FirstRoute';
@@ -179,7 +179,7 @@ export const Profile: FC<Profile> = ({navigation}: Profile) => {
       <View
         style={[
           styles.expandableContainer,
-          {height: hp(isExpanded ? (index === 0 ? 16 : 18) : 5)},
+          {height: hp(isExpanded ? (index === 0 ? 17 : 19) : 5)},
         ]}>
         <View style={styles.expandableViewStyles}>
           <Text
@@ -262,16 +262,17 @@ export const Profile: FC<Profile> = ({navigation}: Profile) => {
                 data?.name,
                 data?.id === 0 ? (
                   <InstaStory
-                    data={storyData}
+                    data={dummyStoryData}
                     duration={5}
                     unPressedBorderColor={'transparent'}
                     style={{alignSelf: 'flex-start'}}
                   />
                 ) : (
                   <InstaStory
-                    data={storyData}
+                    data={dummyStoryData}
                     duration={5}
                     unPressedBorderColor={'transparent'}
+                    pressedBorderColor={'transparent'}
                     style={{alignSelf: 'flex-start'}}
                     avatarImageStyle={styles.avatarImageStyles}
                     avatarWrapperStyle={styles.avatarSquareWrapper}

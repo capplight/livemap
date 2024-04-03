@@ -36,12 +36,20 @@ import axios from 'axios';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
 import {REACT_APP_BASE_URL_DEV} from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {useDispatch} from 'react-redux';
+import {GetUserDetailsRequest} from '@redux/GetUserDetails/GetUserDetailsAction';
+import {useSelector} from 'react-redux';
+import {RootState} from '@redux/Reducers';
 interface Login {
   navigation: StackNavigationProp<any>;
   route?: any;
 }
 
 export const Login: FC<Login> = ({navigation}: Login) => {
+  const dispatch = useDispatch();
+  const isFetching: boolean = useSelector(
+    (state: RootState) => state?.getUserDetails?.isAuthorized,
+  );
   const [isLoading, setLoader] = useState(false);
   const [fcmToken, setFCMToken] = useState('');
 
@@ -74,9 +82,10 @@ export const Login: FC<Login> = ({navigation}: Login) => {
         headers: {Authorization: `Bearer ${token}`},
       })
       .then(response => {
-        console.log('Show response: ', response?.data?.message);
-        homeNavigation({navigation});
-        setLoader(false);
+        // console.log('Show response: ', response?.data?.message);
+        dispatch(GetUserDetailsRequest({token: token}));
+        !isFetching && homeNavigation({navigation});
+        setLoader(isFetching);
       })
       .catch(error => {
         console.error('Error sending message:', error);
@@ -90,6 +99,9 @@ export const Login: FC<Login> = ({navigation}: Login) => {
   useEffect(() => {
     getFCMToken();
     changeNavigationBarColor('transparent');
+    return () => {
+      changeNavigationBarColor('transparent');
+    };
   }, []);
 
   async function getFCMToken() {

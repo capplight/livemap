@@ -1,12 +1,9 @@
 import axios from 'axios';
-import {
-  AddPostRequestParams,
-  GetUserDataRequestParams,
-  SignupRequestParams,
-} from '@redux/types';
+import {GetUserDataRequestParams, SignupRequestParams} from '@redux/types';
 import {REACT_APP_BASE_URL_DEV} from '@env';
 import {ChatListRequestParams} from '@redux/ChatList/ChatListTypes';
 import {ChatDetailsRequestParams} from '@redux/ChatDetails/ChatDetailsTypes';
+import {AddPostRequestParams} from '@redux/AddPost/AddPostTypes';
 
 export const signupApi = ({
   email,
@@ -54,6 +51,14 @@ export const getUserDataApi = ({
       headers: {Authorization: ''},
     },
   );
+};
+
+export const getUserDetailsApi = ({
+  token,
+}: GetUserDataRequestParams): Promise<any> => {
+  return axios.get(`${REACT_APP_BASE_URL_DEV}/dev/user`, {
+    headers: {Authorization: `Bearer ${token}`},
+  });
 };
 
 export const getChatListApi = ({

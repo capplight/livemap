@@ -64,6 +64,7 @@ export const AddPost: FC<AddPost> = ({navigation}: AddPost) => {
   const maxLengthSize = 100;
   const refRBSheet = useRef();
   const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+  const [isImageUploading, setImageUploading] = useState(false);
   const [uploadedImage, setUploadedImage] = useState('');
   const [onMap, setOnMapCheck] = useState(true);
   const [description, setDescription] = useState('');
@@ -138,6 +139,7 @@ export const AddPost: FC<AddPost> = ({navigation}: AddPost) => {
     });
 
   const uploadImage = async (base64File: any) => {
+    setImageUploading(true);
     const raw = JSON.stringify({
       contentType: 'image/jpeg',
       extension: 'jpg',
@@ -155,12 +157,17 @@ export const AddPost: FC<AddPost> = ({navigation}: AddPost) => {
         const imgUrl = response?.data?.location;
         // console.log('Show res: ', response?.data);
         setUploadedImage(imgUrl);
+        setImageUploading(false);
       })
       .catch(function (error) {
+        setImageUploading(false);
         if (error.response) {
           const errMsg = error?.response?.data?.message;
-          // showToast('error', 'Error', errMsg);
-          showToast('error', 'Error', err_image_uploading_msg);
+          showToast(
+            'error',
+            'Error while uploading image',
+            err_image_uploading_msg,
+          );
           console.log(errMsg);
           console.log(error?.response?.status);
           // console.log(error.response.headers);
@@ -316,22 +323,44 @@ export const AddPost: FC<AddPost> = ({navigation}: AddPost) => {
               description: description,
               metadata: curLoc,
             };
-            if (description === '' || uploadedImage === '') {
-              showToast('error', 'Required', 'Fields must not be empty');
+            if (uploadedImage === '') {
+              showToast(
+                'error',
+                'Required',
+                'Please attach any image files to upload',
+              );
             } else {
-              !fetching && dispatch(AddPostRequest(sendingData));
+              !fetching &&
+                !isImageUploading &&
+                dispatch(AddPostRequest(sendingData));
             }
           }}
           style={{marginRight: wp(4)}}>
           <Text style={[exportStyles.text3]}>{`${
-            fetching ? 'Publishing...' : 'Publish'
+            fetching
+              ? 'Publishing...'
+              : !isImageUploading
+              ? 'Publish'
+              : 'Please Wait'
           }`}</Text>
         </TouchableOpacity>
       </View>
       <View style={{alignItems: 'center'}}>
+        {isImageUploading && (
+          <ActivityIndicator
+            size={'large'}
+            color={'white'}
+            style={{position: 'absolute', marginTop: hp(12), zIndex: 100}}
+          />
+        )}
         {profileImage && (
           <FastImage
-            style={{height: hp(32), width: wp(98)}}
+            style={{
+              height: hp(32),
+              width: wp(98),
+              opacity: isImageUploading ? 0.6 : 1,
+              backgroundColor: isImageUploading ? 'white' : 'transparent',
+            }}
             source={{
               uri: profileImage,
             }}
@@ -343,7 +372,7 @@ export const AddPost: FC<AddPost> = ({navigation}: AddPost) => {
             onPress={() => {
               refRBSheet?.current?.open();
             }}>
-            <AntDesignIcon name="pluscircleo" size={62} />
+            <AntDesignIcon name="pluscircleo" size={62} color={'white'} />
             <Text style={styles.text}>Add Image</Text>
           </TouchableOpacity>
         )}
@@ -356,7 +385,7 @@ export const AddPost: FC<AddPost> = ({navigation}: AddPost) => {
               <Ionicons
                 name="close-circle"
                 size={28}
-                color={Colors.lightWhite}
+                color={Colors.fadeWhite}
               />
             </TouchableOpacity>
           </View>

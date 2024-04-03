@@ -23,8 +23,7 @@ export const USER_ID = 'userId';
 export const CHAT_USER_KEY = 'chatUserKey';
 export const token_expire_message = 'Invalid or expired token';
 export const first_time = 'User First Time';
-export const err_image_uploading_msg =
-  'Error while uploading image, Please try again!!';
+export const err_image_uploading_msg = 'Please try again!!';
 
 export enum Orientation {
   landscape = 'landscape',

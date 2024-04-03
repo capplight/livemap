@@ -1,35 +1,34 @@
-import {ChatDetailsActions} from './ChatDetailsAction';
-import {ChatDetailsActionTypes} from './ChatDetailsConstants';
-import {ChatHistory} from './ChatDetailsTypes';
+import {GetUserActions} from './GetUserDetailsAction';
+import {GetUserDetailsActionTypes} from './GetUserDetailsConstants';
+import {UserDetails} from './GetUserDetailsTypes';
 
-export interface ChatDetailsStateType {
+export interface GetUserDetailsStateType {
   fetching: boolean;
   errorMsg: string;
   isAuthorized: boolean;
   isError: boolean;
-  data?: any;
+  data?: UserDetails[];
 }
 
-export const InitialState: ChatDetailsStateType = {
+export const InitialState: GetUserDetailsStateType = {
   fetching: false,
   errorMsg: '',
   isAuthorized: false,
   isError: false,
 };
 
-export default function ChatDetailsReducer(
+export default function GetUserDetailsReducer(
   state = InitialState,
-  action: ChatDetailsActions,
-): ChatDetailsStateType {
+  action: GetUserActions,
+): GetUserDetailsStateType {
   switch (action.type) {
-    case ChatDetailsActionTypes.ChatDetailsRequest:
+    case GetUserDetailsActionTypes.GetUserDetailsRequest:
       return {
         ...state,
         fetching: true,
       };
 
-    case ChatDetailsActionTypes.ChatDetailsSuccess:
-      console.log('Show user details: ', action?.resPayload);
+    case GetUserDetailsActionTypes.GetUserDetailsSuccess:
       return {
         ...state,
         fetching: false,
@@ -39,8 +38,7 @@ export default function ChatDetailsReducer(
         errorMsg: '',
       };
 
-    case ChatDetailsActionTypes.ChatDetailsFailure:
-      console.log('Error getting user details');
+    case GetUserDetailsActionTypes.GetUserDetailsFailure:
       return {
         ...state,
         fetching: false,
@@ -49,7 +47,7 @@ export default function ChatDetailsReducer(
         isAuthorized: false,
       };
 
-    case ChatDetailsActionTypes.ChatDetailsReset:
+    case GetUserDetailsActionTypes.GetUserDetailsReset:
       return {
         ...state,
         isError: false,

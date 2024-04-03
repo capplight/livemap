@@ -1,4 +1,4 @@
-export const storyData = [
+export const dummyStoryData = [
   {
     user_id: 1,
     user_image:
