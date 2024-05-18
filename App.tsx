@@ -32,7 +32,7 @@ const App: React.FC = () => {
   const getDeviceToken = async () => {
     let msgToken = await messaging().getToken();
     storeData(msgToken, FCM_TOKEN);
-    // console.log('Message token: ', msgToken);
+    console.log('Message token: ', msgToken);
   };
 
   useEffect(() => {

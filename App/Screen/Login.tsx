@@ -1,5 +1,5 @@
 import {StackNavigationProp} from '@react-navigation/stack';
-import React, {FC, useEffect, useState} from 'react';
+import React, {FC, useEffect, useId, useState} from 'react';
 import {
   Text,
   StyleSheet,
@@ -7,6 +7,7 @@ import {
   Pressable,
   ScrollView,
   StatusBar,
+  Platform,
 } from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {
@@ -59,12 +60,18 @@ export const Login: FC<Login> = ({navigation}: Login) => {
     try {
       const response = await axios.post(`${baseUrl}/dev/manageOauth`, value);
       showToast('success', 'Success', 'Successfully logged in');
-
       const token = response?.data?.token;
       const userId = response?.data?._id;
       storeData(token, TOKEN_KEY);
       storeData(userId, USER_ID);
-      sendFCM(token);
+      // sendFCM(token);
+      //Remove the below line in future when notification works:
+      if (Platform.OS === 'ios') {
+        homeNavigation({navigation});
+        return;
+      } else {
+        sendFCM(token);
+      }
     } catch (err) {
       console.log('Error message:', err);
       showToast(
@@ -77,13 +84,14 @@ export const Login: FC<Login> = ({navigation}: Login) => {
   }
 
   const sendFCM = async (token: string) => {
+    console.log('Its here....');
     const params = JSON.stringify({fcm_token: fcmToken});
     await axios
       .put(`${REACT_APP_BASE_URL_DEV}/dev/user`, params, {
         headers: {Authorization: `Bearer ${token}`},
       })
       .then(response => {
-        // console.log('Show response: ', response?.data?.message);
+        console.log('Show response: ', response?.data?.message);
         dispatch(GetUserDetailsRequest({token: token, navigation: navigation}));
         setLoader(isAuthorized);
       })
@@ -112,7 +120,7 @@ export const Login: FC<Login> = ({navigation}: Login) => {
   return (
     <SafeAreaView style={styles.container}>
       <StatusBar backgroundColor={Colors.backgroundColor} />
-      <ScrollView>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.container}>
           <Pressable
             onPress={() => {

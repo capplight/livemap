@@ -1,7 +1,10 @@
 source 'https://rubygems.org'
 
-# You may use http://rbenv.org/ or https://rvm.io/ to install and use this version
+# Ensure Ruby version is compatible
 ruby ">= 2.6.10"
 
-gem 'cocoapods', '~> 1.13'
+# Specify the required gems
+gem 'cocoapods', '~> 1.15.2' # Updated to reflect your installed version
 gem 'activesupport', '>= 6.1.7.3', '< 7.1.0'
+gem 'bigdecimal'
+gem 'mutex_m'

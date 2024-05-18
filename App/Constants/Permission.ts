@@ -8,6 +8,11 @@ import {
 } from 'react-native-permissions';
 
 export const isAndroid = Platform.OS === 'android';
+const askForPermission = permission => {
+  request(permission).then(result => {
+    console.log('Permissions: ', result);
+  });
+};
 
 export const requestCameraPermission = async () => {
   try {
@@ -132,20 +137,38 @@ export const requestMapsPermission = async () => {
           openSettings().catch(() => console.warn('cannot open settings'));
       }
     } else {
-      const status = await check(PERMISSIONS.IOS.CAMERA);
-      if (status !== RESULTS.GRANTED) {
-        try {
-          const camStatus = await request(PERMISSIONS.IOS.CAMERA);
-          if (camStatus !== RESULTS.GRANTED) {
-            openSettings().catch(() => console.warn('cannot open settings'));
-            return false;
-          }
-        } catch (err) {
-          console.log(err);
-          return false;
-        }
-      }
-      return true;
+      // const status = await check(PERMISSIONS.IOS.LOCATION_ALWAYS);
+      // if (status !== RESULTS.GRANTED) {
+      //   try {
+      //     const permissionStatus = await request(
+      //       PERMISSIONS.IOS.LOCATION_ALWAYS,
+      //     );
+      //     if (permissionStatus !== RESULTS.GRANTED) {
+      //       openSettings().catch(() => console.warn('cannot open settings'));
+      //       return false;
+      //     }
+      //   } catch (err) {
+      //     console.log(err);
+      //     return false;
+      //   }
+      // }
+      // return true;
+      askForPermission(PERMISSIONS.IOS.LOCATION_ALWAYS);
+      askForPermission(PERMISSIONS.IOS.LOCATION_WHEN_IN_USE);
+      // const permissionResult = await request(PERMISSIONS.IOS.LOCATION_ALWAYS);
+      // if (permissionResult === RESULTS.GRANTED) {
+      //   console.log('Location permission granted');
+      //   return true;
+      //   // You can now proceed with using the location API
+      // } else {
+      //   console.log('Location permission denied');
+      //   // Handle the case where the user denies permission
+      //   const locStatus = await request(PERMISSIONS.IOS.LOCATION_ALWAYS);
+      //   if (locStatus !== RESULTS.GRANTED) {
+      //     openSettings().catch(() => console.warn('cannot open settings'));
+      //     return false;
+      //   }
+      // }
     }
   } catch (err) {
     console.warn('Catch: ', err);

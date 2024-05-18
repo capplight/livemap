@@ -1,6 +1,13 @@
 import {StackNavigationProp} from '@react-navigation/stack';
 import React, {FC, useEffect, useRef, useState} from 'react';
-import {Text, StyleSheet, View, Pressable, ScrollView} from 'react-native';
+import {
+  Text,
+  StyleSheet,
+  View,
+  Pressable,
+  ScrollView,
+  Platform,
+} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {
   widthPercentageToDP as wp,
@@ -22,7 +29,11 @@ import {Formik} from 'formik';
 import {signUpDataSchema} from '@services/validationSchema';
 import {useDispatch} from 'react-redux';
 import {SignupRequest} from '@redux/Signup/SignupAction';
-import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
+import MapView, {
+  Marker,
+  PROVIDER_DEFAULT,
+  PROVIDER_GOOGLE,
+} from 'react-native-maps';
 import Geolocation from 'react-native-geolocation-service';
 import {useSelector} from 'react-redux';
 import {RootState} from '@redux/Reducers';
@@ -78,7 +89,9 @@ export const Register: FC<Register> = ({navigation}: Register) => {
         showsUserLocation={true}
         followsUserLocation={true}
         showsMyLocationButton={true}
-        provider={PROVIDER_GOOGLE}
+        provider={
+          Platform.OS === 'android' ? PROVIDER_GOOGLE : PROVIDER_DEFAULT
+        }
         customMapStyle={mapStyle}
         initialRegion={curLoc}>
         <Marker

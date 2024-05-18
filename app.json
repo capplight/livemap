@@ -1,4 +1,5 @@
 {
   "name": "LiveMap",
-  "displayName": "LiveMap"
+  "displayName": "LiveMap",
+  "plugins": ["@notifee/react-native"]
 }

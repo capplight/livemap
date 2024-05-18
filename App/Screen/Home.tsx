@@ -8,6 +8,7 @@ import {
   Image,
   TouchableHighlight,
   TouchableOpacity,
+  Platform,
 } from 'react-native';
 import {ScrollView} from 'react-native-gesture-handler';
 import {SafeAreaView} from 'react-native-safe-area-context';
@@ -16,7 +17,11 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import MapView, {Marker, PROVIDER_GOOGLE} from 'react-native-maps';
+import MapView, {
+  Marker,
+  PROVIDER_DEFAULT,
+  PROVIDER_GOOGLE,
+} from 'react-native-maps';
 import RBSheet from 'react-native-raw-bottom-sheet';
 import {
   TOKEN_KEY,
@@ -435,6 +440,8 @@ export const Home: FC<Home> = ({navigation}: Home) => {
     getCurrentPosition();
   }, [curtLat, curtLong, mapRef]);
 
+  console.log('Current lat long: ', curLoc);
+
   return (
     <SafeAreaView style={styles.container}>
       {storyData.length > 0 && (
@@ -465,15 +472,19 @@ export const Home: FC<Home> = ({navigation}: Home) => {
         {searchPressed ? searchBottomSheetView() : bottomSheetView()}
       </RBSheet>
       <View style={styles.mapContainer}>
-        {curLoc !== undefined && curLoc?.latitude.toString().length > 0 && (
+        {curLoc !== undefined && curLoc?.latitude?.toString().length > 0 && (
           <MapView
             ref={mapRef}
             style={styles.map}
+            // mapType={Platform.OS === 'android' ? 'none' : 'standard'}
             loadingEnabled={newDataArray?.length > 0 ? true : false}
             // showsUserLocation={true}
             followsUserLocation={true}
             // showsMyLocationButton={true}
-            provider={PROVIDER_GOOGLE}
+            // provider={PROVIDER_GOOGLE}
+            provider={
+              Platform.OS === 'android' ? PROVIDER_GOOGLE : PROVIDER_DEFAULT
+            }
             customMapStyle={mapStyle}
             initialRegion={curLoc}>
             {newDataArray?.length > 0 &&
@@ -683,7 +694,7 @@ const styles = StyleSheet.create({
     width: circle,
     height: circle,
     borderRadius: circle / 2,
-    bottom: hp(8),
+    bottom: hp(Platform.OS === 'ios' ? 10 : 8),
     right: wp(2),
     position: 'absolute',
     justifyContent: 'center',

@@ -16,12 +16,12 @@ import {Ionicons} from '@themes/Icons';
 import {exportStyles} from '@components/ExportStyles';
 import {Colors} from '@themes/Colors';
 
-interface FirstRouteProps {
+interface ThirdRouteProps {
   isLoading?: boolean;
   data: any;
 }
 
-export const FirstRoute = ({isLoading = true, data = []}: FirstRouteProps) => {
+export const ThirdRoute = ({isLoading = true, data = []}: ThirdRouteProps) => {
   const emptyImageLink =
     'https://static.vecteezy.com/system/resources/thumbnails/004/141/669/small/no-photo-or-blank-image-icon-loading-images-or-missing-image-mark-image-not-available-or-image-coming-soon-sign-simple-nature-silhouette-in-frame-isolated-illustration-vector.jpg';
   return (
@@ -73,8 +73,7 @@ export const FirstRoute = ({isLoading = true, data = []}: FirstRouteProps) => {
 export const routeStyles = StyleSheet.create({
   container: {
     flex: 1,
-    marginTop: 1,
-    marginHorizontal: 1,
+    margin: 1,
   },
   imageStyles: {
     height: hp(15),

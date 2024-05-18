@@ -28,8 +28,8 @@ export default function BottomTabNavigation() {
         tabBarActiveTintColor: Colors.activeColor,
         tabBarLabelStyle: {
           fontSize: hp(1.4),
-          marginTop: isIOS ? hp(-0.2) : hp(-0.7),
-          marginBottom: hp(isIOS ? 0.1 : 0.2),
+          marginTop: hp(-0.7),
+          marginBottom: hp(isIOS ? -0.5 : 0.2),
         },
         tabBarStyle: {backgroundColor: '#17041E'},
         // tabBarStyle: {height: hp(8.5), backgroundColor: '#17041E'},
