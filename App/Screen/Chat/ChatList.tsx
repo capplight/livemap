@@ -16,7 +16,7 @@ import {
 } from 'react-native-responsive-screen';
 import {useSelector} from 'react-redux';
 import {useDispatch} from 'react-redux';
-import {CircularImage, exportStyles} from '@components/ExportStyles';
+import {CircularImage, MyHeader, exportStyles} from '@components/ExportStyles';
 import {TopHeaderView} from '@components/TopHeaderView';
 import {horizontalLine, profileImageLink} from '@constants/constValues';
 import {StackNavigationProp} from '@react-navigation/stack';
@@ -191,12 +191,8 @@ export const ChatList = ({navigation, route}: ChatListProps) => {
 
   return (
     <SafeAreaView style={exportStyles.container}>
-      <StatusBar backgroundColor={Colors.backgroundDark} />
-      <TopHeaderView
-        navigation={navigation}
-        navigateBack={true}
-        title="Inbox"
-      />
+      <MyHeader />
+      <TopHeaderView navigation={navigation} navigateBack title="Inbox" />
       {chatListData?.data?.length > 0 && (
         <View style={styles.headerView}>
           <Text style={exportStyles.text5}>Messages</Text>

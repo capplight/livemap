@@ -5,8 +5,10 @@ import {
   TouchableHighlight,
   StyleSheet,
   SafeAreaView,
+  StatusBar,
+  Platform,
 } from 'react-native';
-import {exportStyles} from './ExportStyles';
+import {CircularImage, exportStyles} from './ExportStyles';
 import {homeNavigation} from '@constants/constValues';
 import {EntypoIcon, FeatherIcon} from '@themes/Icons';
 import {SVGRenderer} from './SVGRenderer';
@@ -23,17 +25,27 @@ interface HeaderViewProps {
   navigation: StackNavigationProp<any>;
   navigateBack?: boolean;
   title: string;
+  senderName?: string;
+  isChatScreen?: boolean;
 }
 
 export const TopHeaderView = ({
   navigation,
   title = 'Posts',
   navigateBack = true,
+  senderName = '',
+  isChatScreen = false,
 }: HeaderViewProps) => {
   return (
-    <View style={{backgroundColor: Colors.backgroundDark}}>
-      <View style={{height: hp(3)}} />
-      <SafeAreaView style={styles.topViewStyles}>
+    <SafeAreaView style={{backgroundColor: Colors.backgroundDark}}>
+      {!isChatScreen && (
+        <View style={{height: hp(Platform.OS === 'ios' ? 0 : 1.8)}} />
+      )}
+      <SafeAreaView
+        style={[
+          styles.topViewStyles,
+          {justifyContent: `${isChatScreen ? 'flex-start' : 'space-between'}`},
+        ]}>
         {!navigateBack ? (
           <SVGRenderer
             touchable
@@ -51,29 +63,46 @@ export const TopHeaderView = ({
             <EntypoIcon name="chevron-left" />
           </TouchableOpacity>
         )}
-        <Text
-          style={[
-            exportStyles.text1,
-            {marginVertical: hp(2), fontSize: hp(2)},
-          ]}>
-          {title}
-        </Text>
-        <TouchableHighlight style={{alignSelf: 'center'}}>
-          <FeatherIcon name="search" size={28} color={Colors.lightWhite} />
-        </TouchableHighlight>
+        {isChatScreen && (
+          <View style={styles.userImageStyles}>
+            <CircularImage size={32} />
+            <Text style={[exportStyles.text3, {marginLeft: wp(2.5)}]}>
+              {senderName}
+            </Text>
+          </View>
+        )}
+        {!isChatScreen && (
+          <Text
+            style={[
+              exportStyles.text1,
+              {marginVertical: hp(2), fontSize: hp(2)},
+            ]}>
+            {title}
+          </Text>
+        )}
+        {!isChatScreen && (
+          <TouchableHighlight style={{alignSelf: 'center'}}>
+            <FeatherIcon name="search" size={28} color={Colors.lightWhite} />
+          </TouchableHighlight>
+        )}
       </SafeAreaView>
-    </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
   topViewStyles: {
-    height: hp(8),
+    height: hp(Platform.OS === 'ios' ? 6 : 8),
     flexDirection: 'row',
     alignItems: 'center',
     paddingHorizontal: wp(2),
     paddingTop: hp(1),
     justifyContent: 'space-between',
     // backgroundColor: Colors.backgroundDark,
+  },
+  userImageStyles: {
+    marginLeft: wp(6),
+    flexDirection: 'row',
+    alignItems: 'center',
   },
 });

@@ -7,6 +7,7 @@ import {
   Image,
   FlatList,
   TouchableOpacity,
+  StatusBar,
 } from 'react-native';
 import React, {FC} from 'react';
 import {Colors} from '@themes/Colors';
@@ -109,7 +110,11 @@ export const Feed: FC<Feed> = ({navigation}: Feed) => {
   };
 
   return (
-    <SafeAreaView style={exportStyles.container}>
+    <SafeAreaView
+      style={[
+        exportStyles.container,
+        {backgroundColor: Colors.backgroundDark},
+      ]}>
       <TopHeaderView
         navigation={navigation}
         navigateBack={false}

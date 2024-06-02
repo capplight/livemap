@@ -1,6 +1,13 @@
 import React from 'react';
 import {Colors} from '@themes/Colors';
-import {Image, Platform, StyleProp, StyleSheet, ViewStyle} from 'react-native';
+import {
+  Image,
+  Platform,
+  StyleProp,
+  StyleSheet,
+  View,
+  ViewStyle,
+} from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -22,6 +29,8 @@ export const CircularImage = ({size = 72, link}: ImageStyleProps) => {
   );
 };
 
+export const MyHeader = () => <View style={exportStyles.myHeaderViewStyles} />;
+
 const size = 40;
 export const exportStyles = StyleSheet.create({
   container: {
@@ -33,6 +42,15 @@ export const exportStyles = StyleSheet.create({
     width: wp(20),
     borderRadius: 4,
     borderWidth: hp(0.2),
+  },
+  myHeaderViewStyles: {
+    height: hp(8),
+    position: 'absolute',
+    top: 0,
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: Colors.backgroundDark,
   },
   shadowProp: {
     ...Platform.select({

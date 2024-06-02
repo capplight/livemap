@@ -377,6 +377,8 @@ export const Home: FC<Home> = ({navigation}: Home) => {
           style={{alignSelf: 'flex-start'}}
           avatarImageStyle={{height: hp(11.5), width: wp(19), borderRadius: 4}}
           avatarWrapperStyle={exportStyles.avatarSquareWrapper}
+          unPressedAvatarTextColor={'#ffff'}
+          pressedAvatarTextColor={Colors.liteGrey}
           showAvatarText={false}
         />
       </View>
@@ -440,7 +442,7 @@ export const Home: FC<Home> = ({navigation}: Home) => {
     getCurrentPosition();
   }, [curtLat, curtLong, mapRef]);
 
-  console.log('Current lat long: ', curLoc);
+  // console.log('Current lat long: ', curLoc);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -619,11 +621,12 @@ const styles = StyleSheet.create({
   searchBarStyles: {
     flexDirection: 'row',
     backgroundColor: Colors.liteGrey,
-    borderRadius: 18,
+    borderRadius: 20,
     justifyContent: 'center',
     alignItems: 'center',
     opacity: 0.5,
     marginLeft: wp(6),
+    marginTop: hp(Platform.OS === 'ios' ? 1 : 0),
   },
   searchTextStyles: {
     maxWidth: wp(40),
@@ -636,14 +639,15 @@ const styles = StyleSheet.create({
   searchViewStyles: {
     flexDirection: 'row',
     marginHorizontal: wp(2),
-    marginVertical: hp(0.5),
+    marginVertical: hp(Platform.OS === 'android' ? 0.8 : 0.5),
     alignItems: 'center',
   },
   textViewStyles: {
     width: wp(0.5),
     height: hp(2),
-    marginHorizontal: wp(0.5),
-    backgroundColor: Colors.liteGrey,
+    marginHorizontal: wp(1),
+    backgroundColor: Colors.fadeWhite,
+    zIndex: 10,
   },
   endIconStyles: {
     flexDirection: 'row',

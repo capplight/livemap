@@ -7,6 +7,7 @@ import {
   TextInput,
   ActivityIndicator,
   Keyboard,
+  Platform,
 } from 'react-native';
 import React, {useState, useEffect, FC, useRef} from 'react';
 import {requestCameraPermission} from '@constants/Permission';
@@ -20,7 +21,7 @@ import {
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
 import FastImage from 'react-native-fast-image';
-import {exportStyles} from '@components/ExportStyles';
+import {MyHeader, exportStyles} from '@components/ExportStyles';
 import {LoginButton} from '@components/Buttons/LoginButton';
 import {AntDesignIcon, Ionicons} from '@themes/Icons';
 import {Colors} from '@themes/Colors';
@@ -104,30 +105,6 @@ export const AddPost: FC<AddPost> = ({navigation}: AddPost) => {
         {enableHighAccuracy: true, timeout: 15000, maximumAge: 10000},
       );
     } catch (error) {}
-  }
-
-  const loadImageBase64 = async capturedImageURI => {
-    try {
-      const base64Data = await readFile(capturedImageURI, 'base64');
-      return 'data:image/jpeg;base64,' + base64Data;
-    } catch (error) {
-      console.error('Error converting image to base64:', error);
-    }
-  };
-
-  function DataURIToBlob(dataURI: string) {
-    const splitDataURI = dataURI.split(',');
-    const byteString =
-      splitDataURI[0].indexOf('base64') >= 0
-        ? atob(splitDataURI[1])
-        : decodeURI(splitDataURI[1]);
-    const mimeString = splitDataURI[0].split(':')[1].split(';')[0];
-
-    const ia = new Uint8Array(byteString.length);
-    for (let i = 0; i < byteString.length; i++)
-      ia[i] = byteString.charCodeAt(i);
-
-    return new Blob([ia], {type: mimeString});
   }
 
   const toBase64 = (file: any) =>
@@ -304,6 +281,7 @@ export const AddPost: FC<AddPost> = ({navigation}: AddPost) => {
         }}>
         {bottomSheetView()}
       </RBSheet>
+      <MyHeader />
       <View style={styles.header}>
         <SVGRenderer
           touchable
@@ -439,9 +417,9 @@ export const AddPost: FC<AddPost> = ({navigation}: AddPost) => {
 
 const styles = StyleSheet.create({
   header: {
-    height: hp(10),
+    height: hp(Platform.OS === 'ios' ? 6 : 10),
     width: wp(100),
-    paddingTop: hp(2.5),
+    paddingTop: hp(Platform.OS === 'ios' ? 0 : 2.5),
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',

@@ -1,9 +1,11 @@
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
   Bubble,
+  Composer,
   GiftedChat,
   IMessage,
   InputToolbar,
+  Send,
 } from 'react-native-gifted-chat';
 import axios from 'axios';
 import {REACT_APP_BASE_URL_DEV} from '@env';
@@ -18,6 +20,10 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {
   ActivityIndicator,
   BackHandler,
+  Keyboard,
+  KeyboardAvoidingView,
+  Platform,
+  StatusBar,
   StyleSheet,
   Text,
   View,
@@ -26,19 +32,60 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen';
-import {CircularImage, exportStyles} from '@components/ExportStyles';
-import {EntypoIcon} from '@themes/Icons';
+import {CircularImage, MyHeader, exportStyles} from '@components/ExportStyles';
+import {EntypoIcon, FeatherIcon, MaterialIcon} from '@themes/Icons';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import {goBack} from '../../Navigation/RootNavigationRef';
 import changeNavigationBarColor from 'react-native-navigation-bar-color';
 import {useIsFocused} from '@react-navigation/native';
+import {TopHeaderView} from '@components/TopHeaderView';
+import {StackNavigationProp} from '@react-navigation/stack';
 
 interface ChatProps {
   route?: any;
+  navigation: StackNavigationProp<any>;
   isScreenFocused: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const ChatScreen = ({route, isScreenFocused}: ChatProps) => {
+const CustomInputToolbar = (props: any) => {
+  const {isKeyboardVisible, ...restProps} = props;
+  return (
+    // <KeyboardAvoidingView
+    //   behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+    <InputToolbar
+      {...restProps}
+      containerStyle={[
+        styles.inputToolbar,
+        {
+          paddingBottom: hp(
+            Platform.OS === 'android' && isKeyboardVisible ? 4 : 2,
+          ),
+        },
+      ]}
+      renderComposer={() => (
+        <View style={styles.composerContainer}>
+          <TouchableOpacity style={styles.iconButton}>
+            <MaterialIcon name="photo" size={24} color="white" />
+          </TouchableOpacity>
+          <Composer {...restProps} textInputStyle={styles.composer} />
+          <TouchableOpacity style={styles.iconButton}>
+            <FeatherIcon name="mic" size={24} color="white" />
+          </TouchableOpacity>
+        </View>
+      )}
+      renderSend={sendProps => (
+        <Send {...sendProps} containerStyle={styles.sendButtonContainer}>
+          <View style={styles.sendButton}>
+            <FeatherIcon name="send" size={24} color="white" />
+          </View>
+        </Send>
+      )}
+    />
+    // </KeyboardAvoidingView>
+  );
+};
+
+const ChatScreen = ({route, navigation, isScreenFocused}: ChatProps) => {
   const isFocused = useIsFocused();
   const dispatch = useDispatch();
   const userId = route?.params?.userId;
@@ -47,13 +94,16 @@ const ChatScreen = ({route, isScreenFocused}: ChatProps) => {
   const lastMsg = route?.params?.lastMessage;
   const senderName = route?.params?.senderName;
   const lastMessage = useRef(lastMsg);
-  const [messages, setMessages] = useState<IMessage[]>([]);
+  const [messages, setMessages] = useState<IMessage[] | undefined>(undefined);
   const chatDetails = useSelector(
     (state: RootState) => state?.chatDetails?.data,
   );
   const chatData = chatDetails?.chatHistory;
   const currentPage = chatDetails?.currentPage;
   const totalPages = chatDetails?.totalPages;
+
+  const [isKeyboardVisible, setKeyboardVisible] = useState(false);
+  const [isLoading, setLoader] = useState(true);
 
   async function getSenderData() {
     const data = await AsyncStorage.getItem(CHAT_USER_KEY);
@@ -86,8 +136,70 @@ const ChatScreen = ({route, isScreenFocused}: ChatProps) => {
     }
   }
 
+  const backHandle = () => {
+    BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
+    return () => {
+      BackHandler.removeEventListener(
+        'hardwareBackPress',
+        handleBackButtonClick,
+      );
+    };
+  };
+
+  const onSend = useCallback(async (newMessage: any) => {
+    setMessages(previousMessages =>
+      GiftedChat.append(previousMessages, newMessage),
+    );
+    const params = JSON.stringify({
+      receiver_id: senderId,
+      message: newMessage[0]?.text,
+    });
+    try {
+      await axios.post(`${REACT_APP_BASE_URL_DEV}/dev/message`, params, {
+        headers: {Authorization: `Bearer ${token}`},
+      });
+    } catch (error) {
+      console.error('Error sending message:', error);
+    }
+  }, []);
+
+  function handleBackButtonClick() {
+    isScreenFocused(false);
+    goBack();
+    return true;
+  }
+
   useEffect(() => {
-    changeNavigationBarColor(Colors.primaryColor);
+    const keyboardDidShowListener = Keyboard.addListener(
+      'keyboardDidShow',
+      () => {
+        setKeyboardVisible(true); // or some other action
+      },
+    );
+    const keyboardDidHideListener = Keyboard.addListener(
+      'keyboardDidHide',
+      () => {
+        setKeyboardVisible(false); // or some other action
+      },
+    );
+
+    return () => {
+      keyboardDidHideListener.remove();
+      keyboardDidShowListener.remove();
+    };
+  }, []);
+
+  useEffect(() => {
+    backHandle();
+  });
+
+  useEffect(() => {
+    if (messages !== undefined) {
+      setLoader(false);
+    }
+  }, [messages]);
+
+  useEffect(() => {
     isScreenFocused(isFocused);
     const intervalId = setInterval(() => {
       getSenderData();
@@ -95,7 +207,6 @@ const ChatScreen = ({route, isScreenFocused}: ChatProps) => {
     return () => {
       // Clears the interval when the component unmounts
       clearInterval(intervalId);
-      changeNavigationBarColor('transparent');
     };
   }, []);
 
@@ -124,151 +235,162 @@ const ChatScreen = ({route, isScreenFocused}: ChatProps) => {
         received: true,
       }));
       setMessages(msgs);
+    } else {
+      setMessages([]);
     }
   }, [chatData]);
 
-  const onSend = useCallback(async (newMessage: any) => {
-    setMessages(previousMessages =>
-      GiftedChat.append(previousMessages, newMessage),
-    );
-    const params = JSON.stringify({
-      receiver_id: senderId,
-      message: newMessage[0]?.text,
-    });
-    try {
-      await axios.post(`${REACT_APP_BASE_URL_DEV}/dev/message`, params, {
-        headers: {Authorization: `Bearer ${token}`},
-      });
-    } catch (error) {
-      console.error('Error sending message:', error);
-    }
-  }, []);
-
-  function handleBackButtonClick() {
-    isScreenFocused(false);
-    goBack();
-    return true;
-  }
-  const backHandle = () => {
-    BackHandler.addEventListener('hardwareBackPress', handleBackButtonClick);
-    return () => {
-      BackHandler.removeEventListener(
-        'hardwareBackPress',
-        handleBackButtonClick,
-      );
-    };
-  };
-  useEffect(() => {
-    backHandle();
-  });
-
   return (
-    <View style={exportStyles.container}>
-      <View style={{backgroundColor: Colors.backgroundDark}}>
-        {/* <View style={{height: hp(1)}} /> */}
-        <SafeAreaView style={styles.navigationBarStyles}>
-          <TouchableOpacity
-            onPress={() => {
-              isScreenFocused(false);
-              goBack();
-            }}>
-            <EntypoIcon name="chevron-left" size={32} />
-          </TouchableOpacity>
-          <View style={styles.userBackgroundStyles}>
-            <CircularImage size={32} />
-            <Text style={[exportStyles.text3, {marginLeft: wp(2.5)}]}>
-              {senderName}
-            </Text>
-          </View>
-        </SafeAreaView>
-      </View>
-      <GiftedChat
-        messages={messages}
-        onSend={newMessages => onSend(newMessages)}
-        user={{
-          _id: userId,
-        }}
-        isKeyboardInternallyHandled={false}
-        keyboardShouldPersistTaps="handled"
-        renderLoading={() => {
-          return (
-            <ActivityIndicator
-              size={'large'}
-              color={'white'}
-              style={{marginTop: hp(10)}}
-            />
-          );
-        }}
-        listViewProps={{
-          scrollEventThrottle: 400,
-          onScroll: ({nativeEvent}) => {
-            if (currentPage + 1 <= totalPages) {
-              dispatch(
-                ChatDetailsRequest({
-                  token: token,
-                  receiver_id: senderId,
-                  page: currentPage + 1,
-                  limit: 20,
-                }),
-              );
-            }
-          },
-        }}
-        textInputStyle={{color: 'white'}}
-        // messagesContainerStyle={{height: hp(88), bottom: hp(4)}}
-        renderInputToolbar={props => {
-          return (
-            <InputToolbar
-              {...props}
-              containerStyle={{
-                backgroundColor: Colors.primaryColor,
-                borderTopColor: 'transparent',
-                // height: hp(7),
-                // borderRadius: 80,
-                // padding: 4,
-                // marginHorizontal: wp(8),
-                // marginBottom: hp(0.5),
-                // paddingRight: wp(-8),
-              }}
-            />
-          );
-        }}
-        renderBubble={props => {
-          return (
-            <Bubble
-              {...props}
-              wrapperStyle={
-                {
-                  right: {
-                    backgroundColor: Colors.primaryColor,
-                  },
-                  left: {
-                    backgroundColor: Colors.senderChatColor,
-                  },
-                } as any
-              }
-              textStyle={{left: {color: 'white'}}}
-            />
-          );
-        }}
+    <SafeAreaView
+      style={[
+        exportStyles.container,
+        {backgroundColor: Colors.backgroundDark},
+      ]}>
+      <TopHeaderView
+        navigation={navigation}
+        navigateBack
+        title="Inbox"
+        isChatScreen
+        senderName={senderName}
       />
-    </View>
+      {messages === undefined ? (
+        <ActivityIndicator
+          size={'large'}
+          color={'white'}
+          style={{marginTop: hp(10)}}
+        />
+      ) : (
+        <GiftedChat
+          messages={messages}
+          onSend={newMessages => onSend(newMessages)}
+          user={{
+            _id: userId,
+          }}
+          isKeyboardInternallyHandled={false}
+          keyboardShouldPersistTaps="handled"
+          renderLoading={() => {
+            return (
+              <ActivityIndicator
+                size={'large'}
+                color={'white'}
+                style={{marginTop: hp(10)}}
+              />
+            );
+          }}
+          listViewProps={{
+            scrollEventThrottle: 400,
+            onScroll: ({nativeEvent}) => {
+              if (currentPage + 1 <= totalPages) {
+                dispatch(
+                  ChatDetailsRequest({
+                    token: token,
+                    receiver_id: senderId,
+                    page: currentPage + 1,
+                    limit: 20,
+                  }),
+                );
+              }
+            },
+          }}
+          textInputStyle={{color: 'white'}}
+          // messagesContainerStyle={{height: hp(88), bottom: hp(4)}}
+          // renderInputToolbar={props => {
+          //   return (
+          //     <InputToolbar
+          //       {...props}
+          //       containerStyle={{
+          //         backgroundColor: Colors.primaryColor,
+          //         borderTopColor: 'transparent',
+          //         // height: hp(7),
+          //         // borderRadius: 80,
+          //         // padding: 4,
+          //         // marginHorizontal: wp(8),
+          //         // marginBottom: hp(0.5),
+          //         // paddingRight: wp(-8),
+          //       }}
+          //     />
+          //   );
+          // }}
+          maxComposerHeight={hp(10)}
+          renderInputToolbar={props => (
+            <CustomInputToolbar
+              {...props}
+              isKeyboardVisible={isKeyboardVisible}
+            />
+          )}
+          renderBubble={props => {
+            return (
+              <Bubble
+                {...props}
+                wrapperStyle={
+                  {
+                    right: {
+                      backgroundColor: Colors.primaryColor,
+                    },
+                    left: {
+                      backgroundColor: Colors.senderChatColor,
+                    },
+                  } as any
+                }
+                textStyle={{left: {color: 'white'}}}
+              />
+            );
+          }}
+          messagesContainerStyle={{
+            backgroundColor: Colors.backgroundColor,
+            paddingBottom: hp(
+              Platform.OS === 'ios'
+                ? isKeyboardVisible
+                  ? 4
+                  : 2
+                : isKeyboardVisible
+                ? 6
+                : 4,
+            ),
+          }}
+        />
+      )}
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  navigationBarStyles: {
-    height: hp(6),
+  inputToolbar: {
     backgroundColor: Colors.backgroundDark,
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: wp(2),
-    // paddingTop: hp(1.5),
+    borderTopWidth: 0,
+    padding: hp(1.5),
+    paddingBottom: hp(Platform.OS === 'android' ? 2 : 0),
   },
-  userBackgroundStyles: {
-    marginLeft: wp(6),
+  composerContainer: {
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
+    borderRadius: 25,
+    marginBottom: hp(Platform.OS === 'ios' ? -2 : 0),
+    maxHeight: hp(10),
+    backgroundColor: Colors.primaryColor,
+  },
+  composer: {
+    backgroundColor: 'transparent',
+    color: 'white',
+    flex: 1,
+    paddingTop: hp(1),
+    maxHeight: hp(8),
+  },
+  iconButton: {
+    padding: 10,
+  },
+  sendButtonContainer: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: hp(Platform.OS === 'ios' ? -2 : 0),
+    marginLeft: hp(0.8),
+    marginRight: hp(-0.5),
+  },
+  sendButton: {
+    backgroundColor: Colors.primaryColor,
+    padding: hp(1),
+    borderRadius: 25,
   },
 });
 

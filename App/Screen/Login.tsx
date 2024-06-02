@@ -84,7 +84,6 @@ export const Login: FC<Login> = ({navigation}: Login) => {
   }
 
   const sendFCM = async (token: string) => {
-    console.log('Its here....');
     const params = JSON.stringify({fcm_token: fcmToken});
     await axios
       .put(`${REACT_APP_BASE_URL_DEV}/dev/user`, params, {

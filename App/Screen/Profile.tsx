@@ -204,6 +204,9 @@ export const Profile: FC<Profile> = ({navigation}: Profile) => {
     let isExpanded: boolean = expandedItemIndex === i ? true : false;
     return (
       <View
+        // onPress={() => {
+        //   handleItemClick(i);
+        // }}
         style={[
           styles.expandableContainer,
           {height: hp(isExpanded ? (i === 0 ? 17 : 19) : 5)},
@@ -314,7 +317,7 @@ export const Profile: FC<Profile> = ({navigation}: Profile) => {
               </TouchableOpacity>
             </View>
           </View>
-          <View style={{position: 'absolute', top: hp(14), left: wp(2)}}>
+          <View style={{position: 'absolute', top: hp(15), left: wp(2)}}>
             <CircularImage link={profileImageLink} />
           </View>
           {detailView(
@@ -353,7 +356,8 @@ export const Profile: FC<Profile> = ({navigation}: Profile) => {
                       duration={5}
                       unPressedBorderColor={'transparent'}
                       style={{alignSelf: 'flex-start'}}
-                      avatarTextStyle={{color: 'white'}}
+                      unPressedAvatarTextColor={'#ffff'}
+                      pressedAvatarTextColor={Colors.liteGrey}
                     />
                   ) : (
                     <InstaStory
@@ -364,7 +368,9 @@ export const Profile: FC<Profile> = ({navigation}: Profile) => {
                       style={{alignSelf: 'flex-start'}}
                       avatarImageStyle={styles.avatarImageStyles}
                       avatarWrapperStyle={styles.avatarSquareWrapper}
-                      avatarTextStyle={{bottom: hp(0.5), color: 'white'}}
+                      unPressedAvatarTextColor={'#ffff'}
+                      pressedAvatarTextColor={Colors.liteGrey}
+                      avatarTextStyle={{bottom: hp(0.5)}}
                     />
                   ),
                 )}
@@ -394,7 +400,7 @@ const styles = StyleSheet.create({
   },
   userIdViewStyles: {
     width: wp(32),
-    marginTop: hp(4),
+    marginTop: hp(6),
     marginLeft: wp(3),
     alignSelf: 'flex-start',
   },
@@ -437,7 +443,7 @@ const styles = StyleSheet.create({
   text2: {
     color: 'white',
     paddingHorizontal: wp(1.3),
-    paddingTop: hp(4),
+    paddingTop: hp(2),
     paddingBottom: hp(1),
     fontSize: hp(1.6),
     textAlign: 'justify',
